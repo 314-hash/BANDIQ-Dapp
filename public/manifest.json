@@ -1,0 +1,20 @@
+{
+  "name": "BANDIQ DePIN — Bandwidth + Intelligence",
+  "short_name": "BANDIQ",
+  "description": "Decentralized Bandwidth Network and Mobile Edge Witness on Sidra Chain ($BNDQ).",
+  "start_url": "/dashboard/",
+  "scope": "/dashboard/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#06070d",
+  "theme_color": "#06070d",
+  "icons": [
+    {
+      "src": "bandiq_logo.jpg",
+      "sizes": "192x192 512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["utilities", "finance", "productivity"]
+}

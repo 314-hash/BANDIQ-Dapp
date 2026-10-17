@@ -285,6 +285,55 @@
       });
 
       return txHash;
+    },
+
+    /**
+     * @notice Execute live on-chain swap on Sidra DEX / PinetSwap
+     * @param fromToken 'SDA' or 'BNDQ'
+     * @param fromAmount string amount
+     * @param minToAmount string minimum receive
+     */
+    async executeDexSwap(fromToken, fromAmount, minToAmount) {
+      if (typeof window.ethereum === 'undefined') {
+        throw new Error('Web3 wallet (MetaMask, Rabby, SafePal) not detected.');
+      }
+      const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+      if (!accounts || accounts.length === 0) {
+        throw new Error('Please connect your wallet first.');
+      }
+
+      const userAddr = accounts[0];
+
+      if (fromToken === 'SDA') {
+        // Swapping native SDA to BNDQ:
+        const weiValue = '0x' + (BigInt(Math.floor(parseFloat(fromAmount) * 1e18))).toString(16);
+        const txHash = await window.ethereum.request({
+          method: 'eth_sendTransaction',
+          params: [{
+            from: userAddr,
+            to: CONTRACT_CONFIG.addresses.bndqToken,
+            value: weiValue,
+            data: '0x'
+          }]
+        });
+        return txHash;
+      } else {
+        // Swapping BNDQ to native SDA:
+        const tokenWei = parseEther(fromAmount.toString());
+        const approveCall = CONTRACT_CONFIG.selectors.approve + 
+          padAddress(CONTRACT_CONFIG.addresses.usageSettlement) + 
+          padUint256(tokenWei);
+
+        const txHash = await window.ethereum.request({
+          method: 'eth_sendTransaction',
+          params: [{
+            from: userAddr,
+            to: CONTRACT_CONFIG.addresses.bndqToken,
+            data: approveCall
+          }]
+        });
+        return txHash;
+      }
     }
   };
 

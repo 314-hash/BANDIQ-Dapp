@@ -638,6 +638,21 @@
             </div>
           </div>
 
+          <!-- Quick Swap Banner for Bandwidth Escrow -->
+          <div class="market-swap-banner glass-card">
+            <div class="msb-content">
+              <div class="msb-icon">🔄</div>
+              <div>
+                <h3 class="msb-title">Need $BNDQ to Fund Bandwidth Escrows?</h3>
+                <p class="msb-desc">Acquire $BNDQ on Sidra Chain using the native Sidra DEX & PinetSwap trading pool.</p>
+              </div>
+            </div>
+            <div class="msb-actions">
+              <button class="btn btn-outline-cyan-sm" id="btnGoToDexSwap">Instant DEX Swap ➔</button>
+              <a href="https://pinetswap.app" target="_blank" rel="noopener" class="btn btn-outline-purple-sm">PinetSwap.app ↗</a>
+            </div>
+          </div>
+
           <div class="grid-3-col">
             <!-- Tier 1 -->
             <div class="market-card glass-card">
@@ -949,6 +964,7 @@
                   <span class="platform-tags">
                     <span class="ptag">MetaMask</span>
                     <span class="ptag">Rabby</span>
+                    <span class="ptag">SafePal</span>
                     <span class="ptag">Trust Wallet</span>
                     <span class="ptag">WalletConnect</span>
                     <span class="ptag">Coinbase</span>
@@ -995,6 +1011,141 @@
                     <span class="lr-tx">0x9c41...ee44</span>
                     <span class="lr-time">1 day ago</span>
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============================================================== -->
+          <!-- LIVE SIDRA DEX & PINETSWAP TERMINAL -->
+          <!-- ============================================================== -->
+          <div class="card glass-card mt-6 featured-dex-card" id="sidraDexCard">
+            <div class="card-header-flex">
+              <div>
+                <div class="flex-align-center gap-2">
+                  <h2 class="card-title cyan-accent">Sidra DEX & PinetSwap Live Terminal</h2>
+                  <span class="live-dex-pill">
+                    <span class="pulse-indicator live"></span> Live AMM Pool
+                  </span>
+                </div>
+                <p class="card-subtitle">Instant decentralized swaps for $BNDQ and native Sidra ($SDA / $KST) routed via PinetSwap</p>
+              </div>
+              <div class="dex-badges-row">
+                <span class="dex-chain-chip">Chain: Sidra (97453)</span>
+                <span class="dex-amm-chip">Router: PinetSwap V2</span>
+              </div>
+            </div>
+
+            <!-- DEX Live Market Stats Ribbon -->
+            <div class="dex-stats-ribbon">
+              <div class="dsr-item">
+                <span class="dsr-label">Trading Pair</span>
+                <span class="dsr-val text-neon-cyan">SDA / BNDQ</span>
+              </div>
+              <div class="dsr-item">
+                <span class="dsr-label">AMM Exchange Rate</span>
+                <span class="dsr-val" id="dexExchangeRateDisplay">1 SDA ≈ 245.50 BNDQ</span>
+              </div>
+              <div class="dsr-item">
+                <span class="dsr-label">Pool Liquidity</span>
+                <span class="dsr-val">450K SDA / 110.4M BNDQ</span>
+              </div>
+              <div class="dsr-item">
+                <span class="dsr-label">24h DEX Volume</span>
+                <span class="dsr-val text-neon-purple">84,200 SDA</span>
+              </div>
+            </div>
+
+            <div class="dex-swap-container">
+              <!-- FROM TOKEN BOX -->
+              <div class="dex-token-box">
+                <div class="dtb-header">
+                  <span class="dtb-title">You Pay</span>
+                  <div class="dtb-balance">
+                    <span>Balance: </span>
+                    <strong id="dexFromBalance">0.00 SDA</strong>
+                    <button class="dex-max-btn" id="btnDexMaxFrom">MAX</button>
+                  </div>
+                </div>
+                <div class="dtb-input-row">
+                  <input type="number" id="dexInputFrom" class="dex-amount-input" value="1.0" min="0.0001" step="any" placeholder="0.0">
+                  <div class="dex-token-pill" id="dexTokenFromPill">
+                    <span class="dex-token-icon" id="dexFromIcon">💎</span>
+                    <span class="dex-token-sym" id="dexFromSym">SDA</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- FLIP BUTTON -->
+              <div class="dex-flip-row">
+                <button class="dex-flip-btn" id="btnDexFlip" title="Switch Currencies" aria-label="Switch swap direction">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 16V4m0 0L3 8m4-4l4 4m6 4v12m0 0l4-4m-4 4l-4-4"/></svg>
+                </button>
+              </div>
+
+              <!-- TO TOKEN BOX -->
+              <div class="dex-token-box">
+                <div class="dtb-header">
+                  <span class="dtb-title">You Receive (Estimated)</span>
+                  <div class="dtb-balance">
+                    <span>Balance: </span>
+                    <strong id="dexToBalance">323,117.42 BNDQ</strong>
+                  </div>
+                </div>
+                <div class="dtb-input-row">
+                  <input type="text" id="dexInputTo" class="dex-amount-input" value="244.76" readonly placeholder="0.0">
+                  <div class="dex-token-pill" id="dexTokenToPill">
+                    <span class="dex-token-icon" id="dexToIcon">⚡</span>
+                    <span class="dex-token-sym" id="dexToSym">BNDQ</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- TRADE SETTINGS & SLIPPAGE -->
+              <div class="dex-trade-details">
+                <div class="dtd-row">
+                  <span class="dtd-lbl">Slippage Tolerance:</span>
+                  <div class="slippage-chips" id="slippageChips">
+                    <button class="slip-chip active" data-slip="0.5">0.5%</button>
+                    <button class="slip-chip" data-slip="1.0">1.0%</button>
+                    <button class="slip-chip" data-slip="2.5">2.5%</button>
+                  </div>
+                </div>
+                <div class="dtd-row">
+                  <span class="dtd-lbl">Liquidity Provider Fee (0.3%):</span>
+                  <span class="dtd-val" id="dexLpFee">0.003 SDA</span>
+                </div>
+                <div class="dtd-row">
+                  <span class="dtd-lbl">Minimum Received After Slippage:</span>
+                  <span class="dtd-val text-neon-cyan" id="dexMinReceived">243.53 BNDQ</span>
+                </div>
+                <div class="dtd-row">
+                  <span class="dtd-lbl">Trade Route:</span>
+                  <span class="dtd-val" id="dexRoute">SDA ➔ PinetSwap Sidra V2 Pool ➔ BNDQ</span>
+                </div>
+              </div>
+
+              <!-- ACTION BUTTONS -->
+              <div class="dex-action-buttons">
+                <button class="btn btn-primary btn-block btn-lg" id="btnExecuteDexSwap">
+                  <span id="btnDexSwapText">Swap on Sidra DEX</span>
+                </button>
+                <a href="https://pinetswap.app" target="_blank" rel="noopener" class="btn btn-outline-purple btn-block" id="btnLaunchPinetswap">
+                  <span>Open on PinetSwap.app ↗</span>
+                </a>
+              </div>
+
+              <!-- LIVE TRANSACTION STATUS FEEDBACK -->
+              <div class="dex-tx-feedback" id="dexTxFeedback" style="display: none;">
+                <div class="dtx-header">
+                  <span class="pulse-indicator live" id="dtxBeacon"></span>
+                  <span class="dtx-title" id="dtxTitle">Transaction Broadcast to Sidra Chain</span>
+                </div>
+                <div class="dtx-body" id="dtxBody">
+                  Submitting swap order through Sidra RPC node...
+                </div>
+                <div class="dtx-link" id="dtxLinkWrap">
+                  <a href="#" target="_blank" rel="noopener" id="dtxExplorerLink" class="text-neon-cyan">View on Sidra Explorer ↗</a>
                 </div>
               </div>
             </div>
@@ -1395,6 +1546,17 @@
                 <span class="pb-tag">EVM Compatible</span>
               </button>
 
+              <button class="provider-btn" data-provider="safepal" id="btnConnectSafePal">
+                <div class="pb-left">
+                  <div class="provider-icon safepal-icon">🔲</div>
+                  <div>
+                    <div class="pb-name">SafePal Wallet</div>
+                    <div class="pb-desc">Hardware, Mobile & Browser Extension</div>
+                  </div>
+                </div>
+                <span class="pb-tag" id="tagSafepal">EVM / Sidra</span>
+              </button>
+
               <button class="provider-btn" data-provider="coinbase" id="btnConnectCoinbase">
                 <div class="pb-left">
                   <div class="provider-icon cb-icon">🔵</div>
@@ -1431,6 +1593,11 @@
               <button class="mobile-app-btn" id="btnDeepLinkTrust">
                 <span class="ma-icon">🛡️</span>
                 <span class="ma-name">Trust Wallet</span>
+                <span class="ma-sub">Open App</span>
+              </button>
+              <button class="mobile-app-btn" id="btnDeepLinkSafePal">
+                <span class="ma-icon">🔲</span>
+                <span class="ma-name">SafePal App</span>
                 <span class="ma-sub">Open App</span>
               </button>
               <button class="mobile-app-btn" id="btnDeepLinkOKX">

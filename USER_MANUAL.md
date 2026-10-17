@@ -170,32 +170,32 @@ To modify data caps or speed throttles, adjust `.bandiq/config.json` or use the 
 BANDIQ features a **Universal Multi-Platform Web3 Connector** that connects to any crypto wallet across Desktop, Mobile (iOS/Android), and Browser extensions.
 
 ### Desktop Browsers
-*(MetaMask, Rabby Wallet, Brave Browser, OKX Wallet, Coinbase Wallet)*
+*(MetaMask, Rabby Wallet, SafePal Extension, Brave Browser, OKX Wallet, Coinbase Wallet)*
 
 1. Open your browser and navigate to the BANDIQ Dashboard: `http://127.0.0.1:8080/dashboard/`.
 2. Click the **Connect Wallet** button in the top-right header or in the **BNDQ Ledger** tab.
-3. The dashboard automatically detects any EIP-1193 injected wallet (MetaMask, Rabby, etc.).
-4. Click your preferred wallet provider. Approve the connection prompt in your extension.
+3. The dashboard automatically detects any EIP-1193 injected wallet (MetaMask, Rabby, SafePal, etc.).
+4. Click your preferred wallet provider (e.g. MetaMask, Rabby, or SafePal). Approve the connection prompt in your extension.
 5. If your wallet is on Ethereum or another chain, click **Switch to Sidra Chain**; the dashboard will trigger a 1-click network configuration.
 
 ---
 
 ### Mobile Devices: iOS & Android
-*(MetaMask Mobile, Trust Wallet, OKX Mobile, Rainbow, SafePal)*
+*(SafePal Mobile App, MetaMask Mobile, Trust Wallet, OKX Mobile, Rainbow)*
 
 When accessing the dashboard on a smartphone or tablet:
 
 #### Method A: Direct In-App DApp Browser (Recommended)
-1. Open your mobile wallet app (MetaMask, Trust Wallet, or OKX).
-2. Tap the in-app **Browser / Discover** tab.
-3. Enter your BANDIQ Dashboard URL (or local LAN IP, e.g., `http://192.168.1.50:8080/dashboard/`).
+1. Open your mobile wallet app (SafePal, MetaMask, Trust Wallet, or OKX).
+2. Tap the in-app **Browser / DApp / Discover** tab.
+3. Enter your BANDIQ Dashboard URL (or live deployment `https://bandiq-dapp.vercel.app/`).
 4. Tap **Connect Wallet** — connection is instantaneous with native biometric signature.
 
 #### Method B: Universal Mobile Deep-Link
 1. Open the dashboard in Safari, Chrome, or Firefox on your mobile device.
 2. Tap **Connect Wallet**.
-3. Select **Open in MetaMask Mobile** or **Open in Trust Wallet**.
-4. The dashboard triggers an OS-level universal deep link (`metamask://dapp/...` or `https://link.trustwallet.com/...`) opening the application directly.
+3. Select **Open in SafePal**, **Open in MetaMask Mobile**, or **Open in Trust Wallet**.
+4. The dashboard triggers an OS-level universal deep link (`safepal://dapp?...`, `metamask://dapp/...` or `https://link.trustwallet.com/...`) opening the application directly.
 
 ---
 
@@ -318,7 +318,7 @@ The Web Dashboard runs locally on `http://127.0.0.1:8080/dashboard/` and feature
 4. **DePIN Node Explorer:** Live table of all network nodes with search, status filtering, and quality rankings.
 5. **Bandwidth Market:** Peer-to-peer session marketplace where consumers request bandwidth and inspect active session receipts.
 6. **Proof Verification Center:** In-browser cryptographic tool to paste any report JSON and inspect its Ed25519 signature and audit evaluation.
-7. **BNDQ Ledger & Wallet:** Wallet connection hub, Sidra Chain balance tracker, transaction history, and 1-click token import.
+7. **BNDQ Ledger, Sidra DEX & PinetSwap Terminal:** Live wallet balance tracker, on-chain transaction history, 1-click token import, and live AMM decentralized exchange (swapping SDA <-> BNDQ directly on Sidra Chain with PinetSwap routing).
 8. **Docs & Security:** Built-in searchable manual, operator consent rules, and data collection transparency.
 
 ---

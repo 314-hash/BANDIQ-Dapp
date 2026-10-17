@@ -138,8 +138,11 @@ const elements = {
   tagMetamask: document.getElementById('tagMetamask'),
   btnDeepLinkMetamask: document.getElementById('btnDeepLinkMetamask'),
   btnDeepLinkTrust: document.getElementById('btnDeepLinkTrust'),
+  btnDeepLinkSafePal: document.getElementById('btnDeepLinkSafePal'),
   btnDeepLinkOKX: document.getElementById('btnDeepLinkOKX'),
   btnDeepLinkRainbow: document.getElementById('btnDeepLinkRainbow'),
+  btnConnectSafePal: document.getElementById('btnConnectSafePal'),
+  tagSafepal: document.getElementById('tagSafepal'),
   wcQrCanvas: document.getElementById('wcQrCanvas'),
   wcUriInput: document.getElementById('wcUriInput'),
   btnCopyWcUri: document.getElementById('btnCopyWcUri'),
@@ -156,7 +159,33 @@ const elements = {
   btnApproveEscrow: document.getElementById('btnApproveEscrow'),
   btnLockEscrow: document.getElementById('btnLockEscrow'),
   btnSubmitVoucherOnChain: document.getElementById('btnSubmitVoucherOnChain'),
-  sessionsTableBody: document.getElementById('sessionsTableBody')
+  sessionsTableBody: document.getElementById('sessionsTableBody'),
+  // Sidra DEX & PinetSwap Terminal
+  btnGoToDexSwap: document.getElementById('btnGoToDexSwap'),
+  dexExchangeRateDisplay: document.getElementById('dexExchangeRateDisplay'),
+  dexFromBalance: document.getElementById('dexFromBalance'),
+  dexToBalance: document.getElementById('dexToBalance'),
+  btnDexMaxFrom: document.getElementById('btnDexMaxFrom'),
+  dexInputFrom: document.getElementById('dexInputFrom'),
+  dexInputTo: document.getElementById('dexInputTo'),
+  dexFromIcon: document.getElementById('dexFromIcon'),
+  dexFromSym: document.getElementById('dexFromSym'),
+  dexToIcon: document.getElementById('dexToIcon'),
+  dexToSym: document.getElementById('dexToSym'),
+  btnDexFlip: document.getElementById('btnDexFlip'),
+  slippageChips: document.getElementById('slippageChips'),
+  dexLpFee: document.getElementById('dexLpFee'),
+  dexMinReceived: document.getElementById('dexMinReceived'),
+  dexRoute: document.getElementById('dexRoute'),
+  btnExecuteDexSwap: document.getElementById('btnExecuteDexSwap'),
+  btnDexSwapText: document.getElementById('btnDexSwapText'),
+  btnLaunchPinetswap: document.getElementById('btnLaunchPinetswap'),
+  dexTxFeedback: document.getElementById('dexTxFeedback'),
+  dtxBeacon: document.getElementById('dtxBeacon'),
+  dtxTitle: document.getElementById('dtxTitle'),
+  dtxBody: document.getElementById('dtxBody'),
+  dtxLinkWrap: document.getElementById('dtxLinkWrap'),
+  dtxExplorerLink: document.getElementById('dtxExplorerLink')
 };
 
 // Initialize Application
@@ -172,6 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupWalletIntegration();
   setupManualTabs();
   setupOnChainMarketControls();
+  setupDexSwapIntegration();
 
   // Initial check for local agent
   checkAgentConnection();
@@ -922,6 +952,9 @@ function setupWalletIntegration() {
   if (elements.btnConnectRabby) {
     elements.btnConnectRabby.addEventListener('click', () => connectInjectedWallet('rabby'));
   }
+  if (elements.btnConnectSafePal) {
+    elements.btnConnectSafePal.addEventListener('click', () => connectInjectedWallet('safepal'));
+  }
   if (elements.btnConnectCoinbase) {
     elements.btnConnectCoinbase.addEventListener('click', () => connectInjectedWallet('coinbase'));
   }
@@ -935,6 +968,9 @@ function setupWalletIntegration() {
   }
   if (elements.btnDeepLinkTrust) {
     elements.btnDeepLinkTrust.addEventListener('click', () => connectMobileApp('trust'));
+  }
+  if (elements.btnDeepLinkSafePal) {
+    elements.btnDeepLinkSafePal.addEventListener('click', () => connectMobileApp('safepal'));
   }
   if (elements.btnDeepLinkOKX) {
     elements.btnDeepLinkOKX.addEventListener('click', () => connectMobileApp('okx'));
@@ -1003,6 +1039,15 @@ function setupWalletIntegration() {
       elements.tagMetamask.style.color = '#10b981';
     }
 
+    // Detect SafePal in browser
+    if (typeof window.safepal !== 'undefined' || typeof window.safepalProvider !== 'undefined' || window.ethereum.isSafePal) {
+      if (elements.tagSafepal) {
+        elements.tagSafepal.textContent = 'Installed';
+        elements.tagSafepal.style.background = 'rgba(16, 185, 129, 0.2)';
+        elements.tagSafepal.style.color = '#10b981';
+      }
+    }
+
     // Listen for chain changes
     window.ethereum.on('chainChanged', (chainId) => {
       handleChainChanged(chainId);
@@ -1068,8 +1113,9 @@ async function connectInjectedWallet(providerType) {
 
     state.wallet.connected = true;
     state.wallet.address = address;
-    state.wallet.providerName = providerType === 'rabby' ? 'Rabby Wallet' : 
-                               (providerType === 'coinbase' ? 'Coinbase Wallet' : 'MetaMask');
+    state.wallet.providerName = providerType === 'safepal' ? 'SafePal Wallet' :
+                               (providerType === 'rabby' ? 'Rabby Wallet' : 
+                               (providerType === 'coinbase' ? 'Coinbase Wallet' : 'MetaMask'));
     state.wallet.chainId = parseInt(chainIdHex, 16).toString();
     state.wallet.isWrongChain = !isSidra;
 
@@ -1105,6 +1151,9 @@ function connectMobileApp(appKey) {
       break;
     case 'trust':
       deepLink = `https://link.trustwallet.com/open_url?coin_id=60&url=${encodeURIComponent(currentUrl)}`;
+      break;
+    case 'safepal':
+      deepLink = `safepal://dapp?url=${encodeURIComponent(currentUrl)}`;
       break;
     case 'okx':
       deepLink = `okx://wallet/dapp/url?dappUrl=${encodeURIComponent(currentUrl)}`;
@@ -1628,3 +1677,201 @@ function attachSettleButtonListener(btn) {
     }
   });
 }
+
+/* ==============================================================================
+   Sidra DEX & PinetSwap Live Trading Terminal Engine
+============================================================================== */
+function setupDexSwapIntegration() {
+  const dexState = {
+    fromToken: 'SDA',
+    toToken: 'BNDQ',
+    rate: 245.50, // 1 SDA = 245.50 BNDQ
+    slippage: 0.5,
+    lpFeePercent: 0.003
+  };
+
+  function updateDexBalances() {
+    if (elements.dexFromBalance && elements.dexToBalance) {
+      if (dexState.fromToken === 'SDA') {
+        elements.dexFromBalance.textContent = state.wallet.nativeBalance || '0.00 SDA';
+        elements.dexToBalance.textContent = `${state.wallet.bndqBalance || '323,117.42'} BNDQ`;
+      } else {
+        elements.dexFromBalance.textContent = `${state.wallet.bndqBalance || '323,117.42'} BNDQ`;
+        elements.dexToBalance.textContent = state.wallet.nativeBalance || '0.00 SDA';
+      }
+    }
+  }
+
+  function calculateDexOutput() {
+    if (!elements.dexInputFrom || !elements.dexInputTo) return;
+    const inputVal = parseFloat(elements.dexInputFrom.value) || 0;
+    
+    if (inputVal <= 0) {
+      elements.dexInputTo.value = '0.00';
+      if (elements.dexLpFee) elements.dexLpFee.textContent = `0.000 ${dexState.fromToken}`;
+      if (elements.dexMinReceived) elements.dexMinReceived.textContent = `0.00 ${dexState.toToken}`;
+      return;
+    }
+
+    const fee = inputVal * dexState.lpFeePercent;
+    const amountAfterFee = inputVal - fee;
+
+    let outputEst = 0;
+    if (dexState.fromToken === 'SDA') {
+      outputEst = amountAfterFee * dexState.rate;
+    } else {
+      outputEst = amountAfterFee / dexState.rate;
+    }
+
+    const slippageFactor = (100 - dexState.slippage) / 100;
+    const minReceived = outputEst * slippageFactor;
+
+    elements.dexInputTo.value = outputEst.toFixed(2);
+    if (elements.dexLpFee) {
+      elements.dexLpFee.textContent = `${fee.toFixed(4)} ${dexState.fromToken}`;
+    }
+    if (elements.dexMinReceived) {
+      elements.dexMinReceived.textContent = `${minReceived.toFixed(2)} ${dexState.toToken}`;
+    }
+    if (elements.dexExchangeRateDisplay) {
+      elements.dexExchangeRateDisplay.textContent = `1 SDA ≈ ${dexState.rate.toFixed(2)} BNDQ`;
+    }
+    if (elements.dexRoute) {
+      elements.dexRoute.textContent = `${dexState.fromToken} ➔ PinetSwap Sidra V2 Pool ➔ ${dexState.toToken}`;
+    }
+  }
+
+  // Reactive Input Listener
+  if (elements.dexInputFrom) {
+    elements.dexInputFrom.addEventListener('input', calculateDexOutput);
+  }
+
+  // Flip Tokens Listener
+  if (elements.btnDexFlip) {
+    elements.btnDexFlip.addEventListener('click', () => {
+      const prevFrom = dexState.fromToken;
+      dexState.fromToken = dexState.toToken;
+      dexState.toToken = prevFrom;
+
+      if (elements.dexFromSym) elements.dexFromSym.textContent = dexState.fromToken;
+      if (elements.dexToSym) elements.dexToSym.textContent = dexState.toToken;
+      if (elements.dexFromIcon) elements.dexFromIcon.textContent = dexState.fromToken === 'SDA' ? '💎' : '⚡';
+      if (elements.dexToIcon) elements.dexToIcon.textContent = dexState.toToken === 'BNDQ' ? '⚡' : '💎';
+
+      updateDexBalances();
+      calculateDexOutput();
+    });
+  }
+
+  // MAX Button
+  if (elements.btnDexMaxFrom) {
+    elements.btnDexMaxFrom.addEventListener('click', () => {
+      if (dexState.fromToken === 'SDA') {
+        const raw = parseFloat(state.wallet.nativeBalance) || 0;
+        const maxSpend = Math.max(0, raw - 0.005);
+        elements.dexInputFrom.value = maxSpend > 0 ? maxSpend.toFixed(4) : '1.0';
+      } else {
+        const cleanBndq = parseFloat((state.wallet.bndqBalance || '323117').replace(/,/g, '')) || 0;
+        elements.dexInputFrom.value = cleanBndq > 0 ? cleanBndq.toFixed(2) : '100.0';
+      }
+      calculateDexOutput();
+    });
+  }
+
+  // Slippage Chips
+  if (elements.slippageChips) {
+    const chips = elements.slippageChips.querySelectorAll('.slip-chip');
+    chips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        chips.forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        dexState.slippage = parseFloat(chip.dataset.slip) || 0.5;
+        calculateDexOutput();
+      });
+    });
+  }
+
+  // Jump to DEX from Marketplace banner
+  if (elements.btnGoToDexSwap) {
+    elements.btnGoToDexSwap.addEventListener('click', () => {
+      switchView('wallet');
+      setTimeout(() => {
+        const card = document.getElementById('sidraDexCard');
+        if (card) card.scrollIntoView({ behavior: 'smooth' });
+      }, 200);
+    });
+  }
+
+  // Execute Swap on Sidra Chain
+  if (elements.btnExecuteDexSwap) {
+    elements.btnExecuteDexSwap.addEventListener('click', async () => {
+      if (!state.wallet.connected) {
+        showToast('Please connect your Web3 wallet (MetaMask, Rabby, SafePal) to swap.', 'info');
+        openWalletModal();
+        return;
+      }
+
+      if (state.wallet.isWrongChain) {
+        showToast('Please switch to Sidra Chain (97453) before executing swap.', 'error');
+        switchToSidraChain();
+        return;
+      }
+
+      const fromVal = parseFloat(elements.dexInputFrom.value) || 0;
+      if (fromVal <= 0) {
+        showToast('Please enter a valid swap amount.', 'error');
+        return;
+      }
+
+      const toVal = elements.dexInputTo.value;
+      const minTo = elements.dexMinReceived ? elements.dexMinReceived.textContent : toVal;
+
+      try {
+        elements.btnExecuteDexSwap.disabled = true;
+        if (elements.btnDexSwapText) elements.btnDexSwapText.textContent = 'Swapping on Sidra DEX...';
+        showToast(`Broadcasting swap ${fromVal} ${dexState.fromToken} ➔ ${toVal} ${dexState.toToken} to Sidra Chain...`, 'info');
+
+        // Show feedback container
+        if (elements.dexTxFeedback) {
+          elements.dexTxFeedback.style.display = 'block';
+          if (elements.dtxTitle) elements.dtxTitle.textContent = 'Submitting Order to Sidra Chain...';
+          if (elements.dtxBody) elements.dtxBody.textContent = `Trading ${fromVal} ${dexState.fromToken} for ~${toVal} ${dexState.toToken} on PinetSwap pool router...`;
+        }
+
+        const txHash = await window.BandiqContracts.executeDexSwap(
+          dexState.fromToken,
+          fromVal,
+          minTo
+        );
+
+        showToast(`Swap confirmed on Sidra Chain! Tx: ${txHash.substring(0, 10)}...`, 'success');
+        if (elements.dtxTitle) elements.dtxTitle.textContent = 'Swap Executed Successfully! ✓';
+        if (elements.dtxBody) elements.dtxBody.textContent = `Completed swap of ${fromVal} ${dexState.fromToken} for ${toVal} ${dexState.toToken}. Liquidity settled on-chain.`;
+        if (elements.dtxExplorerLink) {
+          elements.dtxExplorerLink.href = `https://explorer.sidrachain.com/tx/${txHash}`;
+          elements.dtxExplorerLink.textContent = `View Tx ${txHash.substring(0, 14)}... on Sidra Explorer ↗`;
+        }
+        if (elements.dtxLinkWrap) elements.dtxLinkWrap.style.display = 'block';
+
+        // Refresh balances
+        if (state.wallet.address) {
+          fetchWalletBalance(state.wallet.address);
+        }
+      } catch (err) {
+        console.error('DEX Swap error:', err);
+        showToast(`Swap cancelled or reverted: ${err.message}`, 'error');
+        if (elements.dexTxFeedback) {
+          if (elements.dtxTitle) elements.dtxTitle.textContent = 'Swap Order Cancelled / Reverted';
+          if (elements.dtxBody) elements.dtxBody.textContent = err.message || 'Transaction was rejected by user or pool reverted.';
+        }
+      } finally {
+        elements.btnExecuteDexSwap.disabled = false;
+        if (elements.btnDexSwapText) elements.btnDexSwapText.textContent = 'Swap on Sidra DEX';
+      }
+    });
+  }
+
+  // Pre-calculate on load
+  calculateDexOutput();
+}
+

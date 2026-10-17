@@ -808,11 +808,39 @@
         <section class="view-panel" id="viewWallet">
           <div class="section-header">
             <div>
-              <h1 class="section-title">Sidra Chain BNDQ Ledger</h1>
-              <p class="section-subtitle">Read-only blockchain balance and token configuration</p>
+              <h1 class="section-title">Sidra Chain BNDQ Ledger & Wallet Hub</h1>
+              <p class="section-subtitle">Read-only blockchain balance, multi-platform wallet connection, and token configuration</p>
             </div>
             <div class="chain-badge-tag">
-              <span>Expected Chain ID: 97453</span>
+              <span id="walletChainBadge">Sidra Chain ID: 97453</span>
+            </div>
+          </div>
+
+          <!-- Wallet Connection Controls Bar -->
+          <div class="card glass-card wallet-controls-card">
+            <div class="wallet-status-bar">
+              <div class="ws-left">
+                <div class="ws-indicator" id="walletConnIndicator"></div>
+                <div>
+                  <div class="ws-status-label" id="walletConnStatusLabel">Wallet Status: Read-Only Address Watcher</div>
+                  <div class="ws-address" id="walletActiveAddressDisplay">0x6d1537bEE4F1EE3f55F4BC9319Aa40252cd39133</div>
+                </div>
+              </div>
+              <div class="ws-actions">
+                <button class="btn btn-primary-sm" id="btnConnectWalletView">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="3"/><circle cx="16" cy="12" r="2"/></svg>
+                  <span>Connect Wallet</span>
+                </button>
+                <button class="btn btn-outline-sm" id="btnSwitchNetworkView" title="Switch network to Sidra Chain (97453)">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                  <span>Switch Chain (97453)</span>
+                </button>
+                <button class="btn btn-outline-sm" id="btnAddBndqTokenView" title="Add BNDQ to MetaMask / Rabby / Trust">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                  <span>Add $BNDQ to Wallet</span>
+                </button>
+                <button class="btn btn-danger-sm" id="btnDisconnectWallet" style="display:none;">Disconnect</button>
+              </div>
             </div>
           </div>
 
@@ -820,12 +848,15 @@
             <!-- Wallet Card -->
             <div class="card glass-card">
               <div class="wallet-balance-box">
-                <div class="wb-label">Verified BNDQ Balance</div>
+                <div class="wb-label">Verified BNDQ Balance (Sidra Chain)</div>
                 <div class="wb-amount">
                   <span class="wb-num" id="walletBalanceNum">323,117.42</span>
                   <span class="wb-symbol">$BNDQ</span>
                 </div>
-                <div class="wb-sub">Associated with Operator Node: <code>bandiq-node-2d5cd8...</code></div>
+                <div class="wb-sub">
+                  <span>Native Gas: </span>
+                  <strong class="text-neon-cyan" id="walletNativeBalance">0.00 KST</strong> · Associated Node: <code id="walletLinkedNode">bandiq-node-2d5cd8...</code>
+                </div>
               </div>
 
               <div class="wallet-details-list">
@@ -835,7 +866,7 @@
                 </div>
                 <div class="wd-item">
                   <span>Chain ID:</span>
-                  <strong>97453 (Verified via eth_chainId)</strong>
+                  <strong>97453 (0x17cad in Hex)</strong>
                 </div>
                 <div class="wd-item">
                   <span>BNDQ Contract:</span>
@@ -846,8 +877,19 @@
                   </div>
                 </div>
                 <div class="wd-item">
-                  <span>Token Minting Rule:</span>
+                  <span>Token Minting Policy:</span>
                   <strong class="text-neon-cyan">Existing Token Only (Supply Preserved)</strong>
+                </div>
+                <div class="wd-item">
+                  <span>Supported Platforms:</span>
+                  <span class="platform-tags">
+                    <span class="ptag">MetaMask</span>
+                    <span class="ptag">Rabby</span>
+                    <span class="ptag">Trust Wallet</span>
+                    <span class="ptag">WalletConnect</span>
+                    <span class="ptag">Coinbase</span>
+                    <span class="ptag">OKX</span>
+                  </span>
                 </div>
               </div>
             </div>
@@ -896,34 +938,288 @@
         </section>
 
         <!-- ============================================================== -->
-        <!-- VIEW 8: DOCS & SECURITY -->
+        <!-- VIEW 8: COMPREHENSIVE USER MANUAL & SECURITY -->
         <!-- ============================================================== -->
         <section class="view-panel" id="viewDocs">
           <div class="section-header">
             <div>
-              <h1 class="section-title">Documentation & Security Protocol</h1>
-              <p class="section-subtitle">BANDIQ architecture, operator consent rules, and data collection transparency</p>
+              <h1 class="section-title">BANDIQ DePIN User Manual & Protocol Docs</h1>
+              <p class="section-subtitle">Complete operational handbook: node setup, multi-platform wallet connection, proof verification, and ethics</p>
+            </div>
+            <div class="manual-badge">
+              <span>Handbook v2.0</span>
             </div>
           </div>
 
-          <div class="docs-grid">
+          <!-- Interactive Manual Navigation Tabs -->
+          <div class="manual-nav-tabs" id="manualNavTabs">
+            <button class="manual-tab active" data-manual-tab="setup">1. Node Operator Setup</button>
+            <button class="manual-tab" data-manual-tab="wallet-connect">2. Connect Wallet (Any Platform)</button>
+            <button class="manual-tab" data-manual-tab="verification">3. 10 Verification Gates</button>
+            <button class="manual-tab" data-manual-tab="marketplace">4. Marketplace & Settlement</button>
+            <button class="manual-tab" data-manual-tab="security">5. Privacy & Ethics</button>
+            <button class="manual-tab" data-manual-tab="faq">6. Error Codes & FAQ</button>
+          </div>
+
+          <!-- Tab Content: 1. Node Setup -->
+          <div class="manual-tab-panel active" id="manTab-setup">
             <div class="card glass-card">
-              <h2 class="card-title cyan-accent">1. Safety & Privacy Architecture</h2>
+              <h2 class="card-title cyan-accent">Node Operator Quick-Start Guide (Windows 10/11)</h2>
+              <p class="card-subtitle">Set up your lightweight Go bandwidth node in under 2 minutes.</p>
+
+              <div class="manual-step">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                  <h3>Initialize Node Identity & Wallet Pairing</h3>
+                  <p>Open Windows PowerShell in the project directory and bind your recipient EVM wallet address. This generates an Ed25519 cryptographic keypair and deterministic Node ID:</p>
+                  <pre class="code-box"><code>.\bandiq.exe init -wallet "0xYourWalletAddressHere"</code></pre>
+                </div>
+              </div>
+
+              <div class="manual-step">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                  <h3>Grant Explicit Operator Consent</h3>
+                  <p>In accordance with privacy standards, the agent will never touch your network until you record voluntary consent:</p>
+                  <pre class="code-box"><code>.\bandiq.exe consent -accept</code></pre>
+                </div>
+              </div>
+
+              <div class="manual-step">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                  <h3>Launch the Node Agent Daemon</h3>
+                  <p>Start the lightweight agent. It monitors physical interface octets via Windows IP Helper APIs without CGo dependencies:</p>
+                  <pre class="code-box"><code>.\bandiq.exe start
+# Or using the automated background launcher:
+.\scripts\run-node.ps1</code></pre>
+                </div>
+              </div>
+
+              <div class="manual-step">
+                <div class="step-num">4</div>
+                <div class="step-content">
+                  <h3>Operational Power Controls</h3>
+                  <div class="command-table-wrap">
+                    <table class="manual-table">
+                      <thead>
+                        <tr><th>Power Command</th><th>Action</th></tr>
+                      </thead>
+                      <tbody>
+                        <tr><td><code>.\bandiq.exe status</code></td><td>Query node health, CPU/RAM, and adapter octets</td></tr>
+                        <tr><td><code>.\bandiq.exe test</code></td><td>Trigger an on-demand bandwidth capacity benchmark</td></tr>
+                        <tr><td><code>.\bandiq.exe pause</code></td><td>Temporarily pause all network activity</td></tr>
+                        <tr><td><code>.\bandiq.exe resume</code></td><td>Resume background operations</td></tr>
+                        <tr><td><code>.\bandiq.exe uninstall</code></td><td>Purge local keys and clean up all state</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab Content: 2. Connect Wallet on Any Platform -->
+          <div class="manual-tab-panel" id="manTab-wallet-connect">
+            <div class="card glass-card">
+              <h2 class="card-title purple-accent">Connecting Your Wallet Across Any Platform</h2>
+              <p class="card-subtitle">BANDIQ supports desktop extensions, mobile apps (iOS & Android), WalletConnect, and read-only cold watchers.</p>
+
+              <div class="platform-grid">
+                <div class="platform-card">
+                  <div class="platform-header">
+                    <span class="platform-icon">🖥️</span>
+                    <h3>Desktop Browser Extensions</h3>
+                  </div>
+                  <p><strong>Supported:</strong> MetaMask, Rabby, Coinbase Wallet, Brave Wallet, OKX Wallet.</p>
+                  <ol class="manual-list">
+                    <li>Click <strong>Connect Wallet</strong> in the header or BNDQ Ledger tab.</li>
+                    <li>Select your detected wallet provider (e.g. MetaMask or Rabby).</li>
+                    <li>Approve the connection in your browser extension pop-up.</li>
+                    <li>Click <strong>Switch Chain</strong> to automatically configure Sidra Chain (`97453`).</li>
+                  </ol>
+                </div>
+
+                <div class="platform-card">
+                  <div class="platform-header">
+                    <span class="platform-icon">📱</span>
+                    <h3>Mobile Devices (iOS & Android)</h3>
+                  </div>
+                  <p><strong>Supported:</strong> MetaMask Mobile, Trust Wallet, OKX App, Rainbow, SafePal.</p>
+                  <ol class="manual-list">
+                    <li><strong>DApp Browser:</strong> Open the dashboard URL in your mobile wallet's in-app browser for instant zero-friction connection.</li>
+                    <li><strong>Deep-Link:</strong> On mobile Chrome/Safari, click <strong>Connect Wallet</strong> &rarr; <strong>Open in MetaMask Mobile</strong> or <strong>Open in Trust Wallet</strong> to launch the native app.</li>
+                  </ol>
+                </div>
+
+                <div class="platform-card">
+                  <div class="platform-header">
+                    <span class="platform-icon">🔗</span>
+                    <h3>WalletConnect (Cross-Device)</h3>
+                  </div>
+                  <p><strong>Supported:</strong> 300+ Web3 wallets on desktop, phone, or tablet.</p>
+                  <ol class="manual-list">
+                    <li>Open the Wallet Modal and select the <strong>WalletConnect</strong> tab.</li>
+                    <li>Scan the displayed QR code with your phone camera or wallet scanner.</li>
+                    <li>Or click <strong>Copy Pairing URI</strong> and paste into your mobile app.</li>
+                  </ol>
+                </div>
+
+                <div class="platform-card">
+                  <div class="platform-header">
+                    <span class="platform-icon">🛡️</span>
+                    <h3>Read-Only Address Watcher</h3>
+                  </div>
+                  <p><strong>Supported:</strong> Any device, public computer, or hardware wallet (Ledger/Trezor).</p>
+                  <ol class="manual-list">
+                    <li>Select <strong>Read-Only Watcher</strong> in the modal.</li>
+                    <li>Paste your EVM address (e.g. <code>0x6d1537bEE4F1EE3f55F4BC9319Aa40252cd39133</code>).</li>
+                    <li>Inspect balances and earnings with zero private-key exposure.</li>
+                  </ol>
+                </div>
+              </div>
+
+              <!-- Manual Sidra Chain Config Reference Box -->
+              <div class="network-params-box">
+                <h3 class="cyan-accent">Sidra Chain Manual RPC Parameters</h3>
+                <div class="params-grid">
+                  <div class="p-item"><span class="p-lbl">Network Name:</span> <code>Sidra Chain</code></div>
+                  <div class="p-item"><span class="p-lbl">Chain ID:</span> <code>97453</code> (Hex: <code>0x17cad</code>)</div>
+                  <div class="p-item"><span class="p-lbl">RPC URL:</span> <code>https://node.sidrachain.com</code></div>
+                  <div class="p-item"><span class="p-lbl">Currency Symbol:</span> <code>KST</code> (or <code>SIDRA</code>)</div>
+                  <div class="p-item"><span class="p-lbl">BNDQ Contract:</span> <code>0x6d1537bEE4F1EE3f55F4BC9319Aa40252cd39133</code></div>
+                  <div class="p-item"><span class="p-lbl">Token Decimals:</span> <code>18</code> (Symbol: <code>BNDQ</code>)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab Content: 3. Verification Gates -->
+          <div class="manual-tab-panel" id="manTab-verification">
+            <div class="card glass-card">
+              <h2 class="card-title cyan-accent">Proof-of-Bandwidth: The 10 Integrity Gates</h2>
+              <p class="card-subtitle">Why a speed test alone does not equal token rewards. All evidence is verified before settlement.</p>
+
+              <div class="gates-detailed-grid">
+                <div class="gate-detail-card">
+                  <div class="g-num">Gate 1</div>
+                  <h4>Schema & Typing</h4>
+                  <p>Validates report structure, mandatory parameters, and software version compatibility.</p>
+                </div>
+                <div class="gate-detail-card">
+                  <div class="g-num">Gate 2</div>
+                  <h4>Ed25519 Signatures</h4>
+                  <p>Validates cryptographic signature of report hash against registered node public key.</p>
+                </div>
+                <div class="gate-detail-card">
+                  <div class="g-num">Gate 3</div>
+                  <h4>Sequence Monotonicity</h4>
+                  <p>Enforces strictly increasing sequence numbers per node ID to eliminate replay attacks.</p>
+                </div>
+                <div class="gate-detail-card">
+                  <div class="g-num">Gate 4</div>
+                  <h4>Freshness Window (±5m)</h4>
+                  <p>Rejects expired or future-dated reports to eliminate delayed time-travel attacks.</p>
+                </div>
+                <div class="gate-detail-card">
+                  <div class="g-num">Gate 5</div>
+                  <h4>Physical Bounds Check</h4>
+                  <p>Caps throughput at 10,000 Mbps and packet loss &le; 100% to reject impossible metrics.</p>
+                </div>
+                <div class="gate-detail-card">
+                  <div class="g-num">Gate 6</div>
+                  <h4>Hardware Counter Delta</h4>
+                  <p>Compares reported bytes against physical Windows network adapter octets (&Delta;In + &Delta;Out &ge; Reported).</p>
+                </div>
+                <div class="gate-detail-card">
+                  <div class="g-num">Gate 7</div>
+                  <h4>Identical Metric Spam</h4>
+                  <p>Detects synthetic scripts submitting identical throughput, latency, and jitter repeatedly.</p>
+                </div>
+                <div class="gate-detail-card">
+                  <div class="g-num">Gate 8</div>
+                  <h4>Submission Rate Limit</h4>
+                  <p>Enforces a 30-second cooldown per node to prevent DDoS and spam on verifier nodes.</p>
+                </div>
+                <div class="gate-detail-card">
+                  <div class="g-num">Gate 9</div>
+                  <h4>Traffic Segregation</h4>
+                  <p>Classifies speedtests as unearned <code>CAPACITY_BENCHMARK</code> and customer relay as <code>BILLABLE_RELAY</code>.</p>
+                </div>
+                <div class="gate-detail-card">
+                  <div class="g-num">Gate 10</div>
+                  <h4>Statistical Vouchers</h4>
+                  <p>Computes confidence score (0-1.0). If &ge; 0.70 and billable traffic was served, issues signed voucher.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab Content: 4. Marketplace -->
+          <div class="manual-tab-panel" id="manTab-marketplace">
+            <div class="card glass-card">
+              <h2 class="card-title purple-accent">Bandwidth Marketplace & Settlement Flow</h2>
+              <p class="card-subtitle">How consumers purchase bandwidth and providers earn BNDQ token settlement.</p>
+
+              <div class="flow-steps">
+                <div class="flow-card">
+                  <span class="f-step">Phase 1</span>
+                  <h4>Service Request & Escrow</h4>
+                  <p>A customer specifies required volume (e.g. 10 GB) and escrows $BNDQ tokens in the settlement smart contract. Tokens are locked safely.</p>
+                </div>
+                <div class="flow-card">
+                  <span class="f-step">Phase 2</span>
+                  <h4>Workload Delivery & Mutual Receipts</h4>
+                  <p>Eligible nodes route traffic. Both customer and node sign cryptographically hashed byte-counter receipts during the session.</p>
+                </div>
+                <div class="flow-card">
+                  <span class="f-step">Phase 3</span>
+                  <h4>Verification & Voucher Issuance</h4>
+                  <p>The Verifier Service inspects mutual receipts, validates hardware counter telemetry, and issues a non-reentrant Settlement Voucher.</p>
+                </div>
+                <div class="flow-card">
+                  <span class="f-step">Phase 4</span>
+                  <h4>On-Chain BNDQ Settlement</h4>
+                  <p>The settlement contract on Sidra Chain checks the verifier signature and releases escrowed BNDQ tokens directly to the provider's wallet.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab Content: 5. Security & Ethics -->
+          <div class="manual-tab-panel" id="manTab-security">
+            <div class="card glass-card">
+              <h2 class="card-title cyan-accent">Privacy, Security & Ethical DePIN Tenets</h2>
               <ul class="docs-list">
-                <li><strong>Never an open relay or botnet:</strong> The agent does not allow random internet traffic to enter or exit your home connection unmetered or unauthenticated.</li>
-                <li><strong>No private keys requested:</strong> You never share your wallet private key or mnemonic phrase. Only public EVM addresses are associated.</li>
-                <li><strong>No remote shell execution:</strong> The agent will never execute arbitrary terminal commands or run executables sent by the backend.</li>
-                <li><strong>Zero browsing history collection:</strong> No website URLs, DNS queries, payload contents, or personal files are accessed.</li>
+                <li><strong>No Open Relays or Botnets:</strong> The agent does not allow random, unauthenticated internet traffic to enter or exit your connection.</li>
+                <li><strong>Zero Private Key Exposure:</strong> You never share your wallet private key or mnemonic phrase. Only public EVM addresses are associated.</li>
+                <li><strong>No Remote Shell Execution:</strong> The agent will never execute arbitrary terminal commands or run executables sent by the backend.</li>
+                <li><strong>Zero Browsing History Collection:</strong> No website URLs, DNS queries, payload contents, or personal files are accessed.</li>
+                <li><strong>Shariah & Ethical DePIN Alignment:</strong> Rewards strictly reflect verified physical utility; zero speculative fabrications or token supply inflation.</li>
               </ul>
             </div>
+          </div>
 
+          <!-- Tab Content: 6. Error Codes & FAQ -->
+          <div class="manual-tab-panel" id="manTab-faq">
             <div class="card glass-card">
-              <h2 class="card-title purple-accent">2. Shariah Compliance DePIN Tenets</h2>
-              <ul class="docs-list">
-                <li><strong>Real Network Service Backing:</strong> Rewards correspond strictly to measurable, proven bandwidth capacity and delivered service.</li>
-                <li><strong>No Speculative Fabrications:</strong> Zero promises of token price appreciation or guaranteed yield.</li>
-                <li><strong>Clear Consent & Mutual Receipts:</strong> Transparent fee structures with no hidden surcharges or unlimited contract token approvals.</li>
-              </ul>
+              <h2 class="card-title purple-accent">Audit Rejection Codes Reference & FAQ</h2>
+              
+              <div class="command-table-wrap">
+                <table class="manual-table">
+                  <thead>
+                    <tr><th>Audit Error Code</th><th>Root Cause</th><th>Remedy</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><code>ERR_INVALID_SIGNATURE</code></td><td>Report signature verification failed</td><td>Verify .bandiq/identity.json exists and is intact</td></tr>
+                    <tr><td><code>ERR_REPLAY_ATTACK</code></td><td>Report ID has already been recorded</td><td>Only submit original agent reports</td></tr>
+                    <tr><td><code>ERR_SEQUENCE_OUT_OF_ORDER</code></td><td>Sequence counter rolled backwards</td><td>Synchronize system clock or reinitialize agent</td></tr>
+                    <tr><td><code>ERR_TIMESTAMP_EXPIRED</code></td><td>Report timestamp drifted &gt; 5 mins from server</td><td>Enable automatic Windows time synchronization</td></tr>
+                    <tr><td><code>ERR_COUNTER_INCONSISTENCY</code></td><td>Reported bytes exceed hardware adapter delta</td><td>Ensure traffic runs through monitored adapter</td></tr>
+                    <tr><td><code>ERR_IDENTICAL_SAMPLE_SPAM</code></td><td>Repeated identical speed values</td><td>Ensure tests are executed against real HTTP targets</td></tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </section>
@@ -958,6 +1254,168 @@
         <span>Wallet</span>
       </button>
     </nav>
+
+    <!-- Universal Multi-Platform Wallet Connection Modal -->
+    <div class="wallet-modal-overlay" id="walletModal" style="display: none;" aria-hidden="true" role="dialog" aria-modal="true">
+      <div class="wallet-modal-card">
+        <div class="wm-header">
+          <div class="wm-title-group">
+            <h2 class="wm-title">Connect Wallet</h2>
+            <div class="wm-sub">Sidra Chain (97453) · $BNDQ Token</div>
+          </div>
+          <button class="wm-close-btn" id="btnCloseWalletModal" aria-label="Close modal">&times;</button>
+        </div>
+
+        <!-- Connected State Card (Shown when connected) -->
+        <div class="wm-connected-box" id="wmConnectedBox" style="display: none;">
+          <div class="wmc-badge-row">
+            <span class="pulse-indicator live"></span>
+            <span class="wmc-status" id="wmcStatusText">Connected via MetaMask</span>
+            <span class="wmc-chain-tag" id="wmcChainTag">Sidra Chain (97453)</span>
+          </div>
+
+          <div class="wmc-address-box">
+            <span class="wmc-address" id="wmcAddressDisplay">0x...</span>
+            <button class="copy-btn-sm" id="btnCopyConnectedAddress">Copy</button>
+          </div>
+
+          <div class="wmc-balances-grid">
+            <div class="wmc-bal-item">
+              <span class="wmc-bal-lbl">BNDQ Balance</span>
+              <span class="wmc-bal-val" id="wmcBndqBalance">323,117.42</span>
+            </div>
+            <div class="wmc-bal-item">
+              <span class="wmc-bal-lbl">Native Gas (KST)</span>
+              <span class="wmc-bal-val" id="wmcNativeBalance">0.00 KST</span>
+            </div>
+          </div>
+
+          <div class="wmc-actions">
+            <button class="btn btn-outline-sm" id="wmBtnSwitchChain">Switch to Sidra Chain</button>
+            <button class="btn btn-primary-sm" id="wmBtnAddBndq">Add $BNDQ to Wallet</button>
+            <button class="btn btn-danger-sm" id="wmBtnDisconnect">Disconnect</button>
+          </div>
+        </div>
+
+        <!-- Connection Options Selector (Shown when not connected) -->
+        <div class="wm-selection-body" id="wmSelectionBody">
+          <div class="wm-tabs" id="wmTabs">
+            <button class="wm-tab-btn active" data-tab="injected">Browser / Injected</button>
+            <button class="wm-tab-btn" data-tab="mobile">Mobile Web3</button>
+            <button class="wm-tab-btn" data-tab="wc">WalletConnect</button>
+            <button class="wm-tab-btn" data-tab="readonly">Read-Only</button>
+          </div>
+
+          <!-- TAB 1: Injected Extensions -->
+          <div class="wm-tab-content active" id="wmTabInjected">
+            <div class="provider-list">
+              <button class="provider-btn" data-provider="metamask" id="btnConnectMetamask">
+                <div class="pb-left">
+                  <div class="provider-icon metamask-icon">🦊</div>
+                  <div>
+                    <div class="pb-name">MetaMask</div>
+                    <div class="pb-desc">Browser extension & mobile web3</div>
+                  </div>
+                </div>
+                <span class="pb-tag" id="tagMetamask">Detected</span>
+              </button>
+
+              <button class="provider-btn" data-provider="rabby" id="btnConnectRabby">
+                <div class="pb-left">
+                  <div class="provider-icon rabby-icon">🐰</div>
+                  <div>
+                    <div class="pb-name">Rabby Wallet</div>
+                    <div class="pb-desc">Multi-chain EVM wallet for DeFi</div>
+                  </div>
+                </div>
+                <span class="pb-tag">EVM Compatible</span>
+              </button>
+
+              <button class="provider-btn" data-provider="coinbase" id="btnConnectCoinbase">
+                <div class="pb-left">
+                  <div class="provider-icon cb-icon">🔵</div>
+                  <div>
+                    <div class="pb-name">Coinbase Wallet</div>
+                    <div class="pb-desc">Desktop extension or mobile</div>
+                  </div>
+                </div>
+                <span class="pb-tag">Web3</span>
+              </button>
+
+              <button class="provider-btn" data-provider="generic" id="btnConnectInjected">
+                <div class="pb-left">
+                  <div class="provider-icon eth-icon">🌐</div>
+                  <div>
+                    <div class="pb-name">Any Injected Wallet</div>
+                    <div class="pb-desc">Brave, OKX, Opera, or Trust Browser</div>
+                  </div>
+                </div>
+                <span class="pb-tag">window.ethereum</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- TAB 2: Mobile Web3 Apps -->
+          <div class="wm-tab-content" id="wmTabMobile">
+            <p class="wm-notice">Accessing from mobile? Tap to open directly in your wallet's built-in DApp browser via Universal Deep-Link:</p>
+            <div class="mobile-app-grid">
+              <button class="mobile-app-btn" id="btnDeepLinkMetamask">
+                <span class="ma-icon">🦊</span>
+                <span class="ma-name">MetaMask Mobile</span>
+                <span class="ma-sub">Open App</span>
+              </button>
+              <button class="mobile-app-btn" id="btnDeepLinkTrust">
+                <span class="ma-icon">🛡️</span>
+                <span class="ma-name">Trust Wallet</span>
+                <span class="ma-sub">Open App</span>
+              </button>
+              <button class="mobile-app-btn" id="btnDeepLinkOKX">
+                <span class="ma-icon">⬛</span>
+                <span class="ma-name">OKX Wallet</span>
+                <span class="ma-sub">Open App</span>
+              </button>
+              <button class="mobile-app-btn" id="btnDeepLinkRainbow">
+                <span class="ma-icon">🌈</span>
+                <span class="ma-name">Rainbow</span>
+                <span class="ma-sub">Open App</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- TAB 3: WalletConnect QR -->
+          <div class="wm-tab-content" id="wmTabWc">
+            <div class="wc-container">
+              <div class="wc-qr-box" id="wcQrBox">
+                <!-- Dynamic QR Canvas -->
+                <canvas id="wcQrCanvas" width="180" height="180"></canvas>
+              </div>
+              <p class="wc-instruction">Scan with any WalletConnect compatible mobile app (iOS / Android)</p>
+              <div class="wc-uri-row">
+                <input type="text" readonly id="wcUriInput" class="code-input" value="wc:bandiq-depin-session@2?relay-protocol=irn">
+                <button class="btn btn-outline-sm" id="btnCopyWcUri">Copy URI</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 4: Read-Only Watcher -->
+          <div class="wm-tab-content" id="wmTabReadonly">
+            <p class="wm-notice">Audit any Sidra Chain wallet or cold-storage address without connecting private keys:</p>
+            <div class="form-group">
+              <label for="readonlyAddressInput">EVM Address (0x...):</label>
+              <input type="text" id="readonlyAddressInput" class="text-input" placeholder="0x..." value="0x6d1537bEE4F1EE3f55F4BC9319Aa40252cd39133">
+            </div>
+            <button class="btn btn-primary" id="btnSubmitReadOnly">Watch Address</button>
+          </div>
+        </div>
+
+        <div class="wm-footer">
+          <div class="wm-security-note">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span>Non-custodial. Private keys never leave your device.</span>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Notification Toast Container -->
     <div id="toastContainer" class="toast-container"></div>

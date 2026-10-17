@@ -28,6 +28,15 @@ const state = {
     bytesOut: 255451748,
     latestReport: null
   },
+  wallet: {
+    connected: false,
+    address: '0x6d1537bEE4F1EE3f55F4BC9319Aa40252cd39133',
+    chainId: '97453',
+    providerName: 'Read-Only Watcher',
+    nativeBalance: '0.00 KST',
+    bndqBalance: '323,117.42',
+    isWrongChain: false
+  },
   speedtestRunning: false,
   networkNodes: []
 };
@@ -93,7 +102,51 @@ const elements = {
   vrDetailsText: document.getElementById('vrDetailsText'),
   // Canvas
   nodeMapCanvas: document.getElementById('nodeMapCanvas'),
-  toastContainer: document.getElementById('toastContainer')
+  toastContainer: document.getElementById('toastContainer'),
+  // Wallet & Multi-Platform Connector
+  connectWalletBtn: document.getElementById('connectWalletBtn'),
+  walletBtnText: document.getElementById('walletBtnText'),
+  btnConnectWalletView: document.getElementById('btnConnectWalletView'),
+  btnSwitchNetworkView: document.getElementById('btnSwitchNetworkView'),
+  btnAddBndqTokenView: document.getElementById('btnAddBndqTokenView'),
+  btnDisconnectWallet: document.getElementById('btnDisconnectWallet'),
+  walletConnIndicator: document.getElementById('walletConnIndicator'),
+  walletConnStatusLabel: document.getElementById('walletConnStatusLabel'),
+  walletActiveAddressDisplay: document.getElementById('walletActiveAddressDisplay'),
+  walletBalanceNum: document.getElementById('walletBalanceNum'),
+  walletNativeBalance: document.getElementById('walletNativeBalance'),
+  walletLinkedNode: document.getElementById('walletLinkedNode'),
+  // Modal Elements
+  walletModal: document.getElementById('walletModal'),
+  btnCloseWalletModal: document.getElementById('btnCloseWalletModal'),
+  wmConnectedBox: document.getElementById('wmConnectedBox'),
+  wmSelectionBody: document.getElementById('wmSelectionBody'),
+  wmcStatusText: document.getElementById('wmcStatusText'),
+  wmcChainTag: document.getElementById('wmcChainTag'),
+  wmcAddressDisplay: document.getElementById('wmcAddressDisplay'),
+  wmcBndqBalance: document.getElementById('wmcBndqBalance'),
+  wmcNativeBalance: document.getElementById('wmcNativeBalance'),
+  btnCopyConnectedAddress: document.getElementById('btnCopyConnectedAddress'),
+  wmBtnSwitchChain: document.getElementById('wmBtnSwitchChain'),
+  wmBtnAddBndq: document.getElementById('wmBtnAddBndq'),
+  wmBtnDisconnect: document.getElementById('wmBtnDisconnect'),
+  wmTabs: document.getElementById('wmTabs'),
+  btnConnectMetamask: document.getElementById('btnConnectMetamask'),
+  btnConnectRabby: document.getElementById('btnConnectRabby'),
+  btnConnectCoinbase: document.getElementById('btnConnectCoinbase'),
+  btnConnectInjected: document.getElementById('btnConnectInjected'),
+  tagMetamask: document.getElementById('tagMetamask'),
+  btnDeepLinkMetamask: document.getElementById('btnDeepLinkMetamask'),
+  btnDeepLinkTrust: document.getElementById('btnDeepLinkTrust'),
+  btnDeepLinkOKX: document.getElementById('btnDeepLinkOKX'),
+  btnDeepLinkRainbow: document.getElementById('btnDeepLinkRainbow'),
+  wcQrCanvas: document.getElementById('wcQrCanvas'),
+  wcUriInput: document.getElementById('wcUriInput'),
+  btnCopyWcUri: document.getElementById('btnCopyWcUri'),
+  readonlyAddressInput: document.getElementById('readonlyAddressInput'),
+  btnSubmitReadOnly: document.getElementById('btnSubmitReadOnly'),
+  // User Manual
+  manualNavTabs: document.getElementById('manualNavTabs')
 };
 
 // Initialize Application
@@ -106,6 +159,8 @@ document.addEventListener('DOMContentLoaded', () => {
   setupVerificationTool();
   setupCopyButtons();
   setupCanvasMap();
+  setupWalletIntegration();
+  setupManualTabs();
 
   // Initial check for local agent
   checkAgentConnection();
@@ -766,5 +821,576 @@ function generateUUID() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
     const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
     return v.toString(16);
+  });
+}
+
+/* ==============================================================================
+   Universal Multi-Platform Wallet Integration
+   Supports Desktop (MetaMask, Rabby, Coinbase, Brave), Mobile Web3 (Deep Link),
+   WalletConnect QR, and Read-Only Address Watcher.
+============================================================================== */
+const SIDRA_CHAIN_CONFIG = {
+  chainIdHex: '0x17cad',
+  chainIdDec: '97453',
+  chainName: 'Sidra Chain',
+  rpcUrls: ['http://127.0.0.1:8080/rpc', 'https://node.sidrachain.com'],
+  blockExplorerUrls: ['https://explorer.sidrachain.com'],
+  nativeCurrency: { name: 'Sidra Coin', symbol: 'KST', decimals: 18 },
+  tokenContract: '0x6d1537bEE4F1EE3f55F4BC9319Aa40252cd39133',
+  tokenSymbol: 'BNDQ',
+  tokenDecimals: 18
+};
+
+function setupWalletIntegration() {
+  // Modal open triggers
+  if (elements.connectWalletBtn) {
+    elements.connectWalletBtn.addEventListener('click', () => openWalletModal());
+  }
+  if (elements.btnConnectWalletView) {
+    elements.btnConnectWalletView.addEventListener('click', () => openWalletModal());
+  }
+
+  // Modal close triggers
+  if (elements.btnCloseWalletModal) {
+    elements.btnCloseWalletModal.addEventListener('click', () => closeWalletModal());
+  }
+  if (elements.walletModal) {
+    elements.walletModal.addEventListener('click', (e) => {
+      if (e.target === elements.walletModal) closeWalletModal();
+    });
+  }
+
+  // Modal Tab switching
+  if (elements.wmTabs) {
+    const tabBtns = elements.wmTabs.querySelectorAll('.wm-tab-btn');
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const tabKey = btn.dataset.tab;
+        document.querySelectorAll('.wm-tab-content').forEach(p => p.classList.remove('active'));
+        const activePanel = document.getElementById(`wmTab${capitalize(tabKey)}`);
+        if (activePanel) activePanel.classList.add('active');
+
+        if (tabKey === 'wc') {
+          drawWalletConnectQR();
+        }
+      });
+    });
+  }
+
+  // Injected Provider Buttons
+  if (elements.btnConnectMetamask) {
+    elements.btnConnectMetamask.addEventListener('click', () => connectInjectedWallet('metamask'));
+  }
+  if (elements.btnConnectRabby) {
+    elements.btnConnectRabby.addEventListener('click', () => connectInjectedWallet('rabby'));
+  }
+  if (elements.btnConnectCoinbase) {
+    elements.btnConnectCoinbase.addEventListener('click', () => connectInjectedWallet('coinbase'));
+  }
+  if (elements.btnConnectInjected) {
+    elements.btnConnectInjected.addEventListener('click', () => connectInjectedWallet('injected'));
+  }
+
+  // Mobile App Deep-Links
+  if (elements.btnDeepLinkMetamask) {
+    elements.btnDeepLinkMetamask.addEventListener('click', () => connectMobileApp('metamask'));
+  }
+  if (elements.btnDeepLinkTrust) {
+    elements.btnDeepLinkTrust.addEventListener('click', () => connectMobileApp('trust'));
+  }
+  if (elements.btnDeepLinkOKX) {
+    elements.btnDeepLinkOKX.addEventListener('click', () => connectMobileApp('okx'));
+  }
+  if (elements.btnDeepLinkRainbow) {
+    elements.btnDeepLinkRainbow.addEventListener('click', () => connectMobileApp('rainbow'));
+  }
+
+  // WalletConnect copy pairing URI
+  if (elements.btnCopyWcUri && elements.wcUriInput) {
+    elements.btnCopyWcUri.addEventListener('click', () => {
+      navigator.clipboard.writeText(elements.wcUriInput.value).then(() => {
+        showToast('WalletConnect pairing URI copied! Paste into mobile wallet.', 'info');
+      });
+    });
+  }
+
+  // Read-Only Watcher submit
+  if (elements.btnSubmitReadOnly && elements.readonlyAddressInput) {
+    elements.btnSubmitReadOnly.addEventListener('click', () => {
+      const addr = elements.readonlyAddressInput.value.trim();
+      connectReadOnlyWallet(addr);
+    });
+  }
+
+  // Network Switch Buttons
+  if (elements.btnSwitchNetworkView) {
+    elements.btnSwitchNetworkView.addEventListener('click', () => switchToSidraChain());
+  }
+  if (elements.wmBtnSwitchChain) {
+    elements.wmBtnSwitchChain.addEventListener('click', () => switchToSidraChain());
+  }
+
+  // Add BNDQ Token Buttons
+  if (elements.btnAddBndqTokenView) {
+    elements.btnAddBndqTokenView.addEventListener('click', () => addBndqTokenToWallet());
+  }
+  if (elements.wmBtnAddBndq) {
+    elements.wmBtnAddBndq.addEventListener('click', () => addBndqTokenToWallet());
+  }
+
+  // Disconnect Buttons
+  if (elements.btnDisconnectWallet) {
+    elements.btnDisconnectWallet.addEventListener('click', () => disconnectWallet());
+  }
+  if (elements.wmBtnDisconnect) {
+    elements.wmBtnDisconnect.addEventListener('click', () => disconnectWallet());
+  }
+
+  // Copy Connected Address in Modal
+  if (elements.btnCopyConnectedAddress) {
+    elements.btnCopyConnectedAddress.addEventListener('click', () => {
+      if (state.wallet.address) {
+        navigator.clipboard.writeText(state.wallet.address).then(() => {
+          showToast('Wallet address copied to clipboard!', 'info');
+        });
+      }
+    });
+  }
+
+  // Detect MetaMask in browser
+  if (typeof window.ethereum !== 'undefined') {
+    if (elements.tagMetamask) {
+      elements.tagMetamask.textContent = 'Installed';
+      elements.tagMetamask.style.background = 'rgba(16, 185, 129, 0.2)';
+      elements.tagMetamask.style.color = '#10b981';
+    }
+
+    // Listen for chain changes
+    window.ethereum.on('chainChanged', (chainId) => {
+      handleChainChanged(chainId);
+    });
+
+    // Listen for account changes
+    window.ethereum.on('accountsChanged', (accounts) => {
+      handleAccountsChanged(accounts);
+    });
+  }
+
+  // Restore cached wallet if exists
+  restoreSavedWallet();
+}
+
+function openWalletModal() {
+  if (!elements.walletModal) return;
+  elements.walletModal.style.display = 'flex';
+  elements.walletModal.setAttribute('aria-hidden', 'false');
+
+  if (state.wallet.connected) {
+    elements.wmConnectedBox.style.display = 'block';
+    elements.wmSelectionBody.style.display = 'none';
+  } else {
+    elements.wmConnectedBox.style.display = 'none';
+    elements.wmSelectionBody.style.display = 'block';
+    drawWalletConnectQR();
+  }
+}
+
+function closeWalletModal() {
+  if (!elements.walletModal) return;
+  elements.walletModal.style.display = 'none';
+  elements.walletModal.setAttribute('aria-hidden', 'true');
+}
+
+async function connectInjectedWallet(providerType) {
+  if (typeof window.ethereum === 'undefined') {
+    // If on mobile browser, open deep-link directly
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if (isMobile) {
+      connectMobileApp('metamask');
+      return;
+    }
+    showToast('No Web3 extension detected! Please install MetaMask or Rabby.', 'error');
+    window.open('https://metamask.io/download/', '_blank');
+    return;
+  }
+
+  try {
+    showToast('Requesting wallet connection...', 'info');
+    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+
+    if (!accounts || accounts.length === 0) {
+      showToast('No accounts authorized.', 'error');
+      return;
+    }
+
+    const address = accounts[0];
+    const chainIdHex = await window.ethereum.request({ method: 'eth_chainId' });
+    const isSidra = chainIdHex.toLowerCase() === SIDRA_CHAIN_CONFIG.chainIdHex.toLowerCase() || 
+                    parseInt(chainIdHex, 16).toString() === SIDRA_CHAIN_CONFIG.chainIdDec;
+
+    state.wallet.connected = true;
+    state.wallet.address = address;
+    state.wallet.providerName = providerType === 'rabby' ? 'Rabby Wallet' : 
+                               (providerType === 'coinbase' ? 'Coinbase Wallet' : 'MetaMask');
+    state.wallet.chainId = parseInt(chainIdHex, 16).toString();
+    state.wallet.isWrongChain = !isSidra;
+
+    saveWalletState();
+    updateWalletUI();
+    closeWalletModal();
+    showToast(`Connected to ${state.wallet.providerName}!`, 'info');
+
+    // Query live balance
+    fetchWalletBalance(address);
+
+    // Auto-prompt to switch network if wrong chain
+    if (!isSidra) {
+      setTimeout(() => {
+        showToast('Your wallet is on another network. Switching to Sidra Chain...', 'info');
+        switchToSidraChain();
+      }, 1000);
+    }
+  } catch (err) {
+    console.error('Wallet connection error:', err);
+    showToast(err.message || 'Connection request rejected.', 'error');
+  }
+}
+
+function connectMobileApp(appKey) {
+  const currentUrl = window.location.href;
+  const dappHostPath = `${window.location.host}${window.location.pathname}`;
+
+  let deepLink = '';
+  switch (appKey) {
+    case 'metamask':
+      deepLink = `https://metamask.app.link/dapp/${dappHostPath}`;
+      break;
+    case 'trust':
+      deepLink = `https://link.trustwallet.com/open_url?coin_id=60&url=${encodeURIComponent(currentUrl)}`;
+      break;
+    case 'okx':
+      deepLink = `okx://wallet/dapp/url?dappUrl=${encodeURIComponent(currentUrl)}`;
+      break;
+    case 'rainbow':
+      deepLink = `https://rnbwapp.com/`;
+      break;
+    default:
+      deepLink = `https://metamask.app.link/dapp/${dappHostPath}`;
+  }
+
+  showToast(`Opening in ${capitalize(appKey)} Mobile App...`, 'info');
+  window.open(deepLink, '_blank');
+}
+
+function connectReadOnlyWallet(address) {
+  if (!address || !/^0x[a-fA-F0-9]{40}$/.test(address)) {
+    showToast('Invalid EVM address format. Must be 0x followed by 40 hex characters.', 'error');
+    return;
+  }
+
+  state.wallet.connected = true;
+  state.wallet.address = address;
+  state.wallet.providerName = 'Read-Only Watcher';
+  state.wallet.chainId = '97453';
+  state.wallet.isWrongChain = false;
+
+  saveWalletState();
+  updateWalletUI();
+  closeWalletModal();
+  showToast(`Watching address: ${address.substring(0, 6)}...${address.substring(38)}`, 'info');
+
+  fetchWalletBalance(address);
+}
+
+async function switchToSidraChain() {
+  if (typeof window.ethereum === 'undefined') {
+    showToast('Sidra Chain: Expected Chain ID 97453 (0x17cad). Configure in your wallet settings.', 'info');
+    return;
+  }
+
+  try {
+    showToast('Switching network to Sidra Chain (97453)...', 'info');
+    await window.ethereum.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId: SIDRA_CHAIN_CONFIG.chainIdHex }]
+    });
+    state.wallet.chainId = SIDRA_CHAIN_CONFIG.chainIdDec;
+    state.wallet.isWrongChain = false;
+    updateWalletUI();
+    showToast('Switched to Sidra Chain successfully!', 'info');
+  } catch (switchError) {
+    // Error 4902 indicates chain is not added yet
+    if (switchError.code === 4902 || switchError.message.includes('Unrecognized chain')) {
+      try {
+        await window.ethereum.request({
+          method: 'wallet_addEthereumChain',
+          params: [{
+            chainId: SIDRA_CHAIN_CONFIG.chainIdHex,
+            chainName: SIDRA_CHAIN_CONFIG.chainName,
+            nativeCurrency: SIDRA_CHAIN_CONFIG.nativeCurrency,
+            rpcUrls: SIDRA_CHAIN_CONFIG.rpcUrls,
+            blockExplorerUrls: SIDRA_CHAIN_CONFIG.blockExplorerUrls
+          }]
+        });
+        state.wallet.chainId = SIDRA_CHAIN_CONFIG.chainIdDec;
+        state.wallet.isWrongChain = false;
+        updateWalletUI();
+        showToast('Sidra Chain added and activated in your wallet!', 'info');
+      } catch (addError) {
+        showToast('Failed to add Sidra Chain: ' + addError.message, 'error');
+      }
+    } else {
+      showToast('Chain switch rejected: ' + switchError.message, 'error');
+    }
+  }
+}
+
+async function addBndqTokenToWallet() {
+  if (typeof window.ethereum === 'undefined') {
+    showToast('Token Contract: 0x6d1537bEE4F1EE3f55F4BC9319Aa40252cd39133 (Decimals: 18, Symbol: BNDQ)', 'info');
+    return;
+  }
+
+  try {
+    const wasAdded = await window.ethereum.request({
+      method: 'wallet_watchAsset',
+      params: {
+        type: 'ERC20',
+        options: {
+          address: SIDRA_CHAIN_CONFIG.tokenContract,
+          symbol: SIDRA_CHAIN_CONFIG.tokenSymbol,
+          decimals: SIDRA_CHAIN_CONFIG.tokenDecimals,
+          image: window.location.origin + '/dashboard/bandiq_logo.jpg'
+        }
+      }
+    });
+
+    if (wasAdded) {
+      showToast('$BNDQ Token successfully imported to your wallet!', 'info');
+    }
+  } catch (err) {
+    showToast('Token import request cancelled: ' + err.message, 'error');
+  }
+}
+
+function disconnectWallet() {
+  state.wallet.connected = false;
+  state.wallet.address = '0x6d1537bEE4F1EE3f55F4BC9319Aa40252cd39133';
+  state.wallet.providerName = 'Read-Only Watcher';
+  state.wallet.isWrongChain = false;
+  localStorage.removeItem('bandiq_depin_wallet');
+
+  updateWalletUI();
+  closeWalletModal();
+  showToast('Wallet disconnected. Returned to default node viewer.', 'info');
+}
+
+function handleAccountsChanged(accounts) {
+  if (!accounts || accounts.length === 0) {
+    disconnectWallet();
+  } else {
+    state.wallet.address = accounts[0];
+    saveWalletState();
+    updateWalletUI();
+    fetchWalletBalance(accounts[0]);
+    showToast(`Active account changed: ${accounts[0].substring(0, 6)}...`, 'info');
+  }
+}
+
+function handleChainChanged(chainIdHex) {
+  const isSidra = chainIdHex.toLowerCase() === SIDRA_CHAIN_CONFIG.chainIdHex.toLowerCase() || 
+                  parseInt(chainIdHex, 16).toString() === SIDRA_CHAIN_CONFIG.chainIdDec;
+  state.wallet.chainId = parseInt(chainIdHex, 16).toString();
+  state.wallet.isWrongChain = !isSidra;
+  updateWalletUI();
+
+  if (!isSidra) {
+    showToast('Connected to wrong chain! Please switch to Sidra Chain (97453).', 'error');
+  } else {
+    showToast('Connected to Sidra Chain.', 'info');
+  }
+}
+
+function updateWalletUI() {
+  const addr = state.wallet.address;
+  const shortAddr = addr ? `${addr.substring(0, 6)}...${addr.substring(38)}` : '0x6d15...3133';
+
+  // Header button
+  if (elements.walletBtnText) {
+    elements.walletBtnText.textContent = shortAddr;
+  }
+
+  // Wallet view elements
+  if (elements.walletActiveAddressDisplay) {
+    elements.walletActiveAddressDisplay.textContent = addr;
+  }
+  if (elements.walletConnStatusLabel) {
+    elements.walletConnStatusLabel.textContent = state.wallet.connected ? 
+      `Wallet Status: Connected via ${state.wallet.providerName}` : 
+      'Wallet Status: Read-Only Address Watcher';
+  }
+  if (elements.walletConnIndicator) {
+    elements.walletConnIndicator.style.background = state.wallet.isWrongChain ? '#ef4444' : '#10b981';
+    elements.walletConnIndicator.style.boxShadow = state.wallet.isWrongChain ? '0 0 10px #ef4444' : '0 0 10px #10b981';
+  }
+  if (elements.btnDisconnectWallet) {
+    elements.btnDisconnectWallet.style.display = state.wallet.connected ? 'inline-flex' : 'none';
+  }
+
+  // Modal elements
+  if (elements.wmcAddressDisplay) {
+    elements.wmcAddressDisplay.textContent = addr;
+  }
+  if (elements.wmcStatusText) {
+    elements.wmcStatusText.textContent = `Connected via ${state.wallet.providerName}`;
+  }
+  if (elements.wmcChainTag) {
+    elements.wmcChainTag.textContent = state.wallet.isWrongChain ? 
+      `Wrong Chain (ID: ${state.wallet.chainId})` : 
+      'Sidra Chain (97453)';
+    elements.wmcChainTag.style.background = state.wallet.isWrongChain ? 'rgba(239, 68, 68, 0.2)' : 'rgba(139, 92, 246, 0.2)';
+    elements.wmcChainTag.style.color = state.wallet.isWrongChain ? '#fca5a5' : 'var(--color-purple-light)';
+  }
+
+  // Synchronize with operator console
+  if (elements.nodeWalletDisplay) {
+    elements.nodeWalletDisplay.textContent = addr;
+  }
+}
+
+async function fetchWalletBalance(address) {
+  try {
+    // If backend RPC is accessible, query live balance
+    const response = await fetch(`${state.mockBackendURL}/rpc`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        method: 'eth_getBalance',
+        params: [address, 'latest'],
+        id: 1
+      })
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      if (data && data.result) {
+        const wei = parseInt(data.result, 16);
+        const kst = (wei / 1e18).toFixed(2);
+        state.wallet.nativeBalance = `${kst} KST`;
+        if (elements.walletNativeBalance) elements.walletNativeBalance.textContent = `${kst} KST`;
+        if (elements.wmcNativeBalance) elements.wmcNativeBalance.textContent = `${kst} KST`;
+      }
+    }
+  } catch (err) {
+    // Fallback gracefully
+  }
+}
+
+function saveWalletState() {
+  localStorage.setItem('bandiq_depin_wallet', JSON.stringify({
+    connected: state.wallet.connected,
+    address: state.wallet.address,
+    providerName: state.wallet.providerName,
+    chainId: state.wallet.chainId
+  }));
+}
+
+function restoreSavedWallet() {
+  try {
+    const saved = localStorage.getItem('bandiq_depin_wallet');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (parsed && parsed.address) {
+        state.wallet.connected = parsed.connected || false;
+        state.wallet.address = parsed.address;
+        state.wallet.providerName = parsed.providerName || 'Read-Only Watcher';
+        state.wallet.chainId = parsed.chainId || '97453';
+        updateWalletUI();
+      }
+    }
+  } catch (e) {
+    // Ignore cache load failure
+  }
+}
+
+function drawWalletConnectQR() {
+  const canvas = elements.wcQrCanvas;
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const size = canvas.width;
+  ctx.clearRect(0, 0, size, size);
+
+  // Background
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, size, size);
+
+  // Draw futuristic styled QR matrix
+  const gridSize = 21;
+  const cellSize = size / gridSize;
+
+  ctx.fillStyle = '#0a0e1a';
+
+  // Corner finder patterns
+  function drawFinderPattern(startX, startY) {
+    ctx.fillStyle = '#6d28d9';
+    ctx.fillRect(startX * cellSize, startY * cellSize, 7 * cellSize, 7 * cellSize);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect((startX + 1) * cellSize, (startY + 1) * cellSize, 5 * cellSize, 5 * cellSize);
+    ctx.fillStyle = '#00f2fe';
+    ctx.fillRect((startX + 2) * cellSize, (startY + 2) * cellSize, 3 * cellSize, 3 * cellSize);
+  }
+
+  drawFinderPattern(0, 0);
+  drawFinderPattern(14, 0);
+  drawFinderPattern(0, 14);
+
+  // Pseudo-random deterministic data dots based on token address
+  const seed = 0x6d1537;
+  ctx.fillStyle = '#0f172a';
+  for (let x = 0; x < gridSize; x++) {
+    for (let y = 0; y < gridSize; y++) {
+      // Skip finder zones
+      if ((x < 8 && y < 8) || (x > 13 && y < 8) || (x < 8 && y > 13)) continue;
+
+      const hash = Math.sin(x * 12.9898 + y * 78.233 + seed) * 43758.5453;
+      if (hash - Math.floor(hash) > 0.48) {
+        ctx.fillRect(x * cellSize + 0.5, y * cellSize + 0.5, cellSize - 1, cellSize - 1);
+      }
+    }
+  }
+
+  // Center logo indicator
+  ctx.fillStyle = '#00f2fe';
+  ctx.beginPath();
+  ctx.arc(size / 2, size / 2, 8, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+/* ==============================================================================
+   User Manual Tabs Navigation (View 8)
+============================================================================== */
+function setupManualTabs() {
+  if (!elements.manualNavTabs) return;
+
+  const tabs = elements.manualNavTabs.querySelectorAll('.manual-tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const targetKey = tab.dataset.manualTab;
+      document.querySelectorAll('.manual-tab-panel').forEach(panel => {
+        panel.classList.remove('active');
+      });
+
+      const targetPanel = document.getElementById(`manTab-${targetKey}`);
+      if (targetPanel) {
+        targetPanel.classList.add('active');
+      }
+    });
   });
 }

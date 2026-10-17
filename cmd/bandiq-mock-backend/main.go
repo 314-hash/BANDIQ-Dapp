@@ -9,6 +9,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"sync"
 	"time"
@@ -64,12 +65,38 @@ func main() {
 	// Simulated Sidra Chain RPC endpoint (Chain ID 97453 = 0x17cad)
 	mux.HandleFunc("/rpc", server.handleSimulatedRPC)
 
-	addr := fmt.Sprintf("127.0.0.1:%d", *port)
-	log.Printf("[BANDIQ Mock Backend] Starting server on http://%s", addr)
-	log.Printf("[BANDIQ Mock Backend] Providing mock Sidra RPC on http://%s/rpc (Chain ID: 97453)", addr)
-	log.Printf("[BANDIQ Mock Backend] Speedtest endpoints ready: /api/v1/ping, /api/v1/speedtest/download, /api/v1/speedtest/upload")
+	// Dashboard static file serving
+	dashboardDir := "dashboard"
+	if _, err := os.Stat(dashboardDir); err == nil {
+		fs := http.FileServer(http.Dir(dashboardDir))
+		mux.Handle("/dashboard/", http.StripPrefix("/dashboard/", fs))
+		mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+			if r.URL.Path == "/" {
+				http.Redirect(w, r, "/dashboard/", http.StatusFound)
+				return
+			}
+			http.NotFound(w, r)
+		})
+	}
 
-	if err := http.ListenAndServe(addr, mux); err != nil {
+	corsHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, X-BANDIQ-Node-ID, X-BANDIQ-Sequence, X-BANDIQ-Signature")
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+		mux.ServeHTTP(w, r)
+	})
+
+	addr := fmt.Sprintf("0.0.0.0:%d", *port)
+	log.Printf("[BANDIQ Mock Backend] Starting server on http://localhost:%d", *port)
+	log.Printf("[BANDIQ Mock Backend] Web Dashboard available at http://localhost:%d/dashboard/", *port)
+	log.Printf("[BANDIQ Mock Backend] Mobile LAN access: http://<LAN-IP>:%d/dashboard/", *port)
+	log.Printf("[BANDIQ Mock Backend] Providing mock Sidra RPC on http://localhost:%d/rpc (Chain ID: 97453)", *port)
+
+	if err := http.ListenAndServe(addr, corsHandler); err != nil {
 		log.Fatalf("Mock backend failed: %v", err)
 	}
 }

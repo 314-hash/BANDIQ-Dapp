@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>BANDIQ DePIN — Bandwidth + Intelligence Network</title>
+  <meta name="description" content="BANDIQ DePIN Bandwidth Network Dashboard and Explorer on Sidra Chain ($BNDQ). Real-time telemetry, node operator controls, verifiable proof-of-bandwidth, and bandwidth marketplace.">
+  <meta name="theme-color" content="#06070d">
+  <link rel="icon" type="image/jpeg" href="bandiq_logo.jpg">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+  <!-- Background Glow Orbs -->
+  <div class="bg-orb orb-primary" aria-hidden="true"></div>
+  <div class="bg-orb orb-secondary" aria-hidden="true"></div>
+  <div class="bg-orb orb-tertiary" aria-hidden="true"></div>
+  <div class="bg-grid-overlay" aria-hidden="true"></div>
+
+  <div id="app" class="app-container">
+    <!-- Top Bar Navigation (Desktop & Mobile) -->
+    <header class="app-header" id="appHeader">
+      <div class="header-left">
+        <button id="mobileMenuBtn" class="mobile-menu-btn" aria-label="Toggle navigation menu">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </button>
+        <div class="brand-container" id="brandHomeBtn">
+          <div class="logo-wrapper">
+            <img src="bandiq_logo.jpg" alt="BANDIQ Logo" class="brand-logo" id="headerLogo">
+            <div class="logo-glow"></div>
+          </div>
+          <div class="brand-text">
+            <div class="brand-name">
+              <span class="text-silver">BAND</span><span class="text-neon-cyan">IQ</span>
+              <span class="depin-badge">DePIN 2.0</span>
+            </div>
+            <div class="brand-tagline">Bandwidth + Intelligence</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-center">
+        <div class="network-pill" id="networkPill">
+          <span class="pulse-indicator live" id="networkBeacon"></span>
+          <span class="network-name">Sidra Chain</span>
+          <span class="chain-id-tag">ID: 97453</span>
+        </div>
+        <div class="agent-conn-badge" id="agentStatusBadge">
+          <span class="agent-dot checking"></span>
+          <span class="agent-text" id="agentStatusText">Connecting Node...</span>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="compliance-tag" title="Shariah-Compliant Decentralized Physical Infrastructure">
+          <svg class="icon-halal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="M9 12l2 2 4-4"/>
+          </svg>
+          <span class="compliance-text">Ethical DePIN</span>
+        </div>
+        <button class="wallet-btn" id="connectWalletBtn">
+          <svg class="icon-wallet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="4" width="20" height="16" rx="3"/>
+            <circle cx="16" cy="12" r="2"/>
+          </svg>
+          <span id="walletBtnText">0x6d15...3133</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Workspace with Sidebar & Content -->
+    <div class="workspace-layout">
+      <!-- Desktop Sidebar Navigation -->
+      <aside class="app-sidebar" id="appSidebar">
+        <div class="sidebar-compliance-banner">
+          <div class="compliance-sub">Sidra Chain Ecosystem</div>
+          <div class="compliance-title">Fair Bandwidth Utility</div>
+        </div>
+
+        <nav class="nav-menu" id="navMenu">
+          <button class="nav-item active" data-view="overview" id="navOverview">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7" rx="1"/>
+              <rect x="14" y="3" width="7" height="7" rx="1"/>
+              <rect x="14" y="14" width="7" height="7" rx="1"/>
+              <rect x="3" y="14" width="7" height="7" rx="1"/>
+            </svg>
+            <span class="nav-label">Network Overview</span>
+          </button>
+
+          <button class="nav-item" data-view="node-operator" id="navNodeOperator">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="2" width="20" height="8" rx="2"/>
+              <rect x="2" y="14" width="20" height="8" rx="2"/>
+              <line x1="6" y1="6" x2="6.01" y2="6"/>
+              <line x1="6" y1="18" x2="6.01" y2="18"/>
+            </svg>
+            <span class="nav-label">My Node Console</span>
+            <span class="nav-badge" id="nodeStateBadge">Active</span>
+          </button>
+
+          <button class="nav-item" data-view="speedtest" id="navSpeedtest">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2v4"/>
+              <path d="M4.93 4.93l2.83 2.83"/>
+              <path d="M2 12h4"/>
+              <path d="M4.93 19.07l2.83-2.83"/>
+              <path d="M12 22v-4"/>
+              <path d="M19.07 19.07l-2.83-2.83"/>
+              <path d="M22 12h-4"/>
+              <path d="M19.07 4.93l-2.83 2.83"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <span class="nav-label">Bandwidth Benchmark</span>
+          </button>
+
+          <button class="nav-item" data-view="nodes-explorer" id="navNodesExplorer">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="2" y1="12" x2="22" y2="12"/>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+            </svg>
+            <span class="nav-label">DePIN Node Explorer</span>
+          </button>
+
+          <button class="nav-item" data-view="marketplace" id="navMarketplace">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+            <span class="nav-label">Bandwidth Market</span>
+          </button>
+
+          <button class="nav-item" data-view="verification" id="navVerification">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            <span class="nav-label">Proof Verification</span>
+          </button>
+
+          <button class="nav-item" data-view="wallet" id="navWallet">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+            </svg>
+            <span class="nav-label">BNDQ Ledger</span>
+          </button>
+
+          <button class="nav-item" data-view="docs" id="navDocs">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+            </svg>
+            <span class="nav-label">Docs & Privacy</span>
+          </button>
+        </nav>
+
+        <div class="sidebar-footer">
+          <div class="token-chip">
+            <div class="token-icon">B</div>
+            <div class="token-info">
+              <div class="token-name">$BNDQ Token</div>
+              <div class="token-address" title="0x6d1537bEE4F1EE3f55F4BC9319Aa40252cd39133">0x6d15...3133</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Scrollable Content Area -->
+      <main class="app-main" id="mainContent">
+
+        <!-- ============================================================== -->
+        <!-- VIEW 1: NETWORK OVERVIEW -->
+        <!-- ============================================================== -->
+        <section class="view-panel active" id="viewOverview">
+          <div class="view-hero">
+            <div class="hero-left">
+              <div class="hero-pill">
+                <span class="hero-sparkle">✦</span>
+                <span>Decentralized Physical Infrastructure Network</span>
+              </div>
+              <h1 class="hero-title">Real-World Bandwidth <span class="gradient-text">Verified on Sidra Chain</span></h1>
+              <p class="hero-subtitle">
+                BANDIQ powers decentralized connectivity by measuring true physical throughput, cryptographically verifying service proofs, and facilitating transparent, Shariah-compliant rewards.
+              </p>
+            </div>
+            <div class="hero-right">
+              <div class="hero-card-featured glass-card">
+                <div class="featured-header">
+                  <span class="featured-badge">Current Protocol State</span>
+                  <span class="featured-status online">Live & Measuring</span>
+                </div>
+                <div class="featured-body">
+                  <div class="stat-highlight">
+                    <span class="stat-num" id="heroVerifiedBytes">24.85</span>
+                    <span class="stat-unit">TB</span>
+                  </div>
+                  <div class="stat-caption">Total Verified Network Throughput Delivered</div>
+                  <div class="featured-progress-bar">
+                    <div class="progress-fill" style="width: 78%;"></div>
+                  </div>
+                  <div class="featured-meta">
+                    <span>Active Epoch: #481</span>
+                    <span>Chain ID: 97453</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Network KPI Grid -->
+          <div class="kpi-grid">
+            <div class="kpi-card glass-card">
+              <div class="kpi-icon-wrap cyan">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+              </div>
+              <div class="kpi-details">
+                <div class="kpi-label">Registered Nodes</div>
+                <div class="kpi-value" id="kpiRegisteredNodes">1,248</div>
+                <div class="kpi-change positive">▲ 14.2% this week</div>
+              </div>
+            </div>
+
+            <div class="kpi-card glass-card">
+              <div class="kpi-icon-wrap purple">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+              </div>
+              <div class="kpi-details">
+                <div class="kpi-label">Online Active Nodes</div>
+                <div class="kpi-value" id="kpiOnlineNodes">892</div>
+                <div class="kpi-subtext"><span class="badge-dot green"></span> 71.5% network availability</div>
+              </div>
+            </div>
+
+            <div class="kpi-card glass-card">
+              <div class="kpi-icon-wrap blue">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              </div>
+              <div class="kpi-details">
+                <div class="kpi-label">Avg Network Speed</div>
+                <div class="kpi-value" id="kpiAvgSpeed">142.6 <span class="kpi-unit">Mbps</span></div>
+                <div class="kpi-subtext">Avg Latency: 16.4 ms</div>
+              </div>
+            </div>
+
+            <div class="kpi-card glass-card">
+              <div class="kpi-icon-wrap neon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <div class="kpi-details">
+                <div class="kpi-label">Proof Attestation Rate</div>
+                <div class="kpi-value" id="kpiAttestationRate">99.8%</div>
+                <div class="kpi-subtext">Cryptographically Verified</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Network Visualizer & Traffic Segregation Section -->
+          <div class="grid-2-col">
+            <div class="card glass-card">
+              <div class="card-header">
+                <div>
+                  <h2 class="card-title">Global Node Topology Map</h2>
+                  <p class="card-subtitle">Real-time geographical distribution of BANDIQ nodes</p>
+                </div>
+                <span class="live-pill"><span class="pulse-indicator"></span> 14 Regions Active</span>
+              </div>
+              <div class="map-container" id="nodeMapContainer">
+                <canvas id="nodeMapCanvas" class="node-map-canvas"></canvas>
+                <div class="map-overlay-info">
+                  <div class="map-stat-chip">
+                    <span class="chip-label">APAC:</span>
+                    <span class="chip-val">542 Nodes</span>
+                  </div>
+                  <div class="map-stat-chip">
+                    <span class="chip-label">MENA:</span>
+                    <span class="chip-val">388 Nodes</span>
+                  </div>
+                  <div class="map-stat-chip">
+                    <span class="chip-label">EU / NA:</span>
+                    <span class="chip-val">318 Nodes</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Traffic Architecture Distinction Card -->
+            <div class="card glass-card">
+              <div class="card-header">
+                <div>
+                  <h2 class="card-title">Traffic Segregation Architecture</h2>
+                  <p class="card-subtitle">Preventing synthetic speedtest gaming & reward inflation</p>
+                </div>
+              </div>
+              <div class="traffic-breakdown">
+                <div class="traffic-item">
+                  <div class="traffic-item-header">
+                    <span class="traffic-title cyan-accent">Active Synthetic Test Traffic (Unearned)</span>
+                    <span class="traffic-badge unearned">Benchmark Only</span>
+                  </div>
+                  <p class="traffic-desc">
+                    Synthetic packets generated during benchmark tests. Counted strictly for capacity rating; never directly triggers token rewards.
+                  </p>
+                  <div class="traffic-stat-row">
+                    <span>Today's Test Volume:</span>
+                    <strong>1.48 TB (Capped & Rate-Limited)</strong>
+                  </div>
+                </div>
+
+                <div class="traffic-item">
+                  <div class="traffic-item-header">
+                    <span class="traffic-title purple-accent">Served Client Workload (Reward-Eligible)</span>
+                    <span class="traffic-badge earned">Billable Utility</span>
+                  </div>
+                  <p class="traffic-desc">
+                    Physical payload bytes delivered to authorized consumers, authenticated via cryptographic session tickets and mutual receipts.
+                  </p>
+                  <div class="traffic-stat-row">
+                    <span>Delivered Workload:</span>
+                    <strong>23.37 TB (Reconciled with BNDQ Ledger)</strong>
+                  </div>
+                </div>
+
+                <div class="traffic-item">
+                  <div class="traffic-item-header">
+                    <span class="traffic-title blue-accent">OS Adapter Baseline Verification</span>
+                    <span class="traffic-badge neutral">Hardware Telemetry</span>
+                  </div>
+                  <p class="traffic-desc">
+                    Hardware interface counters read through Windows IP Helper API (`GetIfEntry2`) for passive sanity checks.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- VIEW 2: MY NODE OPERATOR CONSOLE -->
+        <!-- ============================================================== -->
+        <section class="view-panel" id="viewNodeOperator">
+          <div class="section-header">
+            <div>
+              <h1 class="section-title">Node Operator Console</h1>
+              <p class="section-subtitle">Local agent management, hardware telemetry, power controls, and data limits</p>
+            </div>
+            <div class="agent-mode-tag" id="agentModeTag">
+              <span class="status-indicator-ring"></span>
+              <span id="agentModeLabel">Probing Local Agent (127.0.0.1:8725)...</span>
+            </div>
+          </div>
+
+          <!-- Node Identity Banner -->
+          <div class="node-identity-card glass-card">
+            <div class="node-id-col">
+              <div class="id-label">Local Node Identifier</div>
+              <div class="id-value-row">
+                <span class="id-text" id="nodeIdDisplay">bandiq-node-f73b889a012c4491de88f01b</span>
+                <button class="copy-btn" data-copy-target="nodeIdDisplay" title="Copy Node ID">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="node-wallet-col">
+              <div class="id-label">Associated Operator Wallet (Sidra Chain)</div>
+              <div class="id-value-row">
+                <span class="id-text" id="nodeWalletDisplay">0x6d1537bEE4F1EE3f55F4BC9319Aa40252cd39133</span>
+                <button class="copy-btn" data-copy-target="nodeWalletDisplay" title="Copy Wallet">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="node-consent-col">
+              <div class="id-label">Explicit Consent</div>
+              <div class="consent-status-badge granted" id="consentBadge">
+                <span class="check-icon">✓</span>
+                <span id="consentText">Opt-In Granted</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Operator Power Controls & Health Grid -->
+          <div class="grid-3-col">
+            <!-- Power Controls Card -->
+            <div class="card glass-card">
+              <h2 class="card-title">Agent Power Controls</h2>
+              <p class="card-subtitle">Manage measurement loop state safely</p>
+              
+              <div class="control-actions">
+                <button class="btn btn-outline" id="btnPauseAgent">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                  <span id="btnPauseLabel">Pause Tests</span>
+                </button>
+
+                <button class="btn btn-primary" id="btnTriggerTest">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  <span>Trigger Test Now</span>
+                </button>
+              </div>
+
+              <div class="control-status-box">
+                <div class="cs-row">
+                  <span>Loop State:</span>
+                  <strong id="loopStateLabel" class="text-neon-cyan">Running (Every 15m)</strong>
+                </div>
+                <div class="cs-row">
+                  <span>Spool Queue:</span>
+                  <strong id="spoolQueueCount">0 Pending Reports</strong>
+                </div>
+                <div class="cs-row">
+                  <span>Completed Proofs:</span>
+                  <strong id="totalCompletedProofs">24 Reports</strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dynamic Caps & Throttle Card -->
+            <div class="card glass-card">
+              <h2 class="card-title">Bandwidth Quotas & Caps</h2>
+              <p class="card-subtitle">Protect your residential connection limits</p>
+
+              <div class="slider-group">
+                <div class="slider-header">
+                  <label for="dailyCapSlider">Daily Benchmark Data Cap:</label>
+                  <span class="slider-val" id="dailyCapValue">1,000 MB</span>
+                </div>
+                <input type="range" id="dailyCapSlider" min="200" max="5000" step="100" value="1000" class="custom-range">
+                <div class="slider-sub">Benchmark tests auto-skip once exceeded today.</div>
+              </div>
+
+              <div class="slider-group">
+                <div class="slider-header">
+                  <label for="speedLimitSlider">Bandwidth Throttle Limit:</label>
+                  <span class="slider-val" id="speedLimitValue">50 Mbps</span>
+                </div>
+                <input type="range" id="speedLimitSlider" min="5" max="500" step="5" value="50" class="custom-range">
+                <div class="slider-sub">Caps peak benchmark speed to prevent lag in games/streams.</div>
+              </div>
+
+              <button class="btn btn-sm btn-outline-cyan" id="btnApplyCaps">Apply Caps to Agent</button>
+            </div>
+
+            <!-- Hardware & Host Telemetry Card -->
+            <div class="card glass-card">
+              <h2 class="card-title">Host Telemetry (Windows)</h2>
+              <p class="card-subtitle">Passive OS kernel readings via IP Helper API</p>
+
+              <div class="telemetry-gauges">
+                <div class="gauge-item">
+                  <div class="gauge-label">CPU Usage</div>
+                  <div class="progress-bar-thin">
+                    <div class="progress-fill purple" id="hostCpuBar" style="width: 14%;"></div>
+                  </div>
+                  <div class="gauge-val" id="hostCpuVal">14.2%</div>
+                </div>
+
+                <div class="gauge-item">
+                  <div class="gauge-label">Memory Usage</div>
+                  <div class="progress-bar-thin">
+                    <div class="progress-fill cyan" id="hostMemBar" style="width: 62%;"></div>
+                  </div>
+                  <div class="gauge-val" id="hostMemVal">5,365 MB / 6,085 MB (88%)</div>
+                </div>
+
+                <div class="gauge-item">
+                  <div class="gauge-label">Active Interface</div>
+                  <div class="interface-chip">
+                    <span class="if-name" id="hostIfaceName">Ethernet</span>
+                    <span class="if-status" id="hostIfaceStatus">Status: UP</span>
+                  </div>
+                </div>
+
+                <div class="gauge-item">
+                  <div class="gauge-label">Adapter Octets (Session)</div>
+                  <div class="octets-val" id="hostOctetsVal">In: 1.42 GB | Out: 255 MB</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Latest Completed Report Card -->
+          <div class="card glass-card">
+            <div class="card-header">
+              <div>
+                <h2 class="card-title">Latest Cryptographically Signed Attestation</h2>
+                <p class="card-subtitle">Verifiable proof-of-bandwidth generated by local private key</p>
+              </div>
+              <button class="btn btn-sm btn-outline" id="btnRefreshReport">Refresh</button>
+            </div>
+            <pre class="json-preview" id="latestReportJson">{
+  "report_id": "c8a3f9e2-1b4d-4e89-a29d-7f9182390a44",
+  "node_id": "bandiq-node-f73b889a012c4491de88f01b",
+  "sequence_number": 1,
+  "download_mbps": 94.25,
+  "upload_mbps": 38.60,
+  "latency_ms": 14.82,
+  "signature": "3f98cba2290f114008bc27834591a2ee04bbda3948571029abce88492048aa77..."
+}</pre>
+          </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- VIEW 3: BANDWIDTH BENCHMARK (SPEEDTEST) -->
+        <!-- ============================================================== -->
+        <section class="view-panel" id="viewSpeedtest">
+          <div class="section-header">
+            <div>
+              <h1 class="section-title">Bandwidth Benchmark Suite</h1>
+              <p class="section-subtitle">Lightweight chunked HTTP speedtest with precision RTT and RFC 3550 statistical jitter</p>
+            </div>
+            <div class="test-target-pill">
+              <span>Target Server:</span>
+              <strong id="speedtestTargetServer">http://127.0.0.1:8080 (Local Mock Backend)</strong>
+            </div>
+          </div>
+
+          <div class="speedtest-hero glass-card">
+            <div class="speedtest-display">
+              <!-- Animated Circular Speed Gauge -->
+              <div class="gauge-circle-wrap">
+                <svg class="gauge-svg" viewBox="0 0 200 200">
+                  <circle class="gauge-bg" cx="100" cy="100" r="85" />
+                  <circle class="gauge-meter" id="gaugeMeter" cx="100" cy="100" r="85" />
+                </svg>
+                <div class="gauge-center-content">
+                  <div class="gauge-phase-label" id="speedtestPhase">READY</div>
+                  <div class="gauge-speed-val" id="speedtestValue">0.0</div>
+                  <div class="gauge-speed-unit">Mbps</div>
+                </div>
+              </div>
+
+              <!-- Speedtest Action Button -->
+              <button class="btn btn-neon-large" id="btnStartSpeedtest">
+                <span class="btn-glow-layer"></span>
+                <span class="btn-text" id="speedtestBtnText">START BENCHMARK</span>
+              </button>
+            </div>
+
+            <!-- Benchmark Metrics Grid -->
+            <div class="speedtest-metrics-grid">
+              <div class="st-metric-card">
+                <div class="st-label">Download Speed</div>
+                <div class="st-val cyan-text" id="stDownloadVal">-- <span class="st-unit">Mbps</span></div>
+                <div class="st-sub" id="stDownloadBytes">0 MB transferred</div>
+              </div>
+
+              <div class="st-metric-card">
+                <div class="st-label">Upload Speed</div>
+                <div class="st-val purple-text" id="stUploadVal">-- <span class="st-unit">Mbps</span></div>
+                <div class="st-sub" id="stUploadBytes">0 MB transferred</div>
+              </div>
+
+              <div class="st-metric-card">
+                <div class="st-label">Latency (RTT)</div>
+                <div class="st-val" id="stLatencyVal">-- <span class="st-unit">ms</span></div>
+                <div class="st-sub">Min: <span id="stMinLatency">--</span> | Max: <span id="stMaxLatency">--</span></div>
+              </div>
+
+              <div class="st-metric-card">
+                <div class="st-label">RFC 3550 Jitter</div>
+                <div class="st-val" id="stJitterVal">-- <span class="st-unit">ms</span></div>
+                <div class="st-sub">Packet Loss: <span id="stPacketLoss">0.0%</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Transparency & Consent Box -->
+          <div class="info-notice-box glass-card">
+            <div class="notice-icon">ℹ</div>
+            <div class="notice-text">
+              <strong>DePIN Transparency Standard:</strong> This benchmark produces synthetic network traffic bounded by your configured bandwidth cap (50 Mbps) and test size (10 MB). Results are cryptographically signed and stored in your node report spool. Active speedtest traffic is strictly isolated from paid client relay bytes.
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- VIEW 4: DEPIN NODE EXPLORER -->
+        <!-- ============================================================== -->
+        <section class="view-panel" id="viewNodesExplorer">
+          <div class="section-header">
+            <div>
+              <h1 class="section-title">DePIN Node Explorer</h1>
+              <p class="section-subtitle">Inspect decentralized bandwidth nodes, health heartbeats, and eligibility states</p>
+            </div>
+            <div class="explorer-filter-bar">
+              <input type="text" id="nodeSearchInput" placeholder="Filter by Node ID or Wallet..." class="search-input">
+              <select id="nodeStatusFilter" class="select-filter">
+                <option value="all">All States</option>
+                <option value="online">Online Only</option>
+                <option value="benchmarking">Benchmarking</option>
+                <option value="offline">Offline</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Node Directory Table Card -->
+          <div class="card glass-card table-card">
+            <div class="table-responsive">
+              <table class="data-table" id="nodesTable">
+                <thead>
+                  <tr>
+                    <th>Node ID</th>
+                    <th>Operator Wallet</th>
+                    <th>Status</th>
+                    <th>Region</th>
+                    <th>Quality (Avg Speed)</th>
+                    <th>Latency</th>
+                    <th>Verified Proofs</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="nodesTableBody">
+                  <!-- Populated dynamically via app.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- VIEW 5: BANDWIDTH MARKETPLACE -->
+        <!-- ============================================================== -->
+        <section class="view-panel" id="viewMarketplace">
+          <div class="section-header">
+            <div>
+              <h1 class="section-title">BANDIQ Bandwidth Marketplace</h1>
+              <p class="section-subtitle">Request verified bandwidth services settled through Sidra Chain $BNDQ</p>
+            </div>
+            <div class="compliance-badge-large">
+              <span>Shariah-Compliant Utility Exchange</span>
+            </div>
+          </div>
+
+          <div class="grid-3-col">
+            <!-- Tier 1 -->
+            <div class="market-card glass-card">
+              <div class="market-tier-badge">Standard Node</div>
+              <h3 class="tier-name">Residential Relay</h3>
+              <div class="tier-price">
+                <span class="price-val">5.0</span>
+                <span class="price-unit">BNDQ / GB</span>
+              </div>
+              <ul class="tier-features">
+                <li>✓ Download: Up to 50 Mbps</li>
+                <li>✓ Latency: &lt; 30 ms</li>
+                <li>✓ Zero Logging & Ephemeral Relay</li>
+                <li>✓ Proof-of-Bandwidth Attestation</li>
+              </ul>
+              <button class="btn btn-outline-cyan btn-block market-order-btn" data-tier="Standard">Select Service</button>
+            </div>
+
+            <!-- Tier 2 -->
+            <div class="market-card glass-card featured-market-card">
+              <div class="market-tier-badge popular">Most Popular</div>
+              <h3 class="tier-name">Ultra-Fast Fiber</h3>
+              <div class="tier-price">
+                <span class="price-val">12.0</span>
+                <span class="price-unit">BNDQ / GB</span>
+              </div>
+              <ul class="tier-features">
+                <li>✓ Download: Up to 250 Mbps</li>
+                <li>✓ Latency: &lt; 15 ms</li>
+                <li>✓ Dedicated High-Availability Peer</li>
+                <li>✓ Cryptographic Mutual Receipts</li>
+              </ul>
+              <button class="btn btn-primary btn-block market-order-btn" data-tier="Ultra">Select Service</button>
+            </div>
+
+            <!-- Tier 3 -->
+            <div class="market-card glass-card">
+              <div class="market-tier-badge">Enterprise</div>
+              <h3 class="tier-name">Dedicated DePIN Tunnel</h3>
+              <div class="tier-price">
+                <span class="price-val">25.0</span>
+                <span class="price-unit">BNDQ / GB</span>
+              </div>
+              <ul class="tier-features">
+                <li>✓ Download: Gigabit+</li>
+                <li>✓ Latency: &lt; 8 ms</li>
+                <li>✓ SLA Backed & Witness Monitored</li>
+                <li>✓ Direct Sidra Settlement</li>
+              </ul>
+              <button class="btn btn-outline-purple btn-block market-order-btn" data-tier="Enterprise">Select Service</button>
+            </div>
+          </div>
+
+          <!-- Active Sessions Lifecycle Table -->
+          <div class="card glass-card mt-6">
+            <h2 class="card-title">Bandwidth Service Sessions Lifecycle</h2>
+            <p class="card-subtitle">State progression: Requested → Active → Completed → Settled</p>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Session ID</th>
+                    <th>Provider Node</th>
+                    <th>Allocated Volume</th>
+                    <th>Throughput</th>
+                    <th>Status</th>
+                    <th>Settlement Proof</th>
+                  </tr>
+                </thead>
+                <tbody id="sessionsTableBody">
+                  <tr>
+                    <td><code>sess-8941f-01</code></td>
+                    <td><code>bandiq-node-f73b88...</code></td>
+                    <td>5.0 GB</td>
+                    <td>84.5 Mbps</td>
+                    <td><span class="status-tag settled">Settled</span></td>
+                    <td><span class="verified-receipt">Receipt #0x48a1...</span></td>
+                  </tr>
+                  <tr>
+                    <td><code>sess-9912a-04</code></td>
+                    <td><code>bandiq-node-2d5cd8...</code></td>
+                    <td>2.5 GB</td>
+                    <td>112.0 Mbps</td>
+                    <td><span class="status-tag active">Active</span></td>
+                    <td><span class="verified-receipt pending">Measuring...</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- VIEW 6: PROOF VERIFICATION CENTER -->
+        <!-- ============================================================== -->
+        <section class="view-panel" id="viewVerification">
+          <div class="section-header">
+            <div>
+              <h1 class="section-title">Proof-of-Bandwidth Verification Center</h1>
+              <p class="section-subtitle">Cryptographic validation of measurement reports, replay defenses, and audit trail</p>
+            </div>
+          </div>
+
+          <div class="grid-2-col">
+            <!-- In-Browser Signature Verifier Tool -->
+            <div class="card glass-card">
+              <h2 class="card-title">Ed25519 Attestation Verifier</h2>
+              <p class="card-subtitle">Paste a report JSON to independently verify its cryptographic signature</p>
+              
+              <div class="form-group">
+                <label for="verifyReportInput">Report JSON:</label>
+                <textarea id="verifyReportInput" class="code-textarea" rows="8" placeholder='{"report_id": "...", "node_id": "...", "signature": "..."}'></textarea>
+              </div>
+
+              <button class="btn btn-primary" id="btnVerifySignature">Verify Attestation</button>
+
+              <div class="verification-result-box" id="verificationResultBox" style="display: none;">
+                <div class="vr-status" id="vrStatusText">VERIFIED</div>
+                <div class="vr-details" id="vrDetailsText">Canonical hash matches Ed25519 public key. Replay sequence valid.</div>
+              </div>
+            </div>
+
+            <!-- Security Audit Rules & Rejection Engine -->
+            <div class="card glass-card">
+              <h2 class="card-title">Automated Verifier Rejection Engine</h2>
+              <p class="card-subtitle">Rules applied before reports enter BNDQ settlement</p>
+              
+              <div class="rules-list">
+                <div class="rule-item">
+                  <div class="rule-icon ok">✓</div>
+                  <div class="rule-content">
+                    <div class="rule-name">Sequence Monotonicity</div>
+                    <div class="rule-desc">Sequence number must be strictly greater than last recorded report for the node. Prevents replay attacks.</div>
+                  </div>
+                </div>
+
+                <div class="rule-item">
+                  <div class="rule-icon ok">✓</div>
+                  <div class="rule-content">
+                    <div class="rule-name">Timestamp Freshness Window</div>
+                    <div class="rule-desc">Report timestamp must fall within 5 minutes of verifier UTC time. Future or stale reports are rejected.</div>
+                  </div>
+                </div>
+
+                <div class="rule-item">
+                  <div class="rule-icon ok">✓</div>
+                  <div class="rule-content">
+                    <div class="rule-name">Physical Plausibility Bounds</div>
+                    <div class="rule-desc">Detects impossible speed spikes, repeated identical byte counters, and non-decreasing interface deltas.</div>
+                  </div>
+                </div>
+
+                <div class="rule-item">
+                  <div class="rule-icon ok">✓</div>
+                  <div class="rule-content">
+                    <div class="rule-name">Synthetic vs Workload Isolation</div>
+                    <div class="rule-desc">Speedtest synthetic traffic cannot be submitted as customer delivered service.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- VIEW 7: BNDQ LEDGER & WALLET -->
+        <!-- ============================================================== -->
+        <section class="view-panel" id="viewWallet">
+          <div class="section-header">
+            <div>
+              <h1 class="section-title">Sidra Chain BNDQ Ledger</h1>
+              <p class="section-subtitle">Read-only blockchain balance and token configuration</p>
+            </div>
+            <div class="chain-badge-tag">
+              <span>Expected Chain ID: 97453</span>
+            </div>
+          </div>
+
+          <div class="grid-2-col">
+            <!-- Wallet Card -->
+            <div class="card glass-card">
+              <div class="wallet-balance-box">
+                <div class="wb-label">Verified BNDQ Balance</div>
+                <div class="wb-amount">
+                  <span class="wb-num" id="walletBalanceNum">323,117.42</span>
+                  <span class="wb-symbol">$BNDQ</span>
+                </div>
+                <div class="wb-sub">Associated with Operator Node: <code>bandiq-node-2d5cd8...</code></div>
+              </div>
+
+              <div class="wallet-details-list">
+                <div class="wd-item">
+                  <span>Target Network:</span>
+                  <strong>Sidra Chain (EVM Compatible)</strong>
+                </div>
+                <div class="wd-item">
+                  <span>Chain ID:</span>
+                  <strong>97453 (Verified via eth_chainId)</strong>
+                </div>
+                <div class="wd-item">
+                  <span>BNDQ Contract:</span>
+                  <div class="code-copy-row">
+                    <code>0x6d1537bEE4F1EE3f55F4BC9319Aa40252cd39133</code>
+                    <button class="copy-btn-sm" data-copy-target="tokenContractText">Copy</button>
+                    <span id="tokenContractText" style="display:none;">0x6d1537bEE4F1EE3f55F4BC9319Aa40252cd39133</span>
+                  </div>
+                </div>
+                <div class="wd-item">
+                  <span>Token Minting Rule:</span>
+                  <strong class="text-neon-cyan">Existing Token Only (Supply Preserved)</strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- Ledger Reconciled Settlements -->
+            <div class="card glass-card">
+              <h2 class="card-title">Settlement Reconciliation Ledger</h2>
+              <p class="card-subtitle">Verified bandwidth proofs reconciled with Sidra Chain transactions</p>
+
+              <div class="ledger-transactions" id="ledgerList">
+                <div class="ledger-row">
+                  <div class="lr-left">
+                    <span class="lr-type earn">+ 125.0 BNDQ</span>
+                    <span class="lr-desc">Epoch #480 Verified Bandwidth (25 GB delivered)</span>
+                  </div>
+                  <div class="lr-right">
+                    <span class="lr-tx">0x7f1a...c890</span>
+                    <span class="lr-time">2 hours ago</span>
+                  </div>
+                </div>
+
+                <div class="ledger-row">
+                  <div class="lr-left">
+                    <span class="lr-type earn">+ 85.0 BNDQ</span>
+                    <span class="lr-desc">Epoch #479 Verified Bandwidth (17 GB delivered)</span>
+                  </div>
+                  <div class="lr-right">
+                    <span class="lr-tx">0x3b89...12ef</span>
+                    <span class="lr-time">14 hours ago</span>
+                  </div>
+                </div>
+
+                <div class="ledger-row">
+                  <div class="lr-left">
+                    <span class="lr-type earn">+ 190.0 BNDQ</span>
+                    <span class="lr-desc">Epoch #478 Verified Bandwidth (38 GB delivered)</span>
+                  </div>
+                  <div class="lr-right">
+                    <span class="lr-tx">0x9c41...ee44</span>
+                    <span class="lr-time">1 day ago</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- VIEW 8: DOCS & SECURITY -->
+        <!-- ============================================================== -->
+        <section class="view-panel" id="viewDocs">
+          <div class="section-header">
+            <div>
+              <h1 class="section-title">Documentation & Security Protocol</h1>
+              <p class="section-subtitle">BANDIQ architecture, operator consent rules, and data collection transparency</p>
+            </div>
+          </div>
+
+          <div class="docs-grid">
+            <div class="card glass-card">
+              <h2 class="card-title cyan-accent">1. Safety & Privacy Architecture</h2>
+              <ul class="docs-list">
+                <li><strong>Never an open relay or botnet:</strong> The agent does not allow random internet traffic to enter or exit your home connection unmetered or unauthenticated.</li>
+                <li><strong>No private keys requested:</strong> You never share your wallet private key or mnemonic phrase. Only public EVM addresses are associated.</li>
+                <li><strong>No remote shell execution:</strong> The agent will never execute arbitrary terminal commands or run executables sent by the backend.</li>
+                <li><strong>Zero browsing history collection:</strong> No website URLs, DNS queries, payload contents, or personal files are accessed.</li>
+              </ul>
+            </div>
+
+            <div class="card glass-card">
+              <h2 class="card-title purple-accent">2. Shariah Compliance DePIN Tenets</h2>
+              <ul class="docs-list">
+                <li><strong>Real Network Service Backing:</strong> Rewards correspond strictly to measurable, proven bandwidth capacity and delivered service.</li>
+                <li><strong>No Speculative Fabrications:</strong> Zero promises of token price appreciation or guaranteed yield.</li>
+                <li><strong>Clear Consent & Mutual Receipts:</strong> Transparent fee structures with no hidden surcharges or unlimited contract token approvals.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Mobile Bottom Navigation Bar (High Ergonomics) -->
+    <nav class="mobile-bottom-bar" id="mobileBottomBar" aria-label="Mobile Navigation">
+      <button class="mobile-nav-btn active" data-view="overview">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+        <span>Overview</span>
+      </button>
+
+      <button class="mobile-nav-btn" data-view="node-operator">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/></svg>
+        <span>My Node</span>
+      </button>
+
+      <button class="mobile-nav-btn speedtest-fab" data-view="speedtest">
+        <div class="fab-glow"></div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v4"/><path d="M2 12h4"/><path d="M12 22v-4"/><path d="M22 12h-4"/><circle cx="12" cy="12" r="3"/></svg>
+        <span>Speedtest</span>
+      </button>
+
+      <button class="mobile-nav-btn" data-view="marketplace">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
+        <span>Market</span>
+      </button>
+
+      <button class="mobile-nav-btn" data-view="wallet">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="3"/><circle cx="16" cy="12" r="2"/></svg>
+        <span>Wallet</span>
+      </button>
+    </nav>
+
+    <!-- Notification Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

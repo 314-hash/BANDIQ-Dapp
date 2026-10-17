@@ -86,9 +86,20 @@ func NewServer(
 	mux.HandleFunc("/trigger", s.handleTrigger)
 	mux.HandleFunc("/reports/latest", s.handleLatestReport)
 
+	corsHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, X-BANDIQ-Node-ID, Authorization")
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+		mux.ServeHTTP(w, r)
+	})
+
 	s.httpServer = &http.Server{
 		Addr:         cfg.Admin.BindAddress,
-		Handler:      mux,
+		Handler:      corsHandler,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}

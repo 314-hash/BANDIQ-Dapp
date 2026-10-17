@@ -165,16 +165,22 @@
       const amountWei = BigInt(Math.floor(amountBndqTokens)) * 1000000000000000000n;
       const data = CONTRACT_CONFIG.selectors.approve + padAddress(spender) + padUint256(amountWei);
 
-      const txHash = await window.ethereum.request({
-        method: 'eth_sendTransaction',
-        params: [{
-          from: accounts[0],
-          to: CONTRACT_CONFIG.addresses.bndqToken,
-          data: data
-        }]
-      });
-
-      return txHash;
+      try {
+        const txHash = await window.ethereum.request({
+          method: 'eth_sendTransaction',
+          params: [{
+            from: accounts[0],
+            to: CONTRACT_CONFIG.addresses.bndqToken,
+            data: data
+          }]
+        });
+        return txHash;
+      } catch (err) {
+        if (err.code === -32002 || err.message?.includes('pending request') || err.message?.includes('Resource unavailable')) {
+          throw new Error('Wallet window is waiting: please open your wallet extension to confirm or reject the pending prompt.');
+        }
+        throw err;
+      }
     },
 
     /**
@@ -219,16 +225,22 @@
         padUint256(durationSeconds) +
         encodedString;
 
-      const txHash = await window.ethereum.request({
-        method: 'eth_sendTransaction',
-        params: [{
-          from: accounts[0],
-          to: CONTRACT_CONFIG.addresses.usageSettlement,
-          data: callData
-        }]
-      });
-
-      return txHash;
+      try {
+        const txHash = await window.ethereum.request({
+          method: 'eth_sendTransaction',
+          params: [{
+            from: accounts[0],
+            to: CONTRACT_CONFIG.addresses.usageSettlement,
+            data: callData
+          }]
+        });
+        return txHash;
+      } catch (err) {
+        if (err.code === -32002 || err.message?.includes('pending request') || err.message?.includes('Resource unavailable')) {
+          throw new Error('Wallet window is waiting: please open your wallet extension to confirm or reject the pending prompt.');
+        }
+        throw err;
+      }
     },
 
     /**
@@ -275,16 +287,22 @@
         encodedVoucher +
         encodedSig;
 
-      const txHash = await window.ethereum.request({
-        method: 'eth_sendTransaction',
-        params: [{
-          from: accounts[0],
-          to: CONTRACT_CONFIG.addresses.usageSettlement,
-          data: callData
-        }]
-      });
-
-      return txHash;
+      try {
+        const txHash = await window.ethereum.request({
+          method: 'eth_sendTransaction',
+          params: [{
+            from: accounts[0],
+            to: CONTRACT_CONFIG.addresses.usageSettlement,
+            data: callData
+          }]
+        });
+        return txHash;
+      } catch (err) {
+        if (err.code === -32002 || err.message?.includes('pending request') || err.message?.includes('Resource unavailable')) {
+          throw new Error('Wallet window is waiting: please open your wallet extension to confirm or reject the pending prompt.');
+        }
+        throw err;
+      }
     },
 
     /**

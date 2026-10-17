@@ -1,0 +1,47 @@
+{
+  "report_id": "f9e8d7c6-b5a4-4f9e-8d7c-6b5a4f9e8d7c",
+  "node_id": "bandiq-node-2d5cd8e1a89aac06c44c45d6e1908d61",
+  "operator_wallet": "0x6d1537bEE4F1EE3f55F4BC9319Aa40252cd39133",
+  "sequence_number": 8,
+  "timestamp": "2026-10-17T11:46:30.000Z",
+  "software_version": "0.1.0",
+  "test_server_id": "https://testnet-verifier.bandiq.network",
+  "measurement_method": "HTTP_SPEEDTEST_V1",
+  "metrics": {
+    "download_mbps": 48500.00,
+    "upload_mbps": 22000.00,
+    "latency_ms": 0.05,
+    "min_latency_ms": 0.02,
+    "max_latency_ms": 0.08,
+    "jitter_ms": 0.01,
+    "packet_loss_pct": 0.0,
+    "active_test_bytes_in": 524288000,
+    "active_test_bytes_out": 262144000,
+    "served_bytes_in": 0,
+    "served_bytes_out": 0,
+    "test_duration_ms": 100
+  },
+  "interface_counters": {
+    "interface_name": "Ethernet",
+    "mac_address": "f4:b5:20:6d:bd:7d",
+    "bytes_sent": 512400900,
+    "bytes_recv": 1890200400,
+    "operational_status": "UP"
+  },
+  "system_metrics": {
+    "cpu_percent": 99.8,
+    "memory_total_mb": 6085,
+    "memory_used_mb": 6000,
+    "uptime_sec": 14290
+  },
+  "signature": "11223344556677889900aabbccddeeff11223344556677889900aabbccddeeff11223344556677889900aabbccddeeff11223344556677889900aabbccddeeff",
+  "_rejection_audit": {
+    "decision": "REJECTED",
+    "rejection_code": "ERR_SEQUENCE_OUT_OF_ORDER",
+    "secondary_flags": [
+      "ERR_IMPOSSIBLE_THROUGHPUT (48.5 Gbps exceeds residential tier ceiling of 10 Gbps)",
+      "ERR_COUNTER_INCONSISTENCY (Claimed 524 MB test traffic with 0 physical adapter delta)"
+    ],
+    "machine_readable_details": "out-of-order sequence: received 8, but node is already at sequence 12"
+  }
+}

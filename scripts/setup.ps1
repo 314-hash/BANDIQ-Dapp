@@ -47,6 +47,13 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
+Write-Host "[+] Building bandiq-verifier.exe (Proof-of-Bandwidth Verifier Engine)..." -ForegroundColor Cyan
+go build -ldflags="-s -w" -o bandiq-verifier.exe ./cmd/bandiq-verifier
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[-] Failed to build bandiq-verifier.exe" -ForegroundColor Red
+    exit 1
+}
+
 # 4. Initialize Local Directory
 if (-not (Test-Path ".bandiq")) {
     New-Item -ItemType Directory -Force -Path ".bandiq" | Out-Null

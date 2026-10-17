@@ -1,0 +1,14 @@
+{
+  "voucher_id": "e4f3a2b1-9c8d-4e5f-6a7b-8c9d0e1f2a3b",
+  "epoch_id": 482,
+  "node_id": "bandiq-node-2d5cd8e1a89aac06c44c45d6e1908d61",
+  "operator_wallet": "0x6d1537bEE4F1EE3f55F4BC9319Aa40252cd39133",
+  "verified_bytes": 10737418240,
+  "qos_score": 9850,
+  "nonce": 1849,
+  "issued_at": "2026-10-17T11:45:05.120Z",
+  "expires_at": "2026-10-18T11:45:05.120Z",
+  "verifier_identity": "bandiq-verifier-root-alpha",
+  "signature": "7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a",
+  "_notes": "This voucher is accepted by BandiqUsageSettlement.sol and BandiqRewardDistributor.sol on Sidra Chain (Chain ID: 97453) to claim earned BNDQ rewards."
+}

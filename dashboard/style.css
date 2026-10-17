@@ -2775,3 +2775,77 @@ html, body {
   color: var(--color-green);
   flex-shrink: 0;
 }
+
+/* ==============================================================================
+   On-Chain Bandwidth Escrow & Settlement Controls
+============================================================================== */
+.mt-3 { margin-top: 12px; }
+.mt-6 { margin-top: 24px; }
+
+.card-header-flex {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.contract-badge-chip span {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  background: rgba(139, 92, 246, 0.15);
+  border: 1px solid var(--border-neon-purple);
+  color: var(--color-purple-light);
+}
+
+.escrow-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.escrow-summary-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  background: rgba(0, 242, 254, 0.04);
+  border: 1px solid rgba(0, 242, 254, 0.2);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+}
+
+.esb-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.esb-lbl {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.esb-val {
+  font-family: var(--font-mono);
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.esb-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-settle-session {
+  font-size: 0.8rem;
+  padding: 6px 12px;
+}

@@ -20,10 +20,10 @@
       // Existing BNDQ token on Sidra Chain (Preserved supply - no minting)
       bndqToken: '0x6d1537bEE4F1EE3f55F4BC9319Aa40252cd39133',
       // Deployed BANDIQ DePIN Infrastructure contracts
-      nodeRegistry: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
-      bandwidthVerifier: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512',
-      usageSettlement: '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0',
-      rewardDistributor: '0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9'
+      nodeRegistry: '0x19b39b7de32F0d690D9286F8E17B593EE4019160',
+      bandwidthVerifier: '0xC2F09B3fEF7d3C8b2aBD87352d21796af3b6839A',
+      usageSettlement: '0xc3801a47b8F6addE3806E76b5B82bBb26b8322cB',
+      rewardDistributor: '0xA367CC3BE055c0726C2FA0471A3D0C35416e8bfD'
     },
 
     selectors: {

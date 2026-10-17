@@ -21,3 +21,8 @@ spool/
 .vscode/
 .idea/
 .env
+
+# Node.js and Hardhat
+node_modules/
+artifacts/
+cache/

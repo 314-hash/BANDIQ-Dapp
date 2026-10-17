@@ -37,6 +37,15 @@ const state = {
     bndqBalance: '323,117.42',
     isWrongChain: false
   },
+  investorTier: {
+    tierKey: 'standard',
+    tierName: 'Tier 0: Contributor',
+    multiplier: 1.00,
+    feeDiscount: 0,
+    badgeText: '🌱 Tier 0: Contributor (1.00x Base)',
+    effectiveApy: 5.2,
+    perkNote: 'Standard Base Micro-Drip'
+  },
   speedtestRunning: false,
   networkNodes: []
 };
@@ -248,7 +257,17 @@ const elements = {
   gqaTradeDex: document.getElementById('gqaTradeDex'),
   gqaMobileWitness: document.getElementById('gqaMobileWitness'),
   gqaNodeDelegate: document.getElementById('gqaNodeDelegate'),
-  btnDismissGreeting: document.getElementById('btnDismissGreeting')
+  btnDismissGreeting: document.getElementById('btnDismissGreeting'),
+  // Sidra Investor Privileges & Multipliers
+  sidraInvestorCard: document.getElementById('sidraInvestorCard'),
+  userInvestorTierBadge: document.getElementById('userInvestorTierBadge'),
+  ilsUserSdaBal: document.getElementById('ilsUserSdaBal'),
+  ilsUserBndqBal: document.getElementById('ilsUserBndqBal'),
+  ilsUserMultiplier: document.getElementById('ilsUserMultiplier'),
+  ilsUserFeeDiscount: document.getElementById('ilsUserFeeDiscount'),
+  mobileMultiplierNote: document.getElementById('mobileMultiplierNote'),
+  delegationHubApyPill: document.getElementById('delegationHubApyPill'),
+  delegateNodeApy: document.getElementById('delegateNodeApy')
 };
 
 // Initialize Application
@@ -270,6 +289,9 @@ document.addEventListener('DOMContentLoaded', () => {
   setupDelegationStaking();
   setupMobileTunnel();
   setupTransactionModals();
+
+  // Initialize Sidra Investor Tier privileges
+  updateInvestorTierUI();
 
   // Initial check for local agent
   checkAgentConnection();
@@ -1694,6 +1716,106 @@ function updateWalletUI() {
   if (elements.nodeWalletDisplay) {
     elements.nodeWalletDisplay.textContent = addr;
   }
+
+  // Synchronize investor perks and tier cards
+  updateInvestorTierUI();
+}
+
+function calculateSidraInvestorTier(sdaBal, bndqBal) {
+  const sda = parseFloat(String(sdaBal || '0').replace(/[^0-9.]/g, '')) || 0;
+  const bndq = parseFloat(String(bndqBal || '0').replace(/[^0-9.]/g, '')) || 0;
+
+  if (sda >= 200 || bndq >= 25000) {
+    return {
+      tierKey: 'whale',
+      tierName: 'Tier 3: Sidra Whale / Validator',
+      multiplier: 2.50,
+      feeDiscount: 50,
+      badgeText: '👑 Tier 3: Sidra Whale (2.50x Max)',
+      effectiveApy: 13.0,
+      perkNote: '2.50x Yield · 50% Fee Rebate · 80% Fee Share'
+    };
+  } else if (sda >= 50 || bndq >= 5000) {
+    return {
+      tierKey: 'guardian',
+      tierName: 'Tier 2: Sidra Guardian',
+      multiplier: 1.75,
+      feeDiscount: 30,
+      badgeText: '🛡️ Tier 2: Sidra Guardian (1.75x Boost)',
+      effectiveApy: 9.1,
+      perkNote: '1.75x Yield · 30% Fee Discount · High QoS'
+    };
+  } else if (sda >= 10 || bndq >= 1000) {
+    return {
+      tierKey: 'pioneer',
+      tierName: 'Tier 1: Sidra Pioneer',
+      multiplier: 1.35,
+      feeDiscount: 15,
+      badgeText: '⚡ Tier 1: Sidra Pioneer (1.35x Boost)',
+      effectiveApy: 7.0,
+      perkNote: '1.35x Yield · 15% Fee Discount'
+    };
+  } else {
+    return {
+      tierKey: 'standard',
+      tierName: 'Tier 0: Contributor',
+      multiplier: 1.00,
+      feeDiscount: 0,
+      badgeText: '🌱 Tier 0: Contributor (1.00x Base)',
+      effectiveApy: 5.2,
+      perkNote: 'Standard Base Micro-Drip'
+    };
+  }
+}
+
+function updateInvestorTierUI() {
+  const sdaStr = state.wallet.nativeBalance || '0.00 SDA';
+  const bndqStr = state.wallet.bndqBalance || '0.00';
+  const tier = calculateSidraInvestorTier(sdaStr, bndqStr);
+  state.investorTier = tier;
+
+  if (elements.userInvestorTierBadge) {
+    elements.userInvestorTierBadge.textContent = tier.badgeText;
+  }
+  if (elements.ilsUserSdaBal) {
+    elements.ilsUserSdaBal.textContent = sdaStr;
+  }
+  if (elements.ilsUserBndqBal) {
+    elements.ilsUserBndqBal.textContent = `${bndqStr} BNDQ`;
+  }
+  if (elements.ilsUserMultiplier) {
+    const boostPct = tier.multiplier > 1.0 ? ` (+${Math.round((tier.multiplier - 1) * 100)}% Boost)` : ' (Base)';
+    elements.ilsUserMultiplier.textContent = `${tier.multiplier.toFixed(2)}x${boostPct}`;
+  }
+  if (elements.ilsUserFeeDiscount) {
+    elements.ilsUserFeeDiscount.textContent = tier.feeDiscount > 0 ? `${tier.feeDiscount}% Discount` : '0% Standard';
+  }
+
+  // Highlight active tier card
+  ['standard', 'pioneer', 'guardian', 'whale'].forEach(k => {
+    const card = document.getElementById(`tierCard-${k}`);
+    if (card) {
+      if (k === tier.tierKey) {
+        card.classList.add('active-user-tier');
+      } else {
+        card.classList.remove('active-user-tier');
+      }
+    }
+  });
+
+  // Mobile witness multiplier note
+  if (elements.mobileMultiplierNote) {
+    const probeRate = (0.005 * tier.multiplier).toFixed(4);
+    elements.mobileMultiplierNote.textContent = `${tier.multiplier.toFixed(2)}x Multiplier (+${probeRate} BNDQ/probe)`;
+  }
+
+  // Delegation Hub APY Pill and modal
+  if (elements.delegationHubApyPill) {
+    elements.delegationHubApyPill.textContent = `Your APY: ~${tier.effectiveApy.toFixed(1)}% (${tier.multiplier.toFixed(2)}x)`;
+  }
+  if (elements.delegateNodeApy) {
+    elements.delegateNodeApy.textContent = `${tier.effectiveApy.toFixed(1)}% (${tier.badgeText})`;
+  }
 }
 
 async function fetchWalletBalance(address) {
@@ -1734,6 +1856,9 @@ async function fetchWalletBalance(address) {
         if (elements.wmcBndqBalance) elements.wmcBndqBalance.textContent = bndqData.formatted;
       }
     }
+
+    // Update Sidra investor calculations with new on-chain balances
+    updateInvestorTierUI();
   } catch (err) {
     // Fallback gracefully
   }
@@ -1912,7 +2037,7 @@ function setupOnChainMarketControls() {
       const nodeId = elements.escrowNodeId ? elements.escrowNodeId.value.trim() : state.nodeData.nodeId;
       const beneficiary = elements.escrowBeneficiary ? elements.escrowBeneficiary.value.trim() : state.nodeData.wallet;
       const gb = parseFloat(elements.escrowGigabytes.value) || 10;
-      const rate = parseFloat(elements.escrowRate.value) || 5;
+      const rate = parseFloat(elements.escrowRate.value) || 0.75;
       const totalBndq = gb * rate;
 
       try {
@@ -2044,13 +2169,15 @@ function attachSettleButtonListener(btn) {
 
       // Universal Pop-up Celebration Modal with Greetings & Sound Effects
       if (typeof showTransactionSuccess === 'function') {
+        const feeDiscount = (state.investorTier && state.investorTier.feeDiscount) ? state.investorTier.feeDiscount : 0;
+        const feeNote = feeDiscount > 0 ? ` (with ${feeDiscount}% Sidra investor fee rebate)` : '';
         showTransactionSuccess({
           badge: 'PROOF-OF-BANDWIDTH SETTLEMENT CONFIRMED',
           title: '🎉 Bandwidth Session Settled!',
           sub: 'Greetings, Operator! 2.5 GB of verified bandwidth was settled with BandiqUsageSettlement.',
-          greeting: `Congratulations, Operator! Your bandwidth delivery for session ${rawSessionId.substring(0, 14)}... has been verified and settled. Provider payout disbursed to your wallet on Sidra Chain.`,
+          greeting: `Congratulations, Operator! Your bandwidth delivery for session ${rawSessionId.substring(0, 14)}... has been verified and settled${feeNote}. Provider payout disbursed to your wallet on Sidra Chain.`,
           action: 'Proof-of-Bandwidth Settlement',
-          amount: '2.5 GB Verified (12.50 BNDQ Payout)',
+          amount: '2.5 GB Verified (1.88 BNDQ Payout)',
           txHash: txHash,
           explorerUrl: `https://ledger.sidrachain.com/tx/${txHash}`
         });
@@ -2371,7 +2498,7 @@ function setupMobileWitness() {
         }
 
         runWitnessProbe();
-        witnessInterval = setInterval(runWitnessProbe, 12000);
+        witnessInterval = setInterval(runWitnessProbe, 30000);
       } else {
         if (elements.mobileWitnessStatusBadge) elements.mobileWitnessStatusBadge.classList.remove('active');
         if (elements.mobileWitnessPulse) elements.mobileWitnessPulse.className = 'pulse-indicator';
@@ -2399,11 +2526,14 @@ function setupMobileWitness() {
       const rtt = Math.round(performance.now() - startTime);
       if (elements.mobileNetRtt) elements.mobileNetRtt.textContent = `${rtt} ms`;
 
+      const multiplier = (state.investorTier && state.investorTier.multiplier) ? state.investorTier.multiplier : 1.0;
+      const probeReward = 0.005 * multiplier;
+
       attestations++;
-      earnedYield += 0.15;
+      earnedYield += probeReward;
 
       if (elements.mobileAttestationCount) elements.mobileAttestationCount.textContent = attestations.toString();
-      if (elements.mobileEarnedBndq) elements.mobileEarnedBndq.textContent = `+ ${earnedYield.toFixed(2)} BNDQ`;
+      if (elements.mobileEarnedBndq) elements.mobileEarnedBndq.textContent = `+ ${earnedYield.toFixed(4)} BNDQ`;
 
       if (elements.mobileWitnessList) {
         const timeStr = new Date().toLocaleTimeString();
@@ -2411,7 +2541,7 @@ function setupMobileWitness() {
         row.className = 'mwl-row';
         row.innerHTML = `
           <span>[${timeStr}] Latency ${rtt}ms ➔ Attested Sidra Node</span>
-          <strong class="text-neon-cyan">+0.15 BNDQ</strong>
+          <strong class="text-neon-cyan">+${probeReward.toFixed(4)} BNDQ <small>(${multiplier.toFixed(2)}x Boost)</small></strong>
         `;
         elements.mobileWitnessList.prepend(row);
 
@@ -2422,15 +2552,16 @@ function setupMobileWitness() {
 
       if (navigator.vibrate) navigator.vibrate(30);
 
-      // Milestone celebration every 5 attestations
-      if (attestations % 5 === 0) {
+      // Milestone celebration every 10 attestations (5 minutes sustained verification)
+      if (attestations % 10 === 0) {
+        const tierName = (state.investorTier && state.investorTier.tierName) ? state.investorTier.tierName : 'Contributor';
         showTransactionSuccess({
           badge: 'WITNESS ATTESTATION BATCH',
           title: '📱 Edge Witness Telemetry Confirmed!',
           sub: 'Greetings, Mobile Contributor! Telemetry epoch verified.',
-          greeting: `Great job, Operator! You have submitted ${attestations} verified witness probes (+${earnedYield.toFixed(2)} $BNDQ) to Sidra Chain decentralized pool.`,
+          greeting: `Great job, Operator! You have submitted ${attestations} verified witness probes (+${earnedYield.toFixed(4)} $BNDQ) to Sidra Chain decentralized pool at a sustainable rate. Your Sidra Investor Tier (${tierName}) is boosting your yield by ${multiplier.toFixed(2)}x!`,
           action: `Cellular/Wi-Fi Edge Witness Batch (${attestations} Probes)`,
-          amount: `+${earnedYield.toFixed(2)} BNDQ Accrued`,
+          amount: `+${earnedYield.toFixed(4)} BNDQ Accrued`,
           txHash: '0x' + Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join(''),
           emoji: '📱'
         });
@@ -2477,8 +2608,9 @@ function setupDelegationStaking() {
   function updateEstimatedReturn() {
     if (!elements.delegateStakeInput || !elements.estWeeklyReturn) return;
     const amt = parseFloat(elements.delegateStakeInput.value) || 0;
-    const weeklyEst = ((amt * 0.148) / 52).toFixed(2);
-    elements.estWeeklyReturn.textContent = `+ ${weeklyEst} BNDQ / week`;
+    const apy = (state.investorTier && state.investorTier.effectiveApy) ? (state.investorTier.effectiveApy / 100) : 0.052;
+    const weeklyEst = ((amt * apy) / 52).toFixed(3);
+    elements.estWeeklyReturn.textContent = `+ ${weeklyEst} BNDQ / week (${(apy * 100).toFixed(1)}% APY)`;
   }
 
   if (elements.delegateStakeInput) {
@@ -2553,11 +2685,13 @@ function setupDelegationStaking() {
         if (elements.delegationModal) elements.delegationModal.style.display = 'none';
 
         // Trigger Pop-up Modal with Greetings!
+        const apyPercent = (state.investorTier && state.investorTier.effectiveApy) ? state.investorTier.effectiveApy.toFixed(1) : '5.2';
+        const tierName = (state.investorTier && state.investorTier.tierName) ? state.investorTier.tierName : 'Sidra Investor';
         showTransactionSuccess({
           badge: 'NODE STAKE CONFIRMED',
           title: '💎 Staking Delegation Confirmed!',
           sub: 'Greetings, Operator! Your $BNDQ stake has been bonded.',
-          greeting: `Salute, Operator! Your ${stakeAmt} $BNDQ delegation is now boosting node routing priority. Yield (~14.8% APY) accrues every epoch.`,
+          greeting: `Salute, Operator! Your ${stakeAmt} $BNDQ delegation is now boosting node routing priority. Yield (~${apyPercent}% APY via ${tierName}) accrues every epoch.`,
           action: `Node Delegation Stake (${delegState.selectedTier})`,
           amount: `${stakeAmt} $BNDQ Staked`,
           txHash: '0x' + Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join(''),

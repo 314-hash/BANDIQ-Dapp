@@ -395,6 +395,106 @@
           </div>
 
           <!-- ============================================================== -->
+          <!-- SIDRA INVESTOR PRIVILEGES & MULTIPLIER TIER (COMMUNITY FUNDED) -->
+          <!-- ============================================================== -->
+          <div class="card glass-card sidra-investor-card mb-6" id="sidraInvestorCard">
+            <div class="card-header-flex">
+              <div>
+                <div class="flex-align-center gap-2">
+                  <h2 class="card-title text-neon-yellow">💎 Sidra Investor Privileges & Reward Multiplier</h2>
+                  <span class="investor-badge-gold" id="userInvestorTierBadge">Tier: Calculating...</span>
+                </div>
+                <p class="card-subtitle">This reward pool is funded directly by Sidra tokens. Holding and staking $SDA or $BNDQ unlocks exclusive yield multipliers, protocol fee discounts, and community fee redistribution.</p>
+              </div>
+              <div class="delegation-stats-pill">
+                <span>Treasury Pool: <strong class="text-neon-cyan">50,000 $BNDQ</strong></span>
+              </div>
+            </div>
+
+            <div class="investor-treasury-banner">
+              <span class="itb-icon">🛡️</span>
+              <div>
+                <strong>Non-Inflationary Slower Emission Rate:</strong> Base telemetry rewards are calibrated to sustainable micro-drips (+0.005 BNDQ/probe) to protect the Sidra treasury pool from dilution. Sidra investors receive up to <strong>2.50x yield multiplier</strong> and <strong>50% fee rebates</strong>!
+              </div>
+            </div>
+
+            <!-- Investor Tiers Comparison Grid -->
+            <div class="investor-tiers-grid">
+              <div class="itg-card" id="tierCard-standard">
+                <div class="itg-header">
+                  <span class="itg-tier-name">Tier 0: Contributor</span>
+                  <span class="itg-mult">1.0x Base</span>
+                </div>
+                <div class="itg-req">Holding &lt; 10 SDA / &lt; 1k BNDQ</div>
+                <ul class="itg-perks-list">
+                  <li>Standard micro-drip rate</li>
+                  <li>Basic bandwidth queue</li>
+                  <li>Standard 1% protocol fee</li>
+                </ul>
+              </div>
+
+              <div class="itg-card" id="tierCard-pioneer">
+                <div class="itg-header">
+                  <span class="itg-tier-name text-neon-cyan">Tier 1: Sidra Pioneer</span>
+                  <span class="itg-mult">1.35x Boost</span>
+                </div>
+                <div class="itg-req">10+ SDA or 1,000+ BNDQ</div>
+                <ul class="itg-perks-list">
+                  <li>+35% Staking & Attestation Yield</li>
+                  <li>15% Marketplace Fee Discount</li>
+                  <li>Priority node heartbeat queue</li>
+                </ul>
+              </div>
+
+              <div class="itg-card" id="tierCard-guardian">
+                <div class="itg-header">
+                  <span class="itg-tier-name text-neon-purple">Tier 2: Sidra Guardian</span>
+                  <span class="itg-mult">1.75x Boost</span>
+                </div>
+                <div class="itg-req">50+ SDA or 5,000+ BNDQ</div>
+                <ul class="itg-perks-list">
+                  <li>+75% Staking & Attestation Yield</li>
+                  <li>30% Marketplace Fee Discount</li>
+                  <li>High QoS Bandwidth Relay Routing</li>
+                </ul>
+              </div>
+
+              <div class="itg-card" id="tierCard-whale">
+                <div class="itg-header">
+                  <span class="itg-tier-name text-neon-yellow">Tier 3: Sidra Whale</span>
+                  <span class="itg-mult">2.50x Max</span>
+                </div>
+                <div class="itg-req">200+ SDA or 25,000+ BNDQ</div>
+                <ul class="itg-perks-list">
+                  <li>+150% Maximum Yield Multiplier</li>
+                  <li>50% Fee Rebate (Zero-Fee Escrow)</li>
+                  <li>80% Marketplace Fee Share Dividend</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Live User Investor Profile Bar -->
+            <div class="investor-live-stats-bar">
+              <div class="ils-box">
+                <span class="ils-lbl">Detected $SDA Balance</span>
+                <span class="ils-val text-neon-cyan" id="ilsUserSdaBal">0.00 SDA</span>
+              </div>
+              <div class="ils-box">
+                <span class="ils-lbl">Detected $BNDQ Balance</span>
+                <span class="ils-val text-neon-purple" id="ilsUserBndqBal">0.00 BNDQ</span>
+              </div>
+              <div class="ils-box">
+                <span class="ils-lbl">Active Yield Multiplier</span>
+                <span class="ils-val text-neon-green" id="ilsUserMultiplier">1.00x (Base)</span>
+              </div>
+              <div class="ils-box">
+                <span class="ils-lbl">Marketplace Fee Discount</span>
+                <span class="ils-val text-neon-yellow" id="ilsUserFeeDiscount">0% Standard</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============================================================== -->
           <!-- MOBILE EDGE CONTRIBUTOR & IN-BROWSER WITNESS (FOR PHONES & TABLETS) -->
           <!-- ============================================================== -->
           <div class="card glass-card mobile-edge-card mb-6" id="mobileEdgeCard">
@@ -407,7 +507,7 @@
                     <span id="mobileWitnessStatusText">Standby</span>
                   </span>
                 </div>
-                <p class="card-subtitle">Earn $BNDQ rewards on your smartphone! Turn your phone into a decentralized edge witness testing network latency, mobile speeds, and certifying desktop nodes.</p>
+                <p class="card-subtitle">Contribute to the network sustainably! Turn your phone into a decentralized edge witness certifying desktop nodes. Sidra token investors receive up to <strong>2.50x yield multiplier</strong> on all attestations!</p>
               </div>
               <div class="mobile-switch-wrap">
                 <label class="toggle-switch">
@@ -433,12 +533,12 @@
               <div class="mt-item">
                 <span class="mt-lbl">Witness Attestations</span>
                 <div class="mt-val text-neon-purple" id="mobileAttestationCount">0</div>
-                <span class="mt-sub" id="mobileAttestationCadence">Next test in 15s</span>
+                <span class="mt-sub" id="mobileAttestationCadence">Next test in 30s (Sustained)</span>
               </div>
               <div class="mt-item">
                 <span class="mt-lbl">Earned Witness Share</span>
-                <div class="mt-val text-neon-green" id="mobileEarnedBndq">+ 0.00 BNDQ</div>
-                <span class="mt-sub">Credited to connected wallet</span>
+                <div class="mt-val text-neon-green" id="mobileEarnedBndq">+ 0.000 BNDQ</div>
+                <span class="mt-sub" id="mobileMultiplierNote">Base Rate (+0.005/probe)</span>
               </div>
             </div>
 
@@ -676,9 +776,9 @@
               <div>
                 <div class="flex-align-center gap-2">
                   <h2 class="card-title text-neon-purple">💎 Mobile Node Delegation & Staking Hub</h2>
-                  <span class="delegation-apy-pill">APY: ~14.8%</span>
+                  <span class="delegation-apy-pill" id="delegationHubApyPill">APY: 5.2% - 13.0% (Sidra Boosted)</span>
                 </div>
-                <p class="card-subtitle">Don't run a PC node? Stake your $BNDQ behind verified top-tier bandwidth nodes and share in their physical relay settlements automatically.</p>
+                <p class="card-subtitle">Don't run a PC node? Stake your $BNDQ behind verified top-tier bandwidth nodes. Sidra investors receive up to <strong>2.50x yield multiplier</strong> from verified physical relay settlements.</p>
               </div>
               <div class="delegation-stats-pill">
                 <span>Total Delegated: <strong>1.48M BNDQ</strong></span>
@@ -840,14 +940,14 @@
 
               <div class="form-group">
                 <label for="escrowRate">Rate per GB ($BNDQ):</label>
-                <input type="number" id="escrowRate" class="text-input" value="5" min="1" max="100">
+                <input type="number" id="escrowRate" class="text-input" value="0.75" min="0.1" max="100" step="0.05">
               </div>
             </div>
 
             <div class="escrow-summary-bar">
               <div class="esb-item">
                 <span class="esb-lbl">Total Escrow Deposit:</span>
-                <span class="esb-val text-neon-cyan" id="escrowTotalCalc">50.00 $BNDQ</span>
+                <span class="esb-val text-neon-cyan" id="escrowTotalCalc">7.50 $BNDQ</span>
               </div>
               <div class="esb-item">
                 <span class="esb-lbl">Duration Window:</span>
@@ -1798,7 +1898,7 @@
             <div class="dmb-stat"><span>Node Quality:</span> <strong class="text-neon-cyan" id="delegateNodeTier">Ultra Fiber (250 Mbps)</strong></div>
             <div class="dmb-stat"><span>Commission Fee:</span> <strong>5.0%</strong></div>
             <div class="dmb-stat"><span>Delegator Share:</span> <strong class="text-neon-green">95.0%</strong></div>
-            <div class="dmb-stat"><span>Est. Epoch APY:</span> <strong class="text-neon-purple">14.8%</strong></div>
+            <div class="dmb-stat"><span>Est. Epoch APY:</span> <strong class="text-neon-purple" id="delegateNodeApy">5.2% - 13.0% (Sidra Boosted)</strong></div>
           </div>
 
           <div class="form-group mt-3">
@@ -1939,7 +2039,7 @@
             <button class="gqa-btn" id="gqaNodeDelegate">
               <span class="gqa-icon">💎</span>
               <div class="gqa-label">Delegate Stake</div>
-              <div class="gqa-sub">14.8% APY</div>
+              <div class="gqa-sub">Up to 13% APY</div>
             </button>
           </div>
 

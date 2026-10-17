@@ -4,78 +4,1957 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>BANDIQ DePIN — Bandwidth + Intelligence Network</title>
-  <meta name="description" content="BANDIQ DePIN Bandwidth Network Dashboard and Explorer on Sidra Chain ($BNDQ).">
-  <meta http-equiv="refresh" content="0; url=/dashboard/">
-  <link rel="icon" type="image/jpeg" href="dashboard/bandiq_logo.jpg">
-  <script>
-    window.location.replace("/dashboard/");
-  </script>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background: #06070d;
-      color: #00f3ff;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      text-align: center;
-    }
-    .loader-box {
-      background: rgba(10, 16, 28, 0.85);
-      border: 1px solid rgba(0, 243, 255, 0.25);
-      box-shadow: 0 0 30px rgba(0, 243, 255, 0.15);
-      border-radius: 16px;
-      padding: 32px 40px;
-      max-width: 380px;
-    }
-    .spinner {
-      width: 42px;
-      height: 42px;
-      border: 3px solid rgba(0, 243, 255, 0.2);
-      border-top-color: #00f3ff;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      margin: 0 auto 16px;
-    }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    h2 {
-      margin: 0 0 8px;
-      font-size: 20px;
-      color: #ffffff;
-      letter-spacing: 0.5px;
-    }
-    p {
-      margin: 0 0 16px;
-      font-size: 13px;
-      color: #8fa0b5;
-    }
-    a.btn {
-      display: inline-block;
-      background: linear-gradient(135deg, #00f3ff, #7928ca);
-      color: #06070d;
-      font-weight: 600;
-      font-size: 13px;
-      padding: 8px 20px;
-      border-radius: 8px;
-      text-decoration: none;
-      transition: opacity 0.2s;
-    }
-    a.btn:hover {
-      opacity: 0.9;
-    }
-  </style>
+  <meta name="description" content="BANDIQ DePIN Bandwidth Network Dashboard and Explorer on Sidra Chain ($BNDQ). Real-time telemetry, node operator controls, verifiable proof-of-bandwidth, and bandwidth marketplace.">
+  <meta name="theme-color" content="#06070d">
+  <link rel="icon" type="image/jpeg" href="bandiq_logo.jpg">
+  <link rel="apple-touch-icon" href="bandiq_logo.jpg">
+  <link rel="manifest" href="manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="BANDIQ">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
-<body>
-  <div class="loader-box">
-    <div class="spinner"></div>
-    <h2>BANDIQ DePIN 2.0</h2>
-    <p>Connecting to Bandwidth Network...</p>
-    <a href="/dashboard/" class="btn">Launch Dashboard</a>
+<body class="dark-theme">
+  <!-- Background Glow Orbs -->
+  <div class="bg-orb orb-primary" aria-hidden="true"></div>
+  <div class="bg-orb orb-secondary" aria-hidden="true"></div>
+  <div class="bg-orb orb-tertiary" aria-hidden="true"></div>
+  <div class="bg-grid-overlay" aria-hidden="true"></div>
+
+  <div id="app" class="app-container">
+    <!-- Top Bar Navigation (Desktop & Mobile) -->
+    <header class="app-header" id="appHeader">
+      <div class="header-left">
+        <button id="mobileMenuBtn" class="mobile-menu-btn" aria-label="Toggle navigation menu">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </button>
+        <div class="brand-container" id="brandHomeBtn">
+          <div class="logo-wrapper">
+            <img src="bandiq_logo.jpg" alt="BANDIQ Logo" class="brand-logo" id="headerLogo">
+            <div class="logo-glow"></div>
+          </div>
+          <div class="brand-text">
+            <div class="brand-name">
+              <span class="text-silver">BAND</span><span class="text-neon-cyan">IQ</span>
+              <span class="depin-badge">DePIN 2.0</span>
+            </div>
+            <div class="brand-tagline">Bandwidth + Intelligence</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-center">
+        <div class="network-pill" id="networkPill">
+          <span class="pulse-indicator live" id="networkBeacon"></span>
+          <span class="network-name">Sidra Chain</span>
+          <span class="chain-id-tag">ID: 97453</span>
+        </div>
+        <div class="agent-conn-badge" id="agentStatusBadge">
+          <span class="agent-dot checking"></span>
+          <span class="agent-text" id="agentStatusText">Connecting Node...</span>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="compliance-tag" title="Shariah-Compliant Decentralized Physical Infrastructure">
+          <svg class="icon-halal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="M9 12l2 2 4-4"/>
+          </svg>
+        <button class="btn-install-pwa" id="btnInstallPwa" style="display: none;" title="Install BANDIQ Mobile App">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span>Install App</span>
+        </button>
+        <button class="wallet-btn" id="connectWalletBtn">
+          <svg class="icon-wallet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="4" width="20" height="16" rx="3"/>
+            <circle cx="16" cy="12" r="2"/>
+          </svg>
+          <span id="walletBtnText">0x6d15...3133</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Workspace with Sidebar & Content -->
+    <div class="workspace-layout">
+      <!-- Desktop Sidebar Navigation -->
+      <aside class="app-sidebar" id="appSidebar">
+        <div class="sidebar-compliance-banner">
+          <div class="compliance-sub">Sidra Chain Ecosystem</div>
+          <div class="compliance-title">Fair Bandwidth Utility</div>
+        </div>
+
+        <nav class="nav-menu" id="navMenu">
+          <button class="nav-item active" data-view="overview" id="navOverview">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7" rx="1"/>
+              <rect x="14" y="3" width="7" height="7" rx="1"/>
+              <rect x="14" y="14" width="7" height="7" rx="1"/>
+              <rect x="3" y="14" width="7" height="7" rx="1"/>
+            </svg>
+            <span class="nav-label">Network Overview</span>
+          </button>
+
+          <button class="nav-item" data-view="node-operator" id="navNodeOperator">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="2" width="20" height="8" rx="2"/>
+              <rect x="2" y="14" width="20" height="8" rx="2"/>
+              <line x1="6" y1="6" x2="6.01" y2="6"/>
+              <line x1="6" y1="18" x2="6.01" y2="18"/>
+            </svg>
+            <span class="nav-label">My Node Console</span>
+            <span class="nav-badge" id="nodeStateBadge">Active</span>
+          </button>
+
+          <button class="nav-item" data-view="speedtest" id="navSpeedtest">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2v4"/>
+              <path d="M4.93 4.93l2.83 2.83"/>
+              <path d="M2 12h4"/>
+              <path d="M4.93 19.07l2.83-2.83"/>
+              <path d="M12 22v-4"/>
+              <path d="M19.07 19.07l-2.83-2.83"/>
+              <path d="M22 12h-4"/>
+              <path d="M19.07 4.93l-2.83 2.83"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <span class="nav-label">Bandwidth Benchmark</span>
+          </button>
+
+          <button class="nav-item" data-view="nodes-explorer" id="navNodesExplorer">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="2" y1="12" x2="22" y2="12"/>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+            </svg>
+            <span class="nav-label">DePIN Node Explorer</span>
+          </button>
+
+          <button class="nav-item" data-view="marketplace" id="navMarketplace">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+            <span class="nav-label">Bandwidth Market</span>
+          </button>
+
+          <button class="nav-item" data-view="verification" id="navVerification">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            <span class="nav-label">Proof Verification</span>
+          </button>
+
+          <button class="nav-item" data-view="wallet" id="navWallet">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+            </svg>
+            <span class="nav-label">BNDQ Ledger</span>
+          </button>
+
+          <button class="nav-item" data-view="docs" id="navDocs">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+            </svg>
+            <span class="nav-label">Docs & Privacy</span>
+          </button>
+        </nav>
+
+        <div class="sidebar-footer">
+          <div class="token-chip">
+            <div class="token-icon">B</div>
+            <div class="token-info">
+              <div class="token-name">$BNDQ Token</div>
+              <div class="token-address" title="0x6d1537bEE4F1EE3f55F4BC9319Aa40252cd39133">0x6d15...3133</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Scrollable Content Area -->
+      <main class="app-main" id="mainContent">
+
+        <!-- ============================================================== -->
+        <!-- VIEW 1: NETWORK OVERVIEW -->
+        <!-- ============================================================== -->
+        <section class="view-panel active" id="viewOverview">
+          <div class="view-hero">
+            <div class="hero-left">
+              <div class="hero-pill">
+                <span class="hero-sparkle">✦</span>
+                <span>Decentralized Physical Infrastructure Network</span>
+              </div>
+              <h1 class="hero-title">Real-World Bandwidth <span class="gradient-text">Verified on Sidra Chain</span></h1>
+              <p class="hero-subtitle">
+                BANDIQ powers decentralized connectivity by measuring true physical throughput, cryptographically verifying service proofs, and facilitating transparent, Shariah-compliant rewards.
+              </p>
+            </div>
+            <div class="hero-right">
+              <div class="hero-card-featured glass-card">
+                <div class="featured-header">
+                  <span class="featured-badge">Current Protocol State</span>
+                  <span class="featured-status online">Live & Measuring</span>
+                </div>
+                <div class="featured-body">
+                  <div class="stat-highlight">
+                    <span class="stat-num" id="heroVerifiedBytes">24.85</span>
+                    <span class="stat-unit">TB</span>
+                  </div>
+                  <div class="stat-caption">Total Verified Network Throughput Delivered</div>
+                  <div class="featured-progress-bar">
+                    <div class="progress-fill" style="width: 78%;"></div>
+                  </div>
+                  <div class="featured-meta">
+                    <span>Active Epoch: #481</span>
+                    <span>Chain ID: 97453</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Network KPI Grid -->
+          <div class="kpi-grid">
+            <div class="kpi-card glass-card">
+              <div class="kpi-icon-wrap cyan">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+              </div>
+              <div class="kpi-details">
+                <div class="kpi-label">Registered Nodes</div>
+                <div class="kpi-value" id="kpiRegisteredNodes">1,248</div>
+                <div class="kpi-change positive">▲ 14.2% this week</div>
+              </div>
+            </div>
+
+            <div class="kpi-card glass-card">
+              <div class="kpi-icon-wrap purple">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+              </div>
+              <div class="kpi-details">
+                <div class="kpi-label">Online Active Nodes</div>
+                <div class="kpi-value" id="kpiOnlineNodes">892</div>
+                <div class="kpi-subtext"><span class="badge-dot green"></span> 71.5% network availability</div>
+              </div>
+            </div>
+
+            <div class="kpi-card glass-card">
+              <div class="kpi-icon-wrap blue">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              </div>
+              <div class="kpi-details">
+                <div class="kpi-label">Avg Network Speed</div>
+                <div class="kpi-value" id="kpiAvgSpeed">142.6 <span class="kpi-unit">Mbps</span></div>
+                <div class="kpi-subtext">Avg Latency: 16.4 ms</div>
+              </div>
+            </div>
+
+            <div class="kpi-card glass-card">
+              <div class="kpi-icon-wrap neon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <div class="kpi-details">
+                <div class="kpi-label">Proof Attestation Rate</div>
+                <div class="kpi-value" id="kpiAttestationRate">99.8%</div>
+                <div class="kpi-subtext">Cryptographically Verified</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Network Visualizer & Traffic Segregation Section -->
+          <div class="grid-2-col">
+            <div class="card glass-card">
+              <div class="card-header">
+                <div>
+                  <h2 class="card-title">Global Node Topology Map</h2>
+                  <p class="card-subtitle">Real-time geographical distribution of BANDIQ nodes</p>
+                </div>
+                <span class="live-pill"><span class="pulse-indicator"></span> 14 Regions Active</span>
+              </div>
+              <div class="map-container" id="nodeMapContainer">
+                <canvas id="nodeMapCanvas" class="node-map-canvas"></canvas>
+                <div class="map-overlay-info">
+                  <div class="map-stat-chip">
+                    <span class="chip-label">APAC:</span>
+                    <span class="chip-val">542 Nodes</span>
+                  </div>
+                  <div class="map-stat-chip">
+                    <span class="chip-label">MENA:</span>
+                    <span class="chip-val">388 Nodes</span>
+                  </div>
+                  <div class="map-stat-chip">
+                    <span class="chip-label">EU / NA:</span>
+                    <span class="chip-val">318 Nodes</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Traffic Architecture Distinction Card -->
+            <div class="card glass-card">
+              <div class="card-header">
+                <div>
+                  <h2 class="card-title">Traffic Segregation Architecture</h2>
+                  <p class="card-subtitle">Preventing synthetic speedtest gaming & reward inflation</p>
+                </div>
+              </div>
+              <div class="traffic-breakdown">
+                <div class="traffic-item">
+                  <div class="traffic-item-header">
+                    <span class="traffic-title cyan-accent">Active Synthetic Test Traffic (Unearned)</span>
+                    <span class="traffic-badge unearned">Benchmark Only</span>
+                  </div>
+                  <p class="traffic-desc">
+                    Synthetic packets generated during benchmark tests. Counted strictly for capacity rating; never directly triggers token rewards.
+                  </p>
+                  <div class="traffic-stat-row">
+                    <span>Today's Test Volume:</span>
+                    <strong>1.48 TB (Capped & Rate-Limited)</strong>
+                  </div>
+                </div>
+
+                <div class="traffic-item">
+                  <div class="traffic-item-header">
+                    <span class="traffic-title purple-accent">Served Client Workload (Reward-Eligible)</span>
+                    <span class="traffic-badge earned">Billable Utility</span>
+                  </div>
+                  <p class="traffic-desc">
+                    Physical payload bytes delivered to authorized consumers, authenticated via cryptographic session tickets and mutual receipts.
+                  </p>
+                  <div class="traffic-stat-row">
+                    <span>Delivered Workload:</span>
+                    <strong>23.37 TB (Reconciled with BNDQ Ledger)</strong>
+                  </div>
+                </div>
+
+                <div class="traffic-item">
+                  <div class="traffic-item-header">
+                    <span class="traffic-title blue-accent">OS Adapter Baseline Verification</span>
+                    <span class="traffic-badge neutral">Hardware Telemetry</span>
+                  </div>
+                  <p class="traffic-desc">
+                    Hardware interface counters read through Windows IP Helper API (`GetIfEntry2`) for passive sanity checks.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- VIEW 2: MY NODE OPERATOR CONSOLE -->
+        <!-- ============================================================== -->
+        <section class="view-panel" id="viewNodeOperator">
+          <div class="section-header">
+            <div>
+              <h1 class="section-title">Node Operator Console</h1>
+              <p class="section-subtitle">Local agent management, hardware telemetry, power controls, and data limits</p>
+            </div>
+            <div class="agent-mode-tag" id="agentModeTag">
+              <span class="status-indicator-ring"></span>
+              <span id="agentModeLabel">Probing Local Agent (127.0.0.1:8725)...</span>
+            </div>
+          </div>
+
+          <!-- Node Identity Banner -->
+          <div class="node-identity-card glass-card">
+            <div class="node-id-col">
+              <div class="id-label">Local Node Identifier</div>
+              <div class="id-value-row">
+                <span class="id-text" id="nodeIdDisplay">bandiq-node-f73b889a012c4491de88f01b</span>
+                <button class="copy-btn" data-copy-target="nodeIdDisplay" title="Copy Node ID">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="node-wallet-col">
+              <div class="id-label">Associated Operator Wallet (Sidra Chain)</div>
+              <div class="id-value-row">
+                <span class="id-text" id="nodeWalletDisplay">0x6d1537bEE4F1EE3f55F4BC9319Aa40252cd39133</span>
+                <button class="copy-btn" data-copy-target="nodeWalletDisplay" title="Copy Wallet">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="node-consent-col">
+              <div class="id-label">Explicit Consent</div>
+              <div class="consent-status-badge granted" id="consentBadge">
+                <span class="check-icon">✓</span>
+                <span id="consentText">Opt-In Granted</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============================================================== -->
+          <!-- MOBILE EDGE CONTRIBUTOR & IN-BROWSER WITNESS (FOR PHONES & TABLETS) -->
+          <!-- ============================================================== -->
+          <div class="card glass-card mobile-edge-card mb-6" id="mobileEdgeCard">
+            <div class="card-header-flex">
+              <div>
+                <div class="flex-align-center gap-2">
+                  <h2 class="card-title text-neon-cyan">📱 Mobile Edge Contributor (In-Browser Witness)</h2>
+                  <span class="mobile-witness-pill" id="mobileWitnessStatusBadge">
+                    <span class="pulse-indicator" id="mobileWitnessPulse"></span>
+                    <span id="mobileWitnessStatusText">Standby</span>
+                  </span>
+                </div>
+                <p class="card-subtitle">Earn $BNDQ rewards on your smartphone! Turn your phone into a decentralized edge witness testing network latency, mobile speeds, and certifying desktop nodes.</p>
+              </div>
+              <div class="mobile-switch-wrap">
+                <label class="toggle-switch">
+                  <input type="checkbox" id="toggleMobileWitness">
+                  <span class="slider round"></span>
+                </label>
+                <span class="toggle-label" id="toggleMobileWitnessLabel">Activate Mobile Witness</span>
+              </div>
+            </div>
+
+            <!-- Mobile Live Telemetry Grid -->
+            <div class="mobile-telemetry-grid">
+              <div class="mt-item">
+                <span class="mt-lbl">Network Type</span>
+                <div class="mt-val" id="mobileNetType">Wi-Fi / 5G</div>
+                <span class="mt-sub" id="mobileNetDownlink">Downlink: ~45 Mbps</span>
+              </div>
+              <div class="mt-item">
+                <span class="mt-lbl">Edge Latency (RTT)</span>
+                <div class="mt-val text-neon-cyan" id="mobileNetRtt">18 ms</div>
+                <span class="mt-sub">Sidra Chain RPC Edge</span>
+              </div>
+              <div class="mt-item">
+                <span class="mt-lbl">Witness Attestations</span>
+                <div class="mt-val text-neon-purple" id="mobileAttestationCount">0</div>
+                <span class="mt-sub" id="mobileAttestationCadence">Next test in 15s</span>
+              </div>
+              <div class="mt-item">
+                <span class="mt-lbl">Earned Witness Share</span>
+                <div class="mt-val text-neon-green" id="mobileEarnedBndq">+ 0.00 BNDQ</div>
+                <span class="mt-sub">Credited to connected wallet</span>
+              </div>
+            </div>
+
+            <!-- Real-Time Activity Log for Mobile Witness -->
+            <div class="mobile-witness-log-box" id="mobileWitnessLogBox">
+              <div class="mwl-header">
+                <span>Recent Mobile Attestations & Witness Proofs</span>
+                <span class="mwl-device" id="mobileDeviceTag">Detecting device...</span>
+              </div>
+              <div class="mwl-list" id="mobileWitnessList">
+                <div class="mwl-row empty">
+                  <span>Toggle "Activate Mobile Witness" to start sampling latency and generating mobile proof-of-bandwidth attestations.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Operator Power Controls & Health Grid -->
+          <div class="grid-3-col">
+            <!-- Power Controls Card -->
+            <div class="card glass-card">
+              <h2 class="card-title">Agent Power Controls</h2>
+              <p class="card-subtitle">Manage measurement loop state safely</p>
+              
+              <div class="control-actions">
+                <button class="btn btn-outline" id="btnPauseAgent">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                  <span id="btnPauseLabel">Pause Tests</span>
+                </button>
+
+                <button class="btn btn-primary" id="btnTriggerTest">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  <span>Trigger Test Now</span>
+                </button>
+              </div>
+
+              <div class="control-status-box">
+                <div class="cs-row">
+                  <span>Loop State:</span>
+                  <strong id="loopStateLabel" class="text-neon-cyan">Running (Every 15m)</strong>
+                </div>
+                <div class="cs-row">
+                  <span>Spool Queue:</span>
+                  <strong id="spoolQueueCount">0 Pending Reports</strong>
+                </div>
+                <div class="cs-row">
+                  <span>Completed Proofs:</span>
+                  <strong id="totalCompletedProofs">24 Reports</strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dynamic Caps & Throttle Card -->
+            <div class="card glass-card">
+              <h2 class="card-title">Bandwidth Quotas & Caps</h2>
+              <p class="card-subtitle">Protect your residential connection limits</p>
+
+              <div class="slider-group">
+                <div class="slider-header">
+                  <label for="dailyCapSlider">Daily Benchmark Data Cap:</label>
+                  <span class="slider-val" id="dailyCapValue">1,000 MB</span>
+                </div>
+                <input type="range" id="dailyCapSlider" min="200" max="5000" step="100" value="1000" class="custom-range">
+                <div class="slider-sub">Benchmark tests auto-skip once exceeded today.</div>
+              </div>
+
+              <div class="slider-group">
+                <div class="slider-header">
+                  <label for="speedLimitSlider">Bandwidth Throttle Limit:</label>
+                  <span class="slider-val" id="speedLimitValue">50 Mbps</span>
+                </div>
+                <input type="range" id="speedLimitSlider" min="5" max="500" step="5" value="50" class="custom-range">
+                <div class="slider-sub">Caps peak benchmark speed to prevent lag in games/streams.</div>
+              </div>
+
+              <button class="btn btn-sm btn-outline-cyan" id="btnApplyCaps">Apply Caps to Agent</button>
+            </div>
+
+            <!-- Hardware & Host Telemetry Card -->
+            <div class="card glass-card">
+              <h2 class="card-title">Host Telemetry (Windows)</h2>
+              <p class="card-subtitle">Passive OS kernel readings via IP Helper API</p>
+
+              <div class="telemetry-gauges">
+                <div class="gauge-item">
+                  <div class="gauge-label">CPU Usage</div>
+                  <div class="progress-bar-thin">
+                    <div class="progress-fill purple" id="hostCpuBar" style="width: 14%;"></div>
+                  </div>
+                  <div class="gauge-val" id="hostCpuVal">14.2%</div>
+                </div>
+
+                <div class="gauge-item">
+                  <div class="gauge-label">Memory Usage</div>
+                  <div class="progress-bar-thin">
+                    <div class="progress-fill cyan" id="hostMemBar" style="width: 62%;"></div>
+                  </div>
+                  <div class="gauge-val" id="hostMemVal">5,365 MB / 6,085 MB (88%)</div>
+                </div>
+
+                <div class="gauge-item">
+                  <div class="gauge-label">Active Interface</div>
+                  <div class="interface-chip">
+                    <span class="if-name" id="hostIfaceName">Ethernet</span>
+                    <span class="if-status" id="hostIfaceStatus">Status: UP</span>
+                  </div>
+                </div>
+
+                <div class="gauge-item">
+                  <div class="gauge-label">Adapter Octets (Session)</div>
+                  <div class="octets-val" id="hostOctetsVal">In: 1.42 GB | Out: 255 MB</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Latest Completed Report Card -->
+          <div class="card glass-card">
+            <div class="card-header">
+              <div>
+                <h2 class="card-title">Latest Cryptographically Signed Attestation</h2>
+                <p class="card-subtitle">Verifiable proof-of-bandwidth generated by local private key</p>
+              </div>
+              <button class="btn btn-sm btn-outline" id="btnRefreshReport">Refresh</button>
+            </div>
+            <pre class="json-preview" id="latestReportJson">{
+  "report_id": "c8a3f9e2-1b4d-4e89-a29d-7f9182390a44",
+  "node_id": "bandiq-node-f73b889a012c4491de88f01b",
+  "sequence_number": 1,
+  "download_mbps": 94.25,
+  "upload_mbps": 38.60,
+  "latency_ms": 14.82,
+  "signature": "3f98cba2290f114008bc27834591a2ee04bbda3948571029abce88492048aa77..."
+}</pre>
+          </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- VIEW 3: BANDWIDTH BENCHMARK (SPEEDTEST) -->
+        <!-- ============================================================== -->
+        <section class="view-panel" id="viewSpeedtest">
+          <div class="section-header">
+            <div>
+              <h1 class="section-title">Bandwidth Benchmark Suite</h1>
+              <p class="section-subtitle">Lightweight chunked HTTP speedtest with precision RTT and RFC 3550 statistical jitter</p>
+            </div>
+            <div class="test-target-pill">
+              <span>Target Server:</span>
+              <strong id="speedtestTargetServer">http://127.0.0.1:8080 (Local Mock Backend)</strong>
+            </div>
+          </div>
+
+          <div class="speedtest-hero glass-card">
+            <div class="speedtest-display">
+              <!-- Animated Circular Speed Gauge -->
+              <div class="gauge-circle-wrap">
+                <svg class="gauge-svg" viewBox="0 0 200 200">
+                  <circle class="gauge-bg" cx="100" cy="100" r="85" />
+                  <circle class="gauge-meter" id="gaugeMeter" cx="100" cy="100" r="85" />
+                </svg>
+                <div class="gauge-center-content">
+                  <div class="gauge-phase-label" id="speedtestPhase">READY</div>
+                  <div class="gauge-speed-val" id="speedtestValue">0.0</div>
+                  <div class="gauge-speed-unit">Mbps</div>
+                </div>
+              </div>
+
+              <!-- Speedtest Action Button -->
+              <button class="btn btn-neon-large" id="btnStartSpeedtest">
+                <span class="btn-glow-layer"></span>
+                <span class="btn-text" id="speedtestBtnText">START BENCHMARK</span>
+              </button>
+            </div>
+
+            <!-- Benchmark Metrics Grid -->
+            <div class="speedtest-metrics-grid">
+              <div class="st-metric-card">
+                <div class="st-label">Download Speed</div>
+                <div class="st-val cyan-text" id="stDownloadVal">-- <span class="st-unit">Mbps</span></div>
+                <div class="st-sub" id="stDownloadBytes">0 MB transferred</div>
+              </div>
+
+              <div class="st-metric-card">
+                <div class="st-label">Upload Speed</div>
+                <div class="st-val purple-text" id="stUploadVal">-- <span class="st-unit">Mbps</span></div>
+                <div class="st-sub" id="stUploadBytes">0 MB transferred</div>
+              </div>
+
+              <div class="st-metric-card">
+                <div class="st-label">Latency (RTT)</div>
+                <div class="st-val" id="stLatencyVal">-- <span class="st-unit">ms</span></div>
+                <div class="st-sub">Min: <span id="stMinLatency">--</span> | Max: <span id="stMaxLatency">--</span></div>
+              </div>
+
+              <div class="st-metric-card">
+                <div class="st-label">RFC 3550 Jitter</div>
+                <div class="st-val" id="stJitterVal">-- <span class="st-unit">ms</span></div>
+                <div class="st-sub">Packet Loss: <span id="stPacketLoss">0.0%</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Transparency & Consent Box -->
+          <div class="info-notice-box glass-card">
+            <div class="notice-icon">ℹ</div>
+            <div class="notice-text">
+              <strong>DePIN Transparency Standard:</strong> This benchmark produces synthetic network traffic bounded by your configured bandwidth cap (50 Mbps) and test size (10 MB). Results are cryptographically signed and stored in your node report spool. Active speedtest traffic is strictly isolated from paid client relay bytes.
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- VIEW 4: DEPIN NODE EXPLORER -->
+        <!-- ============================================================== -->
+        <section class="view-panel" id="viewNodesExplorer">
+          <div class="section-header">
+            <div>
+              <h1 class="section-title">DePIN Node Explorer</h1>
+              <p class="section-subtitle">Inspect decentralized bandwidth nodes, health heartbeats, and eligibility states</p>
+            </div>
+            <div class="explorer-filter-bar">
+              <input type="text" id="nodeSearchInput" placeholder="Filter by Node ID or Wallet..." class="search-input">
+              <select id="nodeStatusFilter" class="select-filter">
+                <option value="all">All States</option>
+                <option value="online">Online Only</option>
+                <option value="benchmarking">Benchmarking</option>
+                <option value="offline">Offline</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Mobile Staking & Delegation Pool Banner -->
+          <div class="card glass-card delegation-hub-card mb-6" id="delegationHubCard">
+            <div class="card-header-flex">
+              <div>
+                <div class="flex-align-center gap-2">
+                  <h2 class="card-title text-neon-purple">💎 Mobile Node Delegation & Staking Hub</h2>
+                  <span class="delegation-apy-pill">APY: ~14.8%</span>
+                </div>
+                <p class="card-subtitle">Don't run a PC node? Stake your $BNDQ behind verified top-tier bandwidth nodes and share in their physical relay settlements automatically.</p>
+              </div>
+              <div class="delegation-stats-pill">
+                <span>Total Delegated: <strong>1.48M BNDQ</strong></span>
+              </div>
+            </div>
+
+            <div class="delegation-metrics-row">
+              <div class="dm-box">
+                <span class="dm-lbl">My Total Delegated</span>
+                <span class="dm-val text-neon-cyan" id="myDelegatedAmount">0.00 BNDQ</span>
+              </div>
+              <div class="dm-box">
+                <span class="dm-lbl">Claimable Delegator Yield</span>
+                <span class="dm-val text-neon-green" id="myClaimableYield">0.00 BNDQ</span>
+              </div>
+              <div class="dm-box">
+                <span class="dm-lbl">Active Node Backing</span>
+                <span class="dm-val" id="myDelegatedNodeCount">0 Nodes</span>
+              </div>
+              <div class="dm-action">
+                <button class="btn btn-primary-sm" id="btnClaimDelegatorYield" disabled>Claim Yield</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Node Directory Table Card -->
+          <div class="card glass-card table-card">
+            <div class="table-responsive">
+              <table class="data-table" id="nodesTable">
+                <thead>
+                  <tr>
+                    <th>Node ID</th>
+                    <th>Operator Wallet</th>
+                    <th>Status</th>
+                    <th>Region</th>
+                    <th>Quality (Avg Speed)</th>
+                    <th>Latency</th>
+                    <th>Verified Proofs</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="nodesTableBody">
+                  <!-- Populated dynamically via app.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- VIEW 5: BANDWIDTH MARKETPLACE -->
+        <!-- ============================================================== -->
+        <section class="view-panel" id="viewMarketplace">
+          <div class="section-header">
+            <div>
+              <h1 class="section-title">BANDIQ Bandwidth Marketplace</h1>
+              <p class="section-subtitle">Request verified bandwidth services settled through Sidra Chain $BNDQ</p>
+            </div>
+            <div class="compliance-badge-large">
+              <span>Shariah-Compliant Utility Exchange</span>
+            </div>
+          </div>
+
+          <!-- Quick Swap Banner for Bandwidth Escrow -->
+          <div class="market-swap-banner glass-card">
+            <div class="msb-content">
+              <div class="msb-icon">🔄</div>
+              <div>
+                <h3 class="msb-title">Need $BNDQ to Fund Bandwidth Escrows?</h3>
+                <p class="msb-desc">Acquire $BNDQ on Sidra Chain using the native Sidra DEX & PinetSwap trading pool.</p>
+              </div>
+            </div>
+            <div class="msb-actions">
+              <button class="btn btn-outline-cyan-sm" id="btnGoToDexSwap">Instant DEX Swap ➔</button>
+              <a href="https://pinetswap.app" target="_blank" rel="noopener" class="btn btn-outline-purple-sm">PinetSwap.app ↗</a>
+            </div>
+          </div>
+
+          <div class="grid-3-col">
+            <!-- Tier 1 -->
+            <div class="market-card glass-card">
+              <div class="market-tier-badge">Standard Node</div>
+              <h3 class="tier-name">Residential Relay</h3>
+              <div class="tier-price">
+                <span class="price-val">5.0</span>
+                <span class="price-unit">BNDQ / GB</span>
+              </div>
+              <ul class="tier-features">
+                <li>✓ Download: Up to 50 Mbps</li>
+                <li>✓ Latency: &lt; 30 ms</li>
+                <li>✓ Zero Logging & Ephemeral Relay</li>
+                <li>✓ Proof-of-Bandwidth Attestation</li>
+              </ul>
+              <button class="btn btn-outline-cyan btn-block market-order-btn" data-tier="Standard">Select Service</button>
+            </div>
+
+            <!-- Tier 2 -->
+            <div class="market-card glass-card featured-market-card">
+              <div class="market-tier-badge popular">Most Popular</div>
+              <h3 class="tier-name">Ultra-Fast Fiber</h3>
+              <div class="tier-price">
+                <span class="price-val">12.0</span>
+                <span class="price-unit">BNDQ / GB</span>
+              </div>
+              <ul class="tier-features">
+                <li>✓ Download: Up to 250 Mbps</li>
+                <li>✓ Latency: &lt; 15 ms</li>
+                <li>✓ Dedicated High-Availability Peer</li>
+                <li>✓ Cryptographic Mutual Receipts</li>
+              </ul>
+              <button class="btn btn-primary btn-block market-order-btn" data-tier="Ultra">Select Service</button>
+            </div>
+
+            <!-- Tier 3 -->
+            <div class="market-card glass-card">
+              <div class="market-tier-badge">Enterprise</div>
+              <h3 class="tier-name">Dedicated DePIN Tunnel</h3>
+              <div class="tier-price">
+                <span class="price-val">25.0</span>
+                <span class="price-unit">BNDQ / GB</span>
+              </div>
+              <ul class="tier-features">
+                <li>✓ Download: Gigabit+</li>
+                <li>✓ Latency: &lt; 8 ms</li>
+                <li>✓ SLA Backed & Witness Monitored</li>
+                <li>✓ Direct Sidra Settlement</li>
+              </ul>
+              <button class="btn btn-outline-purple btn-block market-order-btn" data-tier="Enterprise">Select Service</button>
+            </div>
+          </div>
+
+          <!-- On-Chain Bandwidth Escrow Creation Card -->
+          <div class="card glass-card mt-6">
+            <div class="card-header-flex">
+              <div>
+                <h2 class="card-title cyan-accent">Create On-Chain Bandwidth Escrow (Sidra Chain)</h2>
+                <p class="card-subtitle">Lock $BNDQ in BandiqUsageSettlement.sol. Funds release only upon verified delivery.</p>
+              </div>
+              <div class="contract-badge-chip">
+                <span>Contract: 0x9fE4...a6e0</span>
+              </div>
+            </div>
+
+            <div class="escrow-form-grid">
+              <div class="form-group">
+                <label for="escrowNodeId">Target Provider Node ID:</label>
+                <input type="text" id="escrowNodeId" class="text-input" value="bandiq-node-2d5cd8e1a89aac06c44c45d6e1908d61">
+              </div>
+
+              <div class="form-group">
+                <label for="escrowBeneficiary">Provider Beneficiary Address:</label>
+                <input type="text" id="escrowBeneficiary" class="text-input" value="0x6d1537bEE4F1EE3f55F4BC9319Aa40252cd39133">
+              </div>
+
+              <div class="form-group">
+                <label for="escrowGigabytes">Allocated Volume (GB):</label>
+                <input type="number" id="escrowGigabytes" class="text-input" value="10" min="1" max="1000">
+              </div>
+
+              <div class="form-group">
+                <label for="escrowRate">Rate per GB ($BNDQ):</label>
+                <input type="number" id="escrowRate" class="text-input" value="5" min="1" max="100">
+              </div>
+            </div>
+
+            <div class="escrow-summary-bar">
+              <div class="esb-item">
+                <span class="esb-lbl">Total Escrow Deposit:</span>
+                <span class="esb-val text-neon-cyan" id="escrowTotalCalc">50.00 $BNDQ</span>
+              </div>
+              <div class="esb-item">
+                <span class="esb-lbl">Duration Window:</span>
+                <span class="esb-val">24 Hours (Refundable if unserved)</span>
+              </div>
+              <div class="esb-actions">
+                <button class="btn btn-outline-cyan" id="btnApproveEscrow">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  <span>1. Approve BNDQ</span>
+                </button>
+                <button class="btn btn-primary" id="btnLockEscrow">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  <span>2. Lock Escrow On-Chain</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Active Sessions Lifecycle Table -->
+          <div class="card glass-card mt-6">
+            <h2 class="card-title">Bandwidth Service Sessions Lifecycle</h2>
+            <p class="card-subtitle">State progression: Requested → Active → Completed → Settled</p>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Session ID</th>
+                    <th>Provider Node</th>
+                    <th>Allocated Volume</th>
+                    <th>Throughput</th>
+                    <th>Status</th>
+                    <th>On-Chain Settlement</th>
+                  </tr>
+                </thead>
+                <tbody id="sessionsTableBody">
+                  <tr>
+                    <td><code>sess-8941f-01</code></td>
+                    <td><code>bandiq-node-f73b88...</code></td>
+                    <td>5.0 GB</td>
+                    <td>84.5 Mbps</td>
+                    <td><span class="status-tag settled">Settled</span></td>
+                    <td><span class="verified-receipt">Receipt #0x48a1...</span></td>
+                  </tr>
+                  <tr>
+                    <td><code>sess-9912a-04</code></td>
+                    <td><code>bandiq-node-2d5cd8...</code></td>
+                    <td>2.5 GB</td>
+                    <td>112.0 Mbps</td>
+                    <td><span class="status-tag active">Active</span></td>
+                    <td>
+                      <button class="btn btn-primary-sm btn-settle-session" data-session-id="sess-9912a-04">
+                        Settle On-Chain
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Mobile Fast-Connect QR Tunnel for Bandwidth Consumers -->
+          <div class="card glass-card mt-6" id="mobileTunnelCard">
+            <div class="card-header-flex">
+              <div>
+                <div class="flex-align-center gap-2">
+                  <h2 class="card-title text-neon-cyan">📱 Mobile Fast-Connect QR Tunnel</h2>
+                  <span class="live-dex-pill">Encrypted Residential Tunnel</span>
+                </div>
+                <p class="card-subtitle">Connect your smartphone or tablet to verified BANDIQ relay nodes in 1 tap via QR scan.</p>
+              </div>
+              <button class="btn btn-outline-cyan-sm" id="btnGenerateMobileTunnel">Generate Fresh QR Profile</button>
+            </div>
+
+            <div class="mobile-tunnel-grid">
+              <div class="mtg-qr-box">
+                <canvas id="tunnelQrCanvas" width="160" height="160"></canvas>
+                <span class="mtg-qr-caption">Scan with WireGuard / ShadowTunnel app</span>
+              </div>
+              <div class="mtg-details">
+                <div class="mtg-row"><span>Tunnel Protocol:</span> <strong>ChaCha20-Poly1305 / Noise_IK</strong></div>
+                <div class="mtg-row"><span>Active Relay Node:</span> <code id="mtgRelayNode">bandiq-node-f73b88...</code></div>
+                <div class="mtg-row"><span>Escrow Linked:</span> <strong class="text-neon-cyan">Session #sess-9912a</strong></div>
+                <div class="mtg-row"><span>Bandwidth Allotment:</span> <strong>10.0 GB (Encrypted)</strong></div>
+                <div class="mtg-copy-row mt-2">
+                  <input type="text" readonly id="tunnelUriInput" class="code-input" value="bandiq://tunnel-relay?node=f73b88&port=51820&cipher=chacha20">
+                  <button class="btn btn-outline-sm" id="btnCopyTunnelUri">Copy Config</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- VIEW 6: PROOF VERIFICATION CENTER -->
+        <!-- ============================================================== -->
+        <section class="view-panel" id="viewVerification">
+          <div class="section-header">
+            <div>
+              <h1 class="section-title">Proof-of-Bandwidth Verification Center</h1>
+              <p class="section-subtitle">Cryptographic validation of measurement reports, replay defenses, and audit trail</p>
+            </div>
+          </div>
+
+          <div class="grid-2-col">
+            <!-- In-Browser Signature Verifier Tool -->
+            <div class="card glass-card">
+              <h2 class="card-title">Ed25519 Attestation Verifier</h2>
+              <p class="card-subtitle">Paste a report JSON to independently verify its cryptographic signature</p>
+              
+              <div class="form-group">
+                <label for="verifyReportInput">Report JSON:</label>
+                <textarea id="verifyReportInput" class="code-textarea" rows="8" placeholder='{"report_id": "...", "node_id": "...", "signature": "..."}'></textarea>
+              </div>
+
+              <button class="btn btn-primary" id="btnVerifySignature">Verify Attestation</button>
+
+              <div class="verification-result-box" id="verificationResultBox" style="display: none;">
+                <div class="vr-status" id="vrStatusText">VERIFIED</div>
+                <div class="vr-details" id="vrDetailsText">Canonical hash matches Ed25519 public key. Replay sequence valid.</div>
+                <button class="btn btn-primary-sm mt-3" id="btnSubmitVoucherOnChain" style="display:none;">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 12 15 16 10"/></svg>
+                  <span>Submit Voucher to Sidra Chain</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Security Audit Rules & Rejection Engine -->
+            <div class="card glass-card">
+              <h2 class="card-title">Automated Verifier Rejection Engine</h2>
+              <p class="card-subtitle">Rules applied before reports enter BNDQ settlement</p>
+              
+              <div class="rules-list">
+                <div class="rule-item">
+                  <div class="rule-icon ok">✓</div>
+                  <div class="rule-content">
+                    <div class="rule-name">Sequence Monotonicity</div>
+                    <div class="rule-desc">Sequence number must be strictly greater than last recorded report for the node. Prevents replay attacks.</div>
+                  </div>
+                </div>
+
+                <div class="rule-item">
+                  <div class="rule-icon ok">✓</div>
+                  <div class="rule-content">
+                    <div class="rule-name">Timestamp Freshness Window</div>
+                    <div class="rule-desc">Report timestamp must fall within 5 minutes of verifier UTC time. Future or stale reports are rejected.</div>
+                  </div>
+                </div>
+
+                <div class="rule-item">
+                  <div class="rule-icon ok">✓</div>
+                  <div class="rule-content">
+                    <div class="rule-name">Physical Plausibility Bounds</div>
+                    <div class="rule-desc">Detects impossible speed spikes, repeated identical byte counters, and non-decreasing interface deltas.</div>
+                  </div>
+                </div>
+
+                <div class="rule-item">
+                  <div class="rule-icon ok">✓</div>
+                  <div class="rule-content">
+                    <div class="rule-name">Synthetic vs Workload Isolation</div>
+                    <div class="rule-desc">Speedtest synthetic traffic cannot be submitted as customer delivered service.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- VIEW 7: BNDQ LEDGER & WALLET -->
+        <!-- ============================================================== -->
+        <section class="view-panel" id="viewWallet">
+          <div class="section-header">
+            <div>
+              <h1 class="section-title">Sidra Chain BNDQ Ledger & Wallet Hub</h1>
+              <p class="section-subtitle">Read-only blockchain balance, multi-platform wallet connection, and token configuration</p>
+            </div>
+            <div class="chain-badge-tag">
+              <span id="walletChainBadge">Sidra Chain ID: 97453</span>
+            </div>
+          </div>
+
+          <!-- Wallet Connection Controls Bar -->
+          <div class="card glass-card wallet-controls-card">
+            <div class="wallet-status-bar">
+              <div class="ws-left">
+                <div class="ws-indicator" id="walletConnIndicator"></div>
+                <div>
+                  <div class="ws-status-label" id="walletConnStatusLabel">Wallet Status: Read-Only Address Watcher</div>
+                  <div class="ws-address" id="walletActiveAddressDisplay">0x6d1537bEE4F1EE3f55F4BC9319Aa40252cd39133</div>
+                </div>
+              </div>
+              <div class="ws-actions">
+                <button class="btn btn-primary-sm" id="btnConnectWalletView">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="3"/><circle cx="16" cy="12" r="2"/></svg>
+                  <span>Connect Wallet</span>
+                </button>
+                <button class="btn btn-outline-sm" id="btnSwitchNetworkView" title="Switch network to Sidra Chain (97453)">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                  <span>Switch Chain (97453)</span>
+                </button>
+                <button class="btn btn-outline-sm" id="btnAddBndqTokenView" title="Add BNDQ to MetaMask / Rabby / Trust">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                  <span>Add $BNDQ to Wallet</span>
+                </button>
+                <button class="btn btn-danger-sm" id="btnDisconnectWallet" style="display:none;">Disconnect</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-2-col">
+            <!-- Wallet Card -->
+            <div class="card glass-card">
+              <div class="wallet-balance-box">
+                <div class="wb-label">Verified BNDQ Balance (Sidra Chain)</div>
+                <div class="wb-amount">
+                  <span class="wb-num" id="walletBalanceNum">323,117.42</span>
+                  <span class="wb-symbol">$BNDQ</span>
+                </div>
+                <div class="wb-sub">
+                  <span>Native Gas: </span>
+                  <strong class="text-neon-cyan" id="walletNativeBalance">0.00 KST</strong> · Associated Node: <code id="walletLinkedNode">bandiq-node-2d5cd8...</code>
+                </div>
+              </div>
+
+              <div class="wallet-details-list">
+                <div class="wd-item">
+                  <span>Target Network:</span>
+                  <strong>Sidra Chain (EVM Compatible)</strong>
+                </div>
+                <div class="wd-item">
+                  <span>Chain ID:</span>
+                  <strong>97453 (0x17cad in Hex)</strong>
+                </div>
+                <div class="wd-item">
+                  <span>BNDQ Contract:</span>
+                  <div class="code-copy-row">
+                    <code>0x6d1537bEE4F1EE3f55F4BC9319Aa40252cd39133</code>
+                    <button class="copy-btn-sm" data-copy-target="tokenContractText">Copy</button>
+                    <span id="tokenContractText" style="display:none;">0x6d1537bEE4F1EE3f55F4BC9319Aa40252cd39133</span>
+                  </div>
+                </div>
+                <div class="wd-item">
+                  <span>Token Minting Policy:</span>
+                  <strong class="text-neon-cyan">Existing Token Only (Supply Preserved)</strong>
+                </div>
+                <div class="wd-item">
+                  <span>Supported Platforms:</span>
+                  <span class="platform-tags">
+                    <span class="ptag">MetaMask</span>
+                    <span class="ptag">Rabby</span>
+                    <span class="ptag">SafePal</span>
+                    <span class="ptag">Trust Wallet</span>
+                    <span class="ptag">WalletConnect</span>
+                    <span class="ptag">Coinbase</span>
+                    <span class="ptag">OKX</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Ledger Reconciled Settlements -->
+            <div class="card glass-card">
+              <h2 class="card-title">Settlement Reconciliation Ledger</h2>
+              <p class="card-subtitle">Verified bandwidth proofs reconciled with Sidra Chain transactions</p>
+
+              <div class="ledger-transactions" id="ledgerList">
+                <div class="ledger-row">
+                  <div class="lr-left">
+                    <span class="lr-type earn">+ 125.0 BNDQ</span>
+                    <span class="lr-desc">Epoch #480 Verified Bandwidth (25 GB delivered)</span>
+                  </div>
+                  <div class="lr-right">
+                    <span class="lr-tx">0x7f1a...c890</span>
+                    <span class="lr-time">2 hours ago</span>
+                  </div>
+                </div>
+
+                <div class="ledger-row">
+                  <div class="lr-left">
+                    <span class="lr-type earn">+ 85.0 BNDQ</span>
+                    <span class="lr-desc">Epoch #479 Verified Bandwidth (17 GB delivered)</span>
+                  </div>
+                  <div class="lr-right">
+                    <span class="lr-tx">0x3b89...12ef</span>
+                    <span class="lr-time">14 hours ago</span>
+                  </div>
+                </div>
+
+                <div class="ledger-row">
+                  <div class="lr-left">
+                    <span class="lr-type earn">+ 190.0 BNDQ</span>
+                    <span class="lr-desc">Epoch #478 Verified Bandwidth (38 GB delivered)</span>
+                  </div>
+                  <div class="lr-right">
+                    <span class="lr-tx">0x9c41...ee44</span>
+                    <span class="lr-time">1 day ago</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============================================================== -->
+          <!-- LIVE SIDRA DEX & PINETSWAP TERMINAL -->
+          <!-- ============================================================== -->
+          <div class="card glass-card mt-6 featured-dex-card" id="sidraDexCard">
+            <div class="card-header-flex">
+              <div>
+                <div class="flex-align-center gap-2">
+                  <h2 class="card-title cyan-accent">Sidra DEX & PinetSwap Live Terminal</h2>
+                  <span class="live-dex-pill">
+                    <span class="pulse-indicator live"></span> Live AMM Pool
+                  </span>
+                </div>
+                <p class="card-subtitle">Instant decentralized swaps for $BNDQ and native Sidra ($SDA / $KST) routed via PinetSwap</p>
+              </div>
+              <div class="dex-badges-row">
+                <span class="dex-chain-chip">Chain: Sidra (97453)</span>
+                <span class="dex-amm-chip">Router: PinetSwap V2</span>
+              </div>
+            </div>
+
+            <!-- DEX Live Market Stats Ribbon -->
+            <div class="dex-stats-ribbon">
+              <div class="dsr-item">
+                <span class="dsr-label">Trading Pair</span>
+                <span class="dsr-val text-neon-cyan">SDA / BNDQ</span>
+              </div>
+              <div class="dsr-item">
+                <span class="dsr-label">AMM Exchange Rate</span>
+                <span class="dsr-val" id="dexExchangeRateDisplay">1 SDA ≈ 245.50 BNDQ</span>
+              </div>
+              <div class="dsr-item">
+                <span class="dsr-label">Pool Liquidity</span>
+                <span class="dsr-val">450K SDA / 110.4M BNDQ</span>
+              </div>
+              <div class="dsr-item">
+                <span class="dsr-label">24h DEX Volume</span>
+                <span class="dsr-val text-neon-purple">84,200 SDA</span>
+              </div>
+            </div>
+
+            <div class="dex-swap-container">
+              <!-- FROM TOKEN BOX -->
+              <div class="dex-token-box">
+                <div class="dtb-header">
+                  <span class="dtb-title">You Pay</span>
+                  <div class="dtb-balance">
+                    <span>Balance: </span>
+                    <strong id="dexFromBalance">0.00 SDA</strong>
+                    <button class="dex-max-btn" id="btnDexMaxFrom">MAX</button>
+                  </div>
+                </div>
+                <div class="dtb-input-row">
+                  <input type="number" id="dexInputFrom" class="dex-amount-input" value="1.0" min="0.0001" step="any" placeholder="0.0">
+                  <div class="dex-token-pill" id="dexTokenFromPill">
+                    <span class="dex-token-icon" id="dexFromIcon">💎</span>
+                    <span class="dex-token-sym" id="dexFromSym">SDA</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- FLIP BUTTON -->
+              <div class="dex-flip-row">
+                <button class="dex-flip-btn" id="btnDexFlip" title="Switch Currencies" aria-label="Switch swap direction">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 16V4m0 0L3 8m4-4l4 4m6 4v12m0 0l4-4m-4 4l-4-4"/></svg>
+                </button>
+              </div>
+
+              <!-- TO TOKEN BOX -->
+              <div class="dex-token-box">
+                <div class="dtb-header">
+                  <span class="dtb-title">You Receive (Estimated)</span>
+                  <div class="dtb-balance">
+                    <span>Balance: </span>
+                    <strong id="dexToBalance">323,117.42 BNDQ</strong>
+                  </div>
+                </div>
+                <div class="dtb-input-row">
+                  <input type="text" id="dexInputTo" class="dex-amount-input" value="244.76" readonly placeholder="0.0">
+                  <div class="dex-token-pill" id="dexTokenToPill">
+                    <span class="dex-token-icon" id="dexToIcon">⚡</span>
+                    <span class="dex-token-sym" id="dexToSym">BNDQ</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- TRADE SETTINGS & SLIPPAGE -->
+              <div class="dex-trade-details">
+                <div class="dtd-row">
+                  <span class="dtd-lbl">Slippage Tolerance:</span>
+                  <div class="slippage-chips" id="slippageChips">
+                    <button class="slip-chip active" data-slip="0.5">0.5%</button>
+                    <button class="slip-chip" data-slip="1.0">1.0%</button>
+                    <button class="slip-chip" data-slip="2.5">2.5%</button>
+                  </div>
+                </div>
+                <div class="dtd-row">
+                  <span class="dtd-lbl">Liquidity Provider Fee (0.3%):</span>
+                  <span class="dtd-val" id="dexLpFee">0.003 SDA</span>
+                </div>
+                <div class="dtd-row">
+                  <span class="dtd-lbl">Minimum Received After Slippage:</span>
+                  <span class="dtd-val text-neon-cyan" id="dexMinReceived">243.53 BNDQ</span>
+                </div>
+                <div class="dtd-row">
+                  <span class="dtd-lbl">Trade Route:</span>
+                  <span class="dtd-val" id="dexRoute">SDA ➔ PinetSwap Sidra V2 Pool ➔ BNDQ</span>
+                </div>
+              </div>
+
+              <!-- ACTION BUTTONS -->
+              <div class="dex-action-buttons">
+                <button class="btn btn-primary btn-block btn-lg" id="btnExecuteDexSwap">
+                  <span id="btnDexSwapText">Swap on Sidra DEX</span>
+                </button>
+                <a href="https://pinetswap.app" target="_blank" rel="noopener" class="btn btn-outline-purple btn-block" id="btnLaunchPinetswap">
+                  <span>Open on PinetSwap.app ↗</span>
+                </a>
+              </div>
+
+              <!-- LIVE TRANSACTION STATUS FEEDBACK -->
+              <div class="dex-tx-feedback" id="dexTxFeedback" style="display: none;">
+                <div class="dtx-header">
+                  <span class="pulse-indicator live" id="dtxBeacon"></span>
+                  <span class="dtx-title" id="dtxTitle">Transaction Broadcast to Sidra Chain</span>
+                </div>
+                <div class="dtx-body" id="dtxBody">
+                  Submitting swap order through Sidra RPC node...
+                </div>
+                <div class="dtx-link" id="dtxLinkWrap">
+                  <a href="#" target="_blank" rel="noopener" id="dtxExplorerLink" class="text-neon-cyan">View on Sidra Explorer ↗</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- VIEW 8: COMPREHENSIVE USER MANUAL & SECURITY -->
+        <!-- ============================================================== -->
+        <section class="view-panel" id="viewDocs">
+          <div class="section-header">
+            <div>
+              <h1 class="section-title">BANDIQ DePIN User Manual & Protocol Docs</h1>
+              <p class="section-subtitle">Complete operational handbook: node setup, multi-platform wallet connection, proof verification, and ethics</p>
+            </div>
+            <div class="manual-badge">
+              <span>Handbook v2.0</span>
+            </div>
+          </div>
+
+          <!-- Interactive Manual Navigation Tabs -->
+          <div class="manual-nav-tabs" id="manualNavTabs">
+            <button class="manual-tab active" data-manual-tab="setup">1. Node Operator Setup</button>
+            <button class="manual-tab" data-manual-tab="wallet-connect">2. Connect Wallet (Any Platform)</button>
+            <button class="manual-tab" data-manual-tab="verification">3. 10 Verification Gates</button>
+            <button class="manual-tab" data-manual-tab="marketplace">4. Marketplace & Settlement</button>
+            <button class="manual-tab" data-manual-tab="security">5. Privacy & Ethics</button>
+            <button class="manual-tab" data-manual-tab="faq">6. Error Codes & FAQ</button>
+          </div>
+
+          <!-- Tab Content: 1. Node Setup -->
+          <div class="manual-tab-panel active" id="manTab-setup">
+            <div class="card glass-card">
+              <h2 class="card-title cyan-accent">Node Operator Quick-Start Guide (Windows 10/11)</h2>
+              <p class="card-subtitle">Set up your lightweight Go bandwidth node in under 2 minutes.</p>
+
+              <div class="manual-step">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                  <h3>Initialize Node Identity & Wallet Pairing</h3>
+                  <p>Open Windows PowerShell in the project directory and bind your recipient EVM wallet address. This generates an Ed25519 cryptographic keypair and deterministic Node ID:</p>
+                  <pre class="code-box"><code>.\bandiq.exe init -wallet "0xYourWalletAddressHere"</code></pre>
+                </div>
+              </div>
+
+              <div class="manual-step">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                  <h3>Grant Explicit Operator Consent</h3>
+                  <p>In accordance with privacy standards, the agent will never touch your network until you record voluntary consent:</p>
+                  <pre class="code-box"><code>.\bandiq.exe consent -accept</code></pre>
+                </div>
+              </div>
+
+              <div class="manual-step">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                  <h3>Launch the Node Agent Daemon</h3>
+                  <p>Start the lightweight agent. It monitors physical interface octets via Windows IP Helper APIs without CGo dependencies:</p>
+                  <pre class="code-box"><code>.\bandiq.exe start
+# Or using the automated background launcher:
+.\scripts\run-node.ps1</code></pre>
+                </div>
+              </div>
+
+              <div class="manual-step">
+                <div class="step-num">4</div>
+                <div class="step-content">
+                  <h3>Operational Power Controls</h3>
+                  <div class="command-table-wrap">
+                    <table class="manual-table">
+                      <thead>
+                        <tr><th>Power Command</th><th>Action</th></tr>
+                      </thead>
+                      <tbody>
+                        <tr><td><code>.\bandiq.exe status</code></td><td>Query node health, CPU/RAM, and adapter octets</td></tr>
+                        <tr><td><code>.\bandiq.exe test</code></td><td>Trigger an on-demand bandwidth capacity benchmark</td></tr>
+                        <tr><td><code>.\bandiq.exe pause</code></td><td>Temporarily pause all network activity</td></tr>
+                        <tr><td><code>.\bandiq.exe resume</code></td><td>Resume background operations</td></tr>
+                        <tr><td><code>.\bandiq.exe uninstall</code></td><td>Purge local keys and clean up all state</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab Content: 2. Connect Wallet on Any Platform -->
+          <div class="manual-tab-panel" id="manTab-wallet-connect">
+            <div class="card glass-card">
+              <h2 class="card-title purple-accent">Connecting Your Wallet Across Any Platform</h2>
+              <p class="card-subtitle">BANDIQ supports desktop extensions, mobile apps (iOS & Android), WalletConnect, and read-only cold watchers.</p>
+
+              <div class="platform-grid">
+                <div class="platform-card">
+                  <div class="platform-header">
+                    <span class="platform-icon">🖥️</span>
+                    <h3>Desktop Browser Extensions</h3>
+                  </div>
+                  <p><strong>Supported:</strong> MetaMask, Rabby, Coinbase Wallet, Brave Wallet, OKX Wallet.</p>
+                  <ol class="manual-list">
+                    <li>Click <strong>Connect Wallet</strong> in the header or BNDQ Ledger tab.</li>
+                    <li>Select your detected wallet provider (e.g. MetaMask or Rabby).</li>
+                    <li>Approve the connection in your browser extension pop-up.</li>
+                    <li>Click <strong>Switch Chain</strong> to automatically configure Sidra Chain (`97453`).</li>
+                  </ol>
+                </div>
+
+                <div class="platform-card">
+                  <div class="platform-header">
+                    <span class="platform-icon">📱</span>
+                    <h3>Mobile Devices (iOS & Android)</h3>
+                  </div>
+                  <p><strong>Supported:</strong> MetaMask Mobile, Trust Wallet, OKX App, Rainbow, SafePal.</p>
+                  <ol class="manual-list">
+                    <li><strong>DApp Browser:</strong> Open the dashboard URL in your mobile wallet's in-app browser for instant zero-friction connection.</li>
+                    <li><strong>Deep-Link:</strong> On mobile Chrome/Safari, click <strong>Connect Wallet</strong> &rarr; <strong>Open in MetaMask Mobile</strong> or <strong>Open in Trust Wallet</strong> to launch the native app.</li>
+                  </ol>
+                </div>
+
+                <div class="platform-card">
+                  <div class="platform-header">
+                    <span class="platform-icon">🔗</span>
+                    <h3>WalletConnect (Cross-Device)</h3>
+                  </div>
+                  <p><strong>Supported:</strong> 300+ Web3 wallets on desktop, phone, or tablet.</p>
+                  <ol class="manual-list">
+                    <li>Open the Wallet Modal and select the <strong>WalletConnect</strong> tab.</li>
+                    <li>Scan the displayed QR code with your phone camera or wallet scanner.</li>
+                    <li>Or click <strong>Copy Pairing URI</strong> and paste into your mobile app.</li>
+                  </ol>
+                </div>
+
+                <div class="platform-card">
+                  <div class="platform-header">
+                    <span class="platform-icon">🛡️</span>
+                    <h3>Read-Only Address Watcher</h3>
+                  </div>
+                  <p><strong>Supported:</strong> Any device, public computer, or hardware wallet (Ledger/Trezor).</p>
+                  <ol class="manual-list">
+                    <li>Select <strong>Read-Only Watcher</strong> in the modal.</li>
+                    <li>Paste your EVM address (e.g. <code>0x6d1537bEE4F1EE3f55F4BC9319Aa40252cd39133</code>).</li>
+                    <li>Inspect balances and earnings with zero private-key exposure.</li>
+                  </ol>
+                </div>
+              </div>
+
+              <!-- Manual Sidra Chain Config Reference Box -->
+              <div class="network-params-box">
+                <h3 class="cyan-accent">Sidra Chain Manual RPC Parameters</h3>
+                <div class="params-grid">
+                  <div class="p-item"><span class="p-lbl">Network Name:</span> <code>Sidra Chain</code></div>
+                  <div class="p-item"><span class="p-lbl">Chain ID:</span> <code>97453</code> (Hex: <code>0x17cad</code>)</div>
+                  <div class="p-item"><span class="p-lbl">RPC URL:</span> <code>https://node.sidrachain.com</code></div>
+                  <div class="p-item"><span class="p-lbl">Currency Symbol:</span> <code>KST</code> (or <code>SIDRA</code>)</div>
+                  <div class="p-item"><span class="p-lbl">BNDQ Contract:</span> <code>0x6d1537bEE4F1EE3f55F4BC9319Aa40252cd39133</code></div>
+                  <div class="p-item"><span class="p-lbl">Token Decimals:</span> <code>18</code> (Symbol: <code>BNDQ</code>)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab Content: 3. Verification Gates -->
+          <div class="manual-tab-panel" id="manTab-verification">
+            <div class="card glass-card">
+              <h2 class="card-title cyan-accent">Proof-of-Bandwidth: The 10 Integrity Gates</h2>
+              <p class="card-subtitle">Why a speed test alone does not equal token rewards. All evidence is verified before settlement.</p>
+
+              <div class="gates-detailed-grid">
+                <div class="gate-detail-card">
+                  <div class="g-num">Gate 1</div>
+                  <h4>Schema & Typing</h4>
+                  <p>Validates report structure, mandatory parameters, and software version compatibility.</p>
+                </div>
+                <div class="gate-detail-card">
+                  <div class="g-num">Gate 2</div>
+                  <h4>Ed25519 Signatures</h4>
+                  <p>Validates cryptographic signature of report hash against registered node public key.</p>
+                </div>
+                <div class="gate-detail-card">
+                  <div class="g-num">Gate 3</div>
+                  <h4>Sequence Monotonicity</h4>
+                  <p>Enforces strictly increasing sequence numbers per node ID to eliminate replay attacks.</p>
+                </div>
+                <div class="gate-detail-card">
+                  <div class="g-num">Gate 4</div>
+                  <h4>Freshness Window (±5m)</h4>
+                  <p>Rejects expired or future-dated reports to eliminate delayed time-travel attacks.</p>
+                </div>
+                <div class="gate-detail-card">
+                  <div class="g-num">Gate 5</div>
+                  <h4>Physical Bounds Check</h4>
+                  <p>Caps throughput at 10,000 Mbps and packet loss &le; 100% to reject impossible metrics.</p>
+                </div>
+                <div class="gate-detail-card">
+                  <div class="g-num">Gate 6</div>
+                  <h4>Hardware Counter Delta</h4>
+                  <p>Compares reported bytes against physical Windows network adapter octets (&Delta;In + &Delta;Out &ge; Reported).</p>
+                </div>
+                <div class="gate-detail-card">
+                  <div class="g-num">Gate 7</div>
+                  <h4>Identical Metric Spam</h4>
+                  <p>Detects synthetic scripts submitting identical throughput, latency, and jitter repeatedly.</p>
+                </div>
+                <div class="gate-detail-card">
+                  <div class="g-num">Gate 8</div>
+                  <h4>Submission Rate Limit</h4>
+                  <p>Enforces a 30-second cooldown per node to prevent DDoS and spam on verifier nodes.</p>
+                </div>
+                <div class="gate-detail-card">
+                  <div class="g-num">Gate 9</div>
+                  <h4>Traffic Segregation</h4>
+                  <p>Classifies speedtests as unearned <code>CAPACITY_BENCHMARK</code> and customer relay as <code>BILLABLE_RELAY</code>.</p>
+                </div>
+                <div class="gate-detail-card">
+                  <div class="g-num">Gate 10</div>
+                  <h4>Statistical Vouchers</h4>
+                  <p>Computes confidence score (0-1.0). If &ge; 0.70 and billable traffic was served, issues signed voucher.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab Content: 4. Marketplace -->
+          <div class="manual-tab-panel" id="manTab-marketplace">
+            <div class="card glass-card">
+              <h2 class="card-title purple-accent">Bandwidth Marketplace & Settlement Flow</h2>
+              <p class="card-subtitle">How consumers purchase bandwidth and providers earn BNDQ token settlement.</p>
+
+              <div class="flow-steps">
+                <div class="flow-card">
+                  <span class="f-step">Phase 1</span>
+                  <h4>Service Request & Escrow</h4>
+                  <p>A customer specifies required volume (e.g. 10 GB) and escrows $BNDQ tokens in the settlement smart contract. Tokens are locked safely.</p>
+                </div>
+                <div class="flow-card">
+                  <span class="f-step">Phase 2</span>
+                  <h4>Workload Delivery & Mutual Receipts</h4>
+                  <p>Eligible nodes route traffic. Both customer and node sign cryptographically hashed byte-counter receipts during the session.</p>
+                </div>
+                <div class="flow-card">
+                  <span class="f-step">Phase 3</span>
+                  <h4>Verification & Voucher Issuance</h4>
+                  <p>The Verifier Service inspects mutual receipts, validates hardware counter telemetry, and issues a non-reentrant Settlement Voucher.</p>
+                </div>
+                <div class="flow-card">
+                  <span class="f-step">Phase 4</span>
+                  <h4>On-Chain BNDQ Settlement</h4>
+                  <p>The settlement contract on Sidra Chain checks the verifier signature and releases escrowed BNDQ tokens directly to the provider's wallet.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab Content: 5. Security & Ethics -->
+          <div class="manual-tab-panel" id="manTab-security">
+            <div class="card glass-card">
+              <h2 class="card-title cyan-accent">Privacy, Security & Ethical DePIN Tenets</h2>
+              <ul class="docs-list">
+                <li><strong>No Open Relays or Botnets:</strong> The agent does not allow random, unauthenticated internet traffic to enter or exit your connection.</li>
+                <li><strong>Zero Private Key Exposure:</strong> You never share your wallet private key or mnemonic phrase. Only public EVM addresses are associated.</li>
+                <li><strong>No Remote Shell Execution:</strong> The agent will never execute arbitrary terminal commands or run executables sent by the backend.</li>
+                <li><strong>Zero Browsing History Collection:</strong> No website URLs, DNS queries, payload contents, or personal files are accessed.</li>
+                <li><strong>Shariah & Ethical DePIN Alignment:</strong> Rewards strictly reflect verified physical utility; zero speculative fabrications or token supply inflation.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Tab Content: 6. Error Codes & FAQ -->
+          <div class="manual-tab-panel" id="manTab-faq">
+            <div class="card glass-card">
+              <h2 class="card-title purple-accent">Audit Rejection Codes Reference & FAQ</h2>
+              
+              <div class="command-table-wrap">
+                <table class="manual-table">
+                  <thead>
+                    <tr><th>Audit Error Code</th><th>Root Cause</th><th>Remedy</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><code>ERR_INVALID_SIGNATURE</code></td><td>Report signature verification failed</td><td>Verify .bandiq/identity.json exists and is intact</td></tr>
+                    <tr><td><code>ERR_REPLAY_ATTACK</code></td><td>Report ID has already been recorded</td><td>Only submit original agent reports</td></tr>
+                    <tr><td><code>ERR_SEQUENCE_OUT_OF_ORDER</code></td><td>Sequence counter rolled backwards</td><td>Synchronize system clock or reinitialize agent</td></tr>
+                    <tr><td><code>ERR_TIMESTAMP_EXPIRED</code></td><td>Report timestamp drifted &gt; 5 mins from server</td><td>Enable automatic Windows time synchronization</td></tr>
+                    <tr><td><code>ERR_COUNTER_INCONSISTENCY</code></td><td>Reported bytes exceed hardware adapter delta</td><td>Ensure traffic runs through monitored adapter</td></tr>
+                    <tr><td><code>ERR_IDENTICAL_SAMPLE_SPAM</code></td><td>Repeated identical speed values</td><td>Ensure tests are executed against real HTTP targets</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Mobile Bottom Navigation Bar (High Ergonomics) -->
+    <nav class="mobile-bottom-bar" id="mobileBottomBar" aria-label="Mobile Navigation">
+      <button class="mobile-nav-btn active" data-view="overview">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+        <span>Overview</span>
+      </button>
+
+      <button class="mobile-nav-btn" data-view="node-operator">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/></svg>
+        <span>My Node</span>
+      </button>
+
+      <button class="mobile-nav-btn speedtest-fab" data-view="speedtest">
+        <div class="fab-glow"></div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v4"/><path d="M2 12h4"/><path d="M12 22v-4"/><path d="M22 12h-4"/><circle cx="12" cy="12" r="3"/></svg>
+        <span>Speedtest</span>
+      </button>
+
+      <button class="mobile-nav-btn" data-view="marketplace">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
+        <span>Market</span>
+      </button>
+
+      <button class="mobile-nav-btn" data-view="wallet">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="3"/><circle cx="16" cy="12" r="2"/></svg>
+        <span>Wallet</span>
+      </button>
+    </nav>
+
+    <!-- Universal Multi-Platform Wallet Connection Modal -->
+    <div class="wallet-modal-overlay" id="walletModal" style="display: none;" aria-hidden="true" role="dialog" aria-modal="true">
+      <div class="wallet-modal-card">
+        <div class="wm-header">
+          <div class="wm-title-group">
+            <h2 class="wm-title">Connect Wallet</h2>
+            <div class="wm-sub">Sidra Chain (97453) · $BNDQ Token</div>
+          </div>
+          <button class="wm-close-btn" id="btnCloseWalletModal" aria-label="Close modal">&times;</button>
+        </div>
+
+        <!-- Connected State Card (Shown when connected) -->
+        <div class="wm-connected-box" id="wmConnectedBox" style="display: none;">
+          <div class="wmc-badge-row">
+            <span class="pulse-indicator live"></span>
+            <span class="wmc-status" id="wmcStatusText">Connected via MetaMask</span>
+            <span class="wmc-chain-tag" id="wmcChainTag">Sidra Chain (97453)</span>
+          </div>
+
+          <div class="wmc-address-box">
+            <span class="wmc-address" id="wmcAddressDisplay">0x...</span>
+            <button class="copy-btn-sm" id="btnCopyConnectedAddress">Copy</button>
+          </div>
+
+          <div class="wmc-balances-grid">
+            <div class="wmc-bal-item">
+              <span class="wmc-bal-lbl">BNDQ Balance</span>
+              <span class="wmc-bal-val" id="wmcBndqBalance">323,117.42</span>
+            </div>
+            <div class="wmc-bal-item">
+              <span class="wmc-bal-lbl">Native Gas (KST)</span>
+              <span class="wmc-bal-val" id="wmcNativeBalance">0.00 KST</span>
+            </div>
+          </div>
+
+          <div class="wmc-actions">
+            <button class="btn btn-outline-sm" id="wmBtnSwitchChain">Switch to Sidra Chain</button>
+            <button class="btn btn-primary-sm" id="wmBtnAddBndq">Add $BNDQ to Wallet</button>
+            <button class="btn btn-danger-sm" id="wmBtnDisconnect">Disconnect</button>
+          </div>
+        </div>
+
+        <!-- Connection Options Selector (Shown when not connected) -->
+        <div class="wm-selection-body" id="wmSelectionBody">
+          <div class="wm-tabs" id="wmTabs">
+            <button class="wm-tab-btn active" data-tab="injected">Browser / Injected</button>
+            <button class="wm-tab-btn" data-tab="mobile">Mobile Web3</button>
+            <button class="wm-tab-btn" data-tab="wc">WalletConnect</button>
+            <button class="wm-tab-btn" data-tab="readonly">Read-Only</button>
+          </div>
+
+          <!-- TAB 1: Injected Extensions -->
+          <div class="wm-tab-content active" id="wmTabInjected">
+            <div class="provider-list">
+              <button class="provider-btn" data-provider="metamask" id="btnConnectMetamask">
+                <div class="pb-left">
+                  <div class="provider-icon metamask-icon">🦊</div>
+                  <div>
+                    <div class="pb-name">MetaMask</div>
+                    <div class="pb-desc">Browser extension & mobile web3</div>
+                  </div>
+                </div>
+                <span class="pb-tag" id="tagMetamask">Detected</span>
+              </button>
+
+              <button class="provider-btn" data-provider="rabby" id="btnConnectRabby">
+                <div class="pb-left">
+                  <div class="provider-icon rabby-icon">🐰</div>
+                  <div>
+                    <div class="pb-name">Rabby Wallet</div>
+                    <div class="pb-desc">Multi-chain EVM wallet for DeFi</div>
+                  </div>
+                </div>
+                <span class="pb-tag">EVM Compatible</span>
+              </button>
+
+              <button class="provider-btn" data-provider="safepal" id="btnConnectSafePal">
+                <div class="pb-left">
+                  <div class="provider-icon safepal-icon">🔲</div>
+                  <div>
+                    <div class="pb-name">SafePal Wallet</div>
+                    <div class="pb-desc">Hardware, Mobile & Browser Extension</div>
+                  </div>
+                </div>
+                <span class="pb-tag" id="tagSafepal">EVM / Sidra</span>
+              </button>
+
+              <button class="provider-btn" data-provider="coinbase" id="btnConnectCoinbase">
+                <div class="pb-left">
+                  <div class="provider-icon cb-icon">🔵</div>
+                  <div>
+                    <div class="pb-name">Coinbase Wallet</div>
+                    <div class="pb-desc">Desktop extension or mobile</div>
+                  </div>
+                </div>
+                <span class="pb-tag">Web3</span>
+              </button>
+
+              <button class="provider-btn" data-provider="generic" id="btnConnectInjected">
+                <div class="pb-left">
+                  <div class="provider-icon eth-icon">🌐</div>
+                  <div>
+                    <div class="pb-name">Any Injected Wallet</div>
+                    <div class="pb-desc">Brave, OKX, Opera, or Trust Browser</div>
+                  </div>
+                </div>
+                <span class="pb-tag">window.ethereum</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- TAB 2: Mobile Web3 Apps -->
+          <div class="wm-tab-content" id="wmTabMobile">
+            <p class="wm-notice">Accessing from mobile? Tap to open directly in your wallet's built-in DApp browser via Universal Deep-Link:</p>
+            <div class="mobile-app-grid">
+              <button class="mobile-app-btn" id="btnDeepLinkMetamask">
+                <span class="ma-icon">🦊</span>
+                <span class="ma-name">MetaMask Mobile</span>
+                <span class="ma-sub">Open App</span>
+              </button>
+              <button class="mobile-app-btn" id="btnDeepLinkTrust">
+                <span class="ma-icon">🛡️</span>
+                <span class="ma-name">Trust Wallet</span>
+                <span class="ma-sub">Open App</span>
+              </button>
+              <button class="mobile-app-btn" id="btnDeepLinkSafePal">
+                <span class="ma-icon">🔲</span>
+                <span class="ma-name">SafePal App</span>
+                <span class="ma-sub">Open App</span>
+              </button>
+              <button class="mobile-app-btn" id="btnDeepLinkOKX">
+                <span class="ma-icon">⬛</span>
+                <span class="ma-name">OKX Wallet</span>
+                <span class="ma-sub">Open App</span>
+              </button>
+              <button class="mobile-app-btn" id="btnDeepLinkRainbow">
+                <span class="ma-icon">🌈</span>
+                <span class="ma-name">Rainbow</span>
+                <span class="ma-sub">Open App</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- TAB 3: WalletConnect QR -->
+          <div class="wm-tab-content" id="wmTabWc">
+            <div class="wc-container">
+              <div class="wc-qr-box" id="wcQrBox">
+                <!-- Dynamic QR Canvas -->
+                <canvas id="wcQrCanvas" width="180" height="180"></canvas>
+              </div>
+              <p class="wc-instruction">Scan with any WalletConnect compatible mobile app (iOS / Android)</p>
+              <div class="wc-uri-row">
+                <input type="text" readonly id="wcUriInput" class="code-input" value="wc:bandiq-depin-session@2?relay-protocol=irn">
+                <button class="btn btn-outline-sm" id="btnCopyWcUri">Copy URI</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 4: Read-Only Watcher -->
+          <div class="wm-tab-content" id="wmTabReadonly">
+            <p class="wm-notice">Audit any Sidra Chain wallet or cold-storage address without connecting private keys:</p>
+            <div class="form-group">
+              <label for="readonlyAddressInput">EVM Address (0x...):</label>
+              <input type="text" id="readonlyAddressInput" class="text-input" placeholder="0x..." value="0x6d1537bEE4F1EE3f55F4BC9319Aa40252cd39133">
+            </div>
+            <button class="btn btn-primary" id="btnSubmitReadOnly">Watch Address</button>
+          </div>
+        </div>
+
+        <div class="wm-footer">
+          <div class="wm-security-note">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span>Non-custodial. Private keys never leave your device.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delegation Staking Modal for Mobile & Web Users -->
+    <div class="wallet-modal-overlay" id="delegationModal" style="display: none;" aria-hidden="true" role="dialog">
+      <div class="wallet-modal-card">
+        <div class="wm-header">
+          <div class="wm-title-group">
+            <h2 class="wm-title">Delegate $BNDQ to Node</h2>
+            <div class="wm-sub" id="delegateModalNodeSub">bandiq-node-2d5c... · 99.8% Uptime</div>
+          </div>
+          <button class="wm-close-btn" id="btnCloseDelegationModal">&times;</button>
+        </div>
+        <div class="delegation-modal-body">
+          <div class="dmb-node-info">
+            <div class="dmb-stat"><span>Node Quality:</span> <strong class="text-neon-cyan" id="delegateNodeTier">Ultra Fiber (250 Mbps)</strong></div>
+            <div class="dmb-stat"><span>Commission Fee:</span> <strong>5.0%</strong></div>
+            <div class="dmb-stat"><span>Delegator Share:</span> <strong class="text-neon-green">95.0%</strong></div>
+            <div class="dmb-stat"><span>Est. Epoch APY:</span> <strong class="text-neon-purple">14.8%</strong></div>
+          </div>
+
+          <div class="form-group mt-3">
+            <label>Amount to Stake ($BNDQ):</label>
+            <div class="stake-input-row">
+              <input type="number" id="delegateStakeInput" class="text-input" value="100" min="10" step="10">
+              <button class="btn-max-sm" id="btnMaxStakeBndq">MAX</button>
+            </div>
+            <div class="stake-quick-chips" id="stakeChips">
+              <button class="stake-chip active" data-amount="100">100</button>
+              <button class="stake-chip" data-amount="500">500</button>
+              <button class="stake-chip" data-amount="1000">1,000</button>
+              <button class="stake-chip" data-amount="5000">5,000</button>
+            </div>
+          </div>
+
+          <div class="stake-summary-box mt-3">
+            <div class="ssb-row"><span>Lockup Period:</span> <strong>Flexible (Unstake anytime)</strong></div>
+            <div class="ssb-row"><span>Reward Distribution:</span> <strong>Epoch Payout (Every 24h)</strong></div>
+            <div class="ssb-row"><span>Estimated Weekly Return:</span> <strong class="text-neon-cyan" id="estWeeklyReturn">+ 0.28 BNDQ</strong></div>
+          </div>
+
+          <div class="dmb-actions mt-4">
+            <button class="btn btn-primary btn-block" id="btnConfirmDelegation">Confirm Delegation on Sidra Chain</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Universal Transaction Pop-up & Celebration Modal -->
+    <div class="wallet-modal-overlay" id="txModal" style="display: none;" aria-hidden="true" role="dialog">
+      <div class="wallet-modal-card tx-celebration-card">
+        <div class="tx-celebration-glow"></div>
+        <div class="wm-header">
+          <div class="wm-title-group">
+            <span class="tx-badge-pill" id="txBadgeType">TRANSACTION CONFIRMED</span>
+            <h2 class="wm-title text-neon-green" id="txModalTitle">🎉 Transaction Confirmed!</h2>
+            <div class="wm-sub" id="txModalSub">Greetings, Operator! Your action has been verified on Sidra Chain.</div>
+          </div>
+          <button class="wm-close-btn" id="btnCloseTxModal">&times;</button>
+        </div>
+
+        <div class="tx-modal-body">
+          <div class="tx-celebration-hero">
+            <div class="tx-icon-ring" id="txIconRing">
+              <span class="tx-icon-emoji" id="txIconEmoji">⚡</span>
+            </div>
+            <div class="tx-greeting-callout" id="txGreetingText">
+              "Thank you for powering the decentralized bandwidth network!"
+            </div>
+          </div>
+
+          <!-- Transaction Summary Card -->
+          <div class="tx-receipt-card">
+            <div class="txr-row">
+              <span class="txr-label">Action / Service:</span>
+              <strong class="txr-val text-neon-cyan" id="txActionVal">Sidra DEX Swap</strong>
+            </div>
+            <div class="txr-row">
+              <span class="txr-label">Value / Quantity:</span>
+              <strong class="txr-val text-white" id="txAmountVal">10 SDA ➔ 2,455 BNDQ</strong>
+            </div>
+            <div class="txr-row">
+              <span class="txr-label">Status:</span>
+              <span class="txr-badge-success" id="txStatusVal">
+                <span class="agent-dot connected"></span>
+                <span>CONFIRMED ON-CHAIN</span>
+              </span>
+            </div>
+            <div class="txr-row">
+              <span class="txr-label">Network:</span>
+              <strong class="txr-val" id="txNetworkVal">Sidra Chain (Chain ID: 97453)</strong>
+            </div>
+            <div class="txr-row">
+              <span class="txr-label">Transaction Hash:</span>
+              <div class="txr-hash-box">
+                <span class="txr-hash" id="txHashVal">0x7a89b41e...</span>
+                <button class="btn-copy-hash" id="btnCopyTxHash" title="Copy Hash">📋</button>
+              </div>
+            </div>
+            <div class="txr-row">
+              <span class="txr-label">Timestamp:</span>
+              <span class="txr-time" id="txTimeVal">Oct 17, 2026 16:45:00</span>
+            </div>
+          </div>
+
+          <div class="tx-modal-actions mt-4">
+            <a href="#" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-block" id="btnTxExplorerLink">
+              View on Sidra Explorer ↗
+            </a>
+            <div class="tx-sub-actions mt-2">
+              <button class="btn btn-outline-sm btn-block" id="btnCopyTxReceipt">Copy Full Receipt 📋</button>
+              <button class="btn btn-outline-sm btn-block" id="btnContinueTx">Done & Continue ✓</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Operator Welcome & Greeting Pop-Up Modal -->
+    <div class="wallet-modal-overlay" id="operatorGreetingModal" style="display: none;" aria-hidden="true" role="dialog">
+      <div class="wallet-modal-card greeting-card">
+        <div class="wm-header">
+          <div class="wm-title-group">
+            <span class="greeting-pill" id="greetingTimePill">WELCOME BACK</span>
+            <h2 class="wm-title" id="greetingTitle">👋 Good Day, Operator!</h2>
+            <div class="wm-sub" id="greetingSub">BANDIQ DePIN Network · Bandwidth + Intelligence</div>
+          </div>
+          <button class="wm-close-btn" id="btnCloseGreetingModal">&times;</button>
+        </div>
+        <div class="greeting-modal-body">
+          <div class="greeting-hero-banner">
+            <div class="gh-avatar">🌐</div>
+            <div class="gh-info">
+              <div class="gh-name" id="greetingWalletAddr">0x...</div>
+              <div class="gh-status">
+                <span class="agent-dot connected"></span>
+                <span>Active on Sidra Chain (97453)</span>
+              </div>
+            </div>
+          </div>
+
+          <p class="greeting-message-text" id="greetingMessageBody">
+            Greetings! Your decentralized node interface and Sidra Chain wallet are synchronized. Every packet you verify and every test you run strengthens the decentralized physical internet.
+          </p>
+
+          <div class="greeting-quick-actions">
+            <button class="gqa-btn" id="gqaTradeDex">
+              <span class="gqa-icon">💱</span>
+              <div class="gqa-label">Sidra DEX Swap</div>
+              <div class="gqa-sub">SDA ➔ BNDQ</div>
+            </button>
+            <button class="gqa-btn" id="gqaMobileWitness">
+              <span class="gqa-icon">📱</span>
+              <div class="gqa-label">Edge Witness</div>
+              <div class="gqa-sub">Earn BNDQ</div>
+            </button>
+            <button class="gqa-btn" id="gqaNodeDelegate">
+              <span class="gqa-icon">💎</span>
+              <div class="gqa-label">Delegate Stake</div>
+              <div class="gqa-sub">14.8% APY</div>
+            </button>
+          </div>
+
+          <div class="mt-4">
+            <button class="btn btn-primary btn-block" id="btnDismissGreeting">Enter Dashboard 🚀</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
   </div>
+
+  <script src="contracts.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

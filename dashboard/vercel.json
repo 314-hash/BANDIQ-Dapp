@@ -1,6 +1,14 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
+  "installCommand": "echo 'Static frontend - skipping npm install'",
+  "buildCommand": "echo 'BANDIQ DePIN static dashboard ready'",
+  "rewrites": [
+    {
+      "source": "/rpc",
+      "destination": "https://node.sidrachain.com"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",

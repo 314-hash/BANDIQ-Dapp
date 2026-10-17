@@ -1,38 +1,16 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
+  "installCommand": "echo 'Static frontend - skipping npm install'",
+  "buildCommand": "echo 'BANDIQ DePIN static dashboard ready'",
   "rewrites": [
     {
-      "source": "/",
-      "destination": "/dashboard/index.html"
-    },
-    {
-      "source": "/bandiq_logo.jpg",
-      "destination": "/dashboard/bandiq_logo.jpg"
-    },
-    {
-      "source": "/style.css",
-      "destination": "/dashboard/style.css"
-    },
-    {
-      "source": "/contracts.js",
-      "destination": "/dashboard/contracts.js"
-    },
-    {
-      "source": "/app.js",
-      "destination": "/dashboard/app.js"
-    },
-    {
-      "source": "/manifest.json",
-      "destination": "/dashboard/manifest.json"
-    },
-    {
-      "source": "/sw.js",
-      "destination": "/dashboard/sw.js"
-    },
-    {
       "source": "/dashboard",
-      "destination": "/dashboard/index.html"
+      "destination": "/index.html"
+    },
+    {
+      "source": "/dashboard/",
+      "destination": "/index.html"
     },
     {
       "source": "/rpc",

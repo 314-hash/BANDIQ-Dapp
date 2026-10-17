@@ -1,0 +1,48 @@
+{
+  "report_id": "c8a3f9e2-1b4d-4e89-a29d-7f9182390a44",
+  "node_id": "bandiq-node-f73b889a012c4491de88f01b",
+  "operator_wallet": "0x6d1537bee4f1ee3f55f4bc9319aa40252cd39133",
+  "sequence_number": 1,
+  "timestamp": "2026-10-17T09:45:00.123456789Z",
+  "software_version": "0.1.0",
+  "test_server_id": "http://127.0.0.1:8080",
+  "measurement_method": "HTTP_SPEEDTEST_V1",
+  "metrics": {
+    "download_mbps": 94.25,
+    "upload_mbps": 38.60,
+    "latency_ms": 14.82,
+    "min_latency_ms": 12.10,
+    "max_latency_ms": 17.50,
+    "jitter_ms": 1.45,
+    "packet_loss_pct": 0.0,
+    "active_test_bytes_in": 13107200,
+    "active_test_bytes_out": 5242880,
+    "served_bytes_in": 0,
+    "served_bytes_out": 0,
+    "test_duration_ms": 4850
+  },
+  "interface_counters": {
+    "interface_name": "Ethernet",
+    "mac_address": "f4:b5:20:6d:bd:7d",
+    "bytes_sent": 255451748,
+    "bytes_recv": 1423798221,
+    "packets_sent": 841290,
+    "packets_recv": 1294821,
+    "errors_in": 0,
+    "errors_out": 0,
+    "drops_in": 0,
+    "drops_out": 0,
+    "is_default_route": true,
+    "operational_status": "UP"
+  },
+  "system_metrics": {
+    "timestamp": "2026-10-17T09:45:04.978Z",
+    "uptime_sec": 8345,
+    "agent_uptime_sec": 300,
+    "cpu_percent": 3.85,
+    "memory_total_mb": 6085,
+    "memory_used_mb": 5365,
+    "memory_percent": 88.0
+  },
+  "signature": "3f98cba2290f114008bc27834591a2ee04bbda3948571029abce88492048aa77bcda04928173491208ccff83901a9420bfed398291029482918471203984af0a"
+}

@@ -1,0 +1,23 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with 'go test -c'
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Local data directory
+.bandiq/
+spool/
+
+# Temporary and editor files
+*.tmp
+*.log
+.vscode/
+.idea/
+.env

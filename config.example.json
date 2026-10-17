@@ -1,0 +1,37 @@
+{
+  "software_version": "0.1.0",
+  "data_dir": ".bandiq",
+  "log_level": "info",
+  "operator": {
+    "wallet_address": "0x6d1537bEE4F1EE3f55F4BC9319Aa40252cd39133",
+    "consent_given": false
+  },
+  "network": {
+    "target_chain_id": 97453,
+    "token_contract_address": "0x6d1537bEE4F1EE3f55F4BC9319Aa40252cd39133",
+    "rpc_url": "https://rpc.sidrachain.com",
+    "verify_chain_on_startup": true
+  },
+  "measurement": {
+    "enabled": true,
+    "test_interval_sec": 900,
+    "max_test_duration_sec": 10,
+    "max_data_per_test_mb": 25,
+    "daily_data_cap_mb": 1000,
+    "max_bandwidth_limit_mbps": 50.0,
+    "test_servers": [
+      "http://127.0.0.1:8080"
+    ]
+  },
+  "backend": {
+    "base_url": "http://127.0.0.1:8080",
+    "submit_reports": true,
+    "report_interval_sec": 60,
+    "spool_dir": ".bandiq/spool",
+    "max_spool_reports": 500
+  },
+  "admin": {
+    "enabled": true,
+    "bind_address": "127.0.0.1:8725"
+  }
+}

@@ -1,0 +1,154 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "BANDIQNodeAgentConfig",
+  "description": "Configuration schema for BANDIQ DePIN Bandwidth Node Agent",
+  "type": "object",
+  "required": ["software_version", "data_dir", "operator", "network", "measurement", "backend", "admin"],
+  "properties": {
+    "software_version": {
+      "type": "string",
+      "description": "Version string of the BANDIQ agent binary"
+    },
+    "data_dir": {
+      "type": "string",
+      "description": "Path to persistent local agent storage (keys, spool queue, consent)"
+    },
+    "log_level": {
+      "type": "string",
+      "enum": ["debug", "info", "warn", "error"],
+      "default": "info"
+    },
+    "operator": {
+      "type": "object",
+      "required": ["wallet_address"],
+      "properties": {
+        "wallet_address": {
+          "type": "string",
+          "pattern": "^0x[0-9a-fA-F]{40}$",
+          "description": "Operator EVM wallet address on Sidra Chain to associate with this node"
+        },
+        "consent_given": {
+          "type": "boolean",
+          "description": "Whether explicit operator consent has been recorded"
+        }
+      }
+    },
+    "network": {
+      "type": "object",
+      "required": ["target_chain_id", "token_contract_address", "rpc_url"],
+      "properties": {
+        "target_chain_id": {
+          "type": "integer",
+          "const": 97453,
+          "description": "Target blockchain network chain ID (97453 for Sidra Chain)"
+        },
+        "token_contract_address": {
+          "type": "string",
+          "pattern": "^0x[0-9a-fA-F]{40}$",
+          "description": "BNDQ token contract address on Sidra Chain"
+        },
+        "rpc_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Sidra Chain JSON-RPC endpoint"
+        },
+        "verify_chain_on_startup": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether to query and verify eth_chainId on node startup"
+        }
+      }
+    },
+    "measurement": {
+      "type": "object",
+      "required": ["enabled", "test_interval_sec", "max_test_duration_sec", "max_data_per_test_mb", "daily_data_cap_mb", "max_bandwidth_limit_mbps", "test_servers"],
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable active bandwidth benchmarks"
+        },
+        "test_interval_sec": {
+          "type": "integer",
+          "minimum": 60,
+          "description": "Frequency in seconds between automated tests (e.g. 900 for 15 mins)"
+        },
+        "max_test_duration_sec": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 60,
+          "description": "Maximum test duration limit in seconds to prevent pipe hogging"
+        },
+        "max_data_per_test_mb": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 500,
+          "description": "Maximum data volume transferred per benchmark"
+        },
+        "daily_data_cap_mb": {
+          "type": "integer",
+          "minimum": 10,
+          "description": "Daily bandwidth cap in megabytes. Tests automatically halt when exceeded"
+        },
+        "max_bandwidth_limit_mbps": {
+          "type": "number",
+          "minimum": 1.0,
+          "description": "Bandwidth speed throttle in Mbps to protect home ISP connection"
+        },
+        "test_servers": {
+          "type": "array",
+          "items": { "type": "string", "format": "uri" },
+          "description": "List of authorized test server endpoints"
+        }
+      }
+    },
+    "backend": {
+      "type": "object",
+      "required": ["base_url", "submit_reports", "report_interval_sec", "spool_dir", "max_spool_reports"],
+      "properties": {
+        "base_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "BANDIQ verification backend base URL"
+        },
+        "submit_reports": {
+          "type": "boolean",
+          "default": true
+        },
+        "report_interval_sec": {
+          "type": "integer",
+          "minimum": 10,
+          "description": "Frequency of flushing offline spooled reports"
+        },
+        "spool_dir": {
+          "type": "string",
+          "description": "Path to persistent offline spool directory"
+        },
+        "max_spool_reports": {
+          "type": "integer",
+          "minimum": 10,
+          "maximum": 5000,
+          "description": "Maximum queued reports retained during network outages"
+        }
+      }
+    },
+    "admin": {
+      "type": "object",
+      "required": ["enabled", "bind_address"],
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "bind_address": {
+          "type": "string",
+          "pattern": "^(127\\.0\\.0\\.1|localhost):[0-9]+$",
+          "description": "Localhost loopback bind address (remote binding strictly forbidden by default)"
+        },
+        "auth_token": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

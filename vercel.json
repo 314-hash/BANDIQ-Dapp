@@ -1,0 +1,49 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/dashboard/index.html"
+    },
+    {
+      "source": "/bandiq_logo.jpg",
+      "destination": "/dashboard/bandiq_logo.jpg"
+    },
+    {
+      "source": "/style.css",
+      "destination": "/dashboard/style.css"
+    },
+    {
+      "source": "/contracts.js",
+      "destination": "/dashboard/contracts.js"
+    },
+    {
+      "source": "/app.js",
+      "destination": "/dashboard/app.js"
+    },
+    {
+      "source": "/dashboard",
+      "destination": "/dashboard/index.html"
+    },
+    {
+      "source": "/rpc",
+      "destination": "https://node.sidrachain.com"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
+      ]
+    }
+  ]
+}

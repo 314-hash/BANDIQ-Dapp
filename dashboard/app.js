@@ -868,7 +868,7 @@ const SIDRA_CHAIN_CONFIG = {
   chainIdHex: '0x17cad',
   chainIdDec: '97453',
   chainName: 'Sidra Chain',
-  rpcUrls: ['http://127.0.0.1:8080/rpc', 'https://node.sidrachain.com'],
+  rpcUrls: ['https://node.sidrachain.com', 'http://127.0.0.1:8080/rpc'],
   blockExplorerUrls: ['https://explorer.sidrachain.com'],
   nativeCurrency: { name: 'Sidra Coin', symbol: 'KST', decimals: 18 },
   tokenContract: '0x6d1537bEE4F1EE3f55F4BC9319Aa40252cd39133',
@@ -1298,8 +1298,12 @@ function updateWalletUI() {
 
 async function fetchWalletBalance(address) {
   try {
-    // If backend RPC is accessible, query live balance
-    const response = await fetch(`${state.mockBackendURL}/rpc`, {
+    // If running remotely on Vercel/HTTPS, query official Sidra RPC; otherwise query local mock
+    const isRemoteOrHttps = typeof window !== 'undefined' && 
+      (window.location.protocol === 'https:' || (window.location.hostname !== '127.0.0.1' && window.location.hostname !== 'localhost'));
+    const rpcEndpoint = isRemoteOrHttps ? 'https://node.sidrachain.com' : `${state.mockBackendURL}/rpc`;
+
+    const response = await fetch(rpcEndpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

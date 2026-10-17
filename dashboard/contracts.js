@@ -13,7 +13,7 @@
     chainIdHex: '0x17cad',
     chainIdDec: '97453',
     chainName: 'Sidra Chain',
-    rpcUrls: ['http://127.0.0.1:8080/rpc', 'https://node.sidrachain.com'],
+    rpcUrls: ['https://node.sidrachain.com', 'http://127.0.0.1:8080/rpc'],
     blockExplorerUrls: ['https://explorer.sidrachain.com'],
 
     addresses: {
@@ -103,8 +103,10 @@
       }
 
       const callData = CONTRACT_CONFIG.selectors.balanceOf + padAddress(walletAddress);
-      const rpcEndpoint = (window.state && window.state.mockBackendURL) ? 
-        `${window.state.mockBackendURL}/rpc` : CONTRACT_CONFIG.rpcUrls[0];
+      const isRemoteOrHttps = typeof window !== 'undefined' && 
+        (window.location.protocol === 'https:' || (window.location.hostname !== '127.0.0.1' && window.location.hostname !== 'localhost'));
+      const rpcEndpoint = isRemoteOrHttps ? 'https://node.sidrachain.com' : 
+        ((window.state && window.state.mockBackendURL) ? `${window.state.mockBackendURL}/rpc` : CONTRACT_CONFIG.rpcUrls[0]);
 
       try {
         let hexResult = '0x0';

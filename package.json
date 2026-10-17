@@ -8,6 +8,7 @@
     "example": "examples"
   },
   "scripts": {
+    "build": "echo 'BANDIQ DePIN static build ready'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

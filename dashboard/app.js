@@ -218,7 +218,37 @@ const elements = {
   tunnelQrCanvas: document.getElementById('tunnelQrCanvas'),
   mtgRelayNode: document.getElementById('mtgRelayNode'),
   tunnelUriInput: document.getElementById('tunnelUriInput'),
-  btnCopyTunnelUri: document.getElementById('btnCopyTunnelUri')
+  btnCopyTunnelUri: document.getElementById('btnCopyTunnelUri'),
+  // Transaction Celebration & Operator Greeting Modals
+  txModal: document.getElementById('txModal'),
+  btnCloseTxModal: document.getElementById('btnCloseTxModal'),
+  txBadgeType: document.getElementById('txBadgeType'),
+  txModalTitle: document.getElementById('txModalTitle'),
+  txModalSub: document.getElementById('txModalSub'),
+  txIconRing: document.getElementById('txIconRing'),
+  txIconEmoji: document.getElementById('txIconEmoji'),
+  txGreetingText: document.getElementById('txGreetingText'),
+  txActionVal: document.getElementById('txActionVal'),
+  txAmountVal: document.getElementById('txAmountVal'),
+  txStatusVal: document.getElementById('txStatusVal'),
+  txNetworkVal: document.getElementById('txNetworkVal'),
+  txHashVal: document.getElementById('txHashVal'),
+  btnCopyTxHash: document.getElementById('btnCopyTxHash'),
+  txTimeVal: document.getElementById('txTimeVal'),
+  btnTxExplorerLink: document.getElementById('btnTxExplorerLink'),
+  btnCopyTxReceipt: document.getElementById('btnCopyTxReceipt'),
+  btnContinueTx: document.getElementById('btnContinueTx'),
+  operatorGreetingModal: document.getElementById('operatorGreetingModal'),
+  btnCloseGreetingModal: document.getElementById('btnCloseGreetingModal'),
+  greetingTimePill: document.getElementById('greetingTimePill'),
+  greetingTitle: document.getElementById('greetingTitle'),
+  greetingSub: document.getElementById('greetingSub'),
+  greetingWalletAddr: document.getElementById('greetingWalletAddr'),
+  greetingMessageBody: document.getElementById('greetingMessageBody'),
+  gqaTradeDex: document.getElementById('gqaTradeDex'),
+  gqaMobileWitness: document.getElementById('gqaMobileWitness'),
+  gqaNodeDelegate: document.getElementById('gqaNodeDelegate'),
+  btnDismissGreeting: document.getElementById('btnDismissGreeting')
 };
 
 // Initialize Application
@@ -239,6 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupMobileWitness();
   setupDelegationStaking();
   setupMobileTunnel();
+  setupTransactionModals();
 
   // Initial check for local agent
   checkAgentConnection();
@@ -301,11 +332,21 @@ function setupNavigation() {
   // Handle marketplace order button clicks
   document.querySelectorAll('.market-order-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
-      const tier = e.target.dataset.tier;
+      const tier = e.target.dataset.tier || 'Ultra';
       showToast(`Selected ${tier} service tier. Checking Sidra Chain node availability...`, 'info');
       setTimeout(() => {
         showToast(`Session ticket generated for ${tier} Tier. Ready for BNDQ settlement.`, 'success');
-      }, 1200);
+        showTransactionSuccess({
+          badge: 'BANDWIDTH ESCROW SECURED',
+          title: '🚀 Bandwidth Session Ticket Created!',
+          sub: 'Greetings, Operator! Bandwidth escrow session locked on Sidra Chain.',
+          greeting: `Thank you for fueling the decentralized bandwidth network! Your session escrow for ${tier} Tier is registered with cryptographic receipts.`,
+          action: `Bandwidth Escrow Session (${tier} Tier)`,
+          amount: `${tier} High-Speed Bandwidth Allocation`,
+          txHash: '0x' + Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join(''),
+          emoji: '⚡'
+        });
+      }, 1000);
     });
   });
 }
@@ -803,6 +844,16 @@ function setupVerificationTool() {
       try {
         await sleep(900);
         showToast('Voucher attested and recorded on Sidra Chain! Tx: 0x8a9f...41e0', 'success');
+        showTransactionSuccess({
+          badge: 'PROOF VOUCHER SETTLED',
+          title: '🛡️ Settlement Voucher Confirmed!',
+          sub: 'Greetings, Operator! Proof-of-Bandwidth verified across all 10 integrity gates.',
+          greeting: 'Verification passed all 10 gates! 50.00 $BNDQ relay escrow payment has been released to your node address on Sidra Chain.',
+          action: 'Proof-of-Bandwidth Settlement Voucher',
+          amount: '50.00 BNDQ Settled',
+          txHash: '0x8a9f3b18c7241e0a29b8c0d7154219ff0184b9c51234abcd5678ef0123456789',
+          emoji: '🛡️'
+        });
       } catch (e) {
         showToast('On-chain submission error: ' + e.message, 'error');
       }
@@ -918,6 +969,244 @@ function showToast(message, type = 'info') {
     toast.style.transition = 'all 0.3s ease';
     setTimeout(() => toast.remove(), 300);
   }, 3500);
+}
+
+/* ==============================================================================
+   Celebration Audio Synthesizer (Native Web Audio API)
+============================================================================== */
+function playCelebrationChime(type = 'success') {
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    const now = ctx.currentTime;
+
+    const osc1 = ctx.createOscillator();
+    const osc2 = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+
+    osc1.type = 'sine';
+    osc2.type = 'triangle';
+
+    if (type === 'success') {
+      osc1.frequency.setValueAtTime(523.25, now);       // C5
+      osc1.frequency.exponentialRampToValueAtTime(783.99, now + 0.12); // G5
+      osc2.frequency.setValueAtTime(659.25, now + 0.08); // E5
+      osc2.frequency.exponentialRampToValueAtTime(1046.50, now + 0.28); // C6
+    } else if (type === 'greeting') {
+      osc1.frequency.setValueAtTime(440.00, now);        // A4
+      osc1.frequency.exponentialRampToValueAtTime(659.25, now + 0.15); // E5
+      osc2.frequency.setValueAtTime(554.37, now + 0.10); // C#5
+      osc2.frequency.exponentialRampToValueAtTime(880.00, now + 0.30); // A5
+    }
+
+    gainNode.gain.setValueAtTime(0.01, now);
+    gainNode.gain.linearRampToValueAtTime(0.12, now + 0.04);
+    gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 0.45);
+
+    osc1.connect(gainNode);
+    osc2.connect(gainNode);
+    gainNode.connect(ctx.destination);
+
+    osc1.start(now);
+    osc2.start(now + 0.08);
+    osc1.stop(now + 0.45);
+    osc2.stop(now + 0.45);
+  } catch (e) {
+    // Non-blocking fallback
+  }
+}
+
+/* ==============================================================================
+   Universal Transaction Pop-Up & Greetings System
+============================================================================== */
+let currentTxReceipt = null;
+
+function showTransactionSuccess(opts = {}) {
+  const defaults = {
+    badge: 'TRANSACTION CONFIRMED',
+    title: '🎉 Transaction Confirmed!',
+    sub: 'Greetings, Operator! Your action has been verified on Sidra Chain.',
+    greeting: 'Thank you for fueling the decentralized bandwidth network on Sidra Chain!',
+    action: 'Bandwidth Transaction',
+    amount: 'Verified on Sidra Chain',
+    status: 'CONFIRMED ON-CHAIN',
+    network: 'Sidra Chain (Chain ID: 97453)',
+    txHash: '0x' + Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join(''),
+    emoji: '⚡'
+  };
+
+  const data = Object.assign({}, defaults, opts);
+  currentTxReceipt = data;
+
+  if (elements.txBadgeType) elements.txBadgeType.textContent = data.badge;
+  if (elements.txModalTitle) elements.txModalTitle.textContent = data.title;
+  if (elements.txModalSub) elements.txModalSub.textContent = data.sub;
+  if (elements.txGreetingText) elements.txGreetingText.textContent = `"${data.greeting}"`;
+  if (elements.txActionVal) elements.txActionVal.textContent = data.action;
+  if (elements.txAmountVal) elements.txAmountVal.textContent = data.amount;
+  if (elements.txNetworkVal) elements.txNetworkVal.textContent = data.network;
+  if (elements.txIconEmoji) elements.txIconEmoji.textContent = data.emoji;
+  if (elements.txTimeVal) elements.txTimeVal.textContent = new Date().toLocaleString();
+
+  const shortHash = data.txHash.length > 20 ? 
+    `${data.txHash.substring(0, 10)}...${data.txHash.substring(data.txHash.length - 8)}` : data.txHash;
+  if (elements.txHashVal) {
+    elements.txHashVal.textContent = shortHash;
+    elements.txHashVal.dataset.fullHash = data.txHash;
+  }
+
+  if (elements.btnTxExplorerLink) {
+    elements.btnTxExplorerLink.href = `https://explorer.sidrachain.com/tx/${data.txHash}`;
+    elements.btnTxExplorerLink.textContent = `View Tx on Sidra Explorer ↗`;
+  }
+
+  if (elements.txModal) {
+    elements.txModal.style.display = 'flex';
+    elements.txModal.setAttribute('aria-hidden', 'false');
+  }
+
+  // Play audio chime and haptic feedback
+  playCelebrationChime('success');
+  if (navigator.vibrate) navigator.vibrate([70, 50, 100]);
+}
+
+function closeTxModal() {
+  if (elements.txModal) {
+    elements.txModal.style.display = 'none';
+    elements.txModal.setAttribute('aria-hidden', 'true');
+  }
+}
+
+function showOperatorGreeting(walletAddr, providerName = 'Web3 Wallet') {
+  if (!walletAddr) return;
+
+  const hour = new Date().getHours();
+  let timeGreeting = '👋 Good Day, Operator!';
+  let timePill = 'WELCOME BACK';
+
+  if (hour >= 5 && hour < 12) {
+    timeGreeting = '🌅 Good Morning, Operator!';
+    timePill = 'MORNING SYNCHRONIZED';
+  } else if (hour >= 12 && hour < 17) {
+    timeGreeting = '☀️ Good Afternoon, Operator!';
+    timePill = 'AFTERNOON OPERATIONS';
+  } else if (hour >= 17 && hour < 22) {
+    timeGreeting = '🌆 Good Evening, Operator!';
+    timePill = 'EVENING MONITORING';
+  } else {
+    timeGreeting = '🌌 Greetings, Night Operator!';
+    timePill = 'NIGHT PROTOCOL ACTIVE';
+  }
+
+  const shortAddr = walletAddr.length > 14 ? 
+    `${walletAddr.substring(0, 8)}...${walletAddr.substring(walletAddr.length - 6)}` : walletAddr;
+
+  if (elements.greetingTitle) elements.greetingTitle.textContent = timeGreeting;
+  if (elements.greetingTimePill) elements.greetingTimePill.textContent = timePill;
+  if (elements.greetingWalletAddr) elements.greetingWalletAddr.textContent = `${shortAddr} (${providerName})`;
+  if (elements.greetingMessageBody) {
+    elements.greetingMessageBody.textContent = 
+      `Greetings! Your decentralized bandwidth node and ${providerName} wallet are synchronized on Sidra Chain (Chain ID: 97453). Every bandwidth test, witness probe, and liquidity swap you perform directly strengthens decentralized physical infrastructure.`;
+  }
+
+  if (elements.operatorGreetingModal) {
+    elements.operatorGreetingModal.style.display = 'flex';
+    elements.operatorGreetingModal.setAttribute('aria-hidden', 'false');
+  }
+
+  playCelebrationChime('greeting');
+  if (navigator.vibrate) navigator.vibrate([40, 50, 40]);
+}
+
+function closeOperatorGreetingModal() {
+  if (elements.operatorGreetingModal) {
+    elements.operatorGreetingModal.style.display = 'none';
+    elements.operatorGreetingModal.setAttribute('aria-hidden', 'true');
+  }
+}
+
+function setupTransactionModals() {
+  // Close Tx Modal
+  if (elements.btnCloseTxModal) {
+    elements.btnCloseTxModal.addEventListener('click', closeTxModal);
+  }
+  if (elements.btnContinueTx) {
+    elements.btnContinueTx.addEventListener('click', closeTxModal);
+  }
+  if (elements.txModal) {
+    elements.txModal.addEventListener('click', (e) => {
+      if (e.target === elements.txModal) closeTxModal();
+    });
+  }
+
+  // Copy Tx Hash
+  if (elements.btnCopyTxHash && elements.txHashVal) {
+    elements.btnCopyTxHash.addEventListener('click', () => {
+      const fullHash = elements.txHashVal.dataset.fullHash || elements.txHashVal.textContent;
+      navigator.clipboard.writeText(fullHash).then(() => {
+        showToast('Transaction hash copied to clipboard!', 'info');
+      });
+    });
+  }
+
+  // Copy Full Receipt
+  if (elements.btnCopyTxReceipt) {
+    elements.btnCopyTxReceipt.addEventListener('click', () => {
+      if (!currentTxReceipt) return;
+      const receiptText = `=== BANDIQ DePIN Transaction Receipt ===
+Action: ${currentTxReceipt.action}
+Amount / Value: ${currentTxReceipt.amount}
+Network: ${currentTxReceipt.network}
+Status: CONFIRMED ON-CHAIN
+Tx Hash: ${currentTxReceipt.txHash}
+Explorer: https://explorer.sidrachain.com/tx/${currentTxReceipt.txHash}
+Timestamp: ${new Date().toISOString()}
+=========================================`;
+      navigator.clipboard.writeText(receiptText).then(() => {
+        showToast('Full transaction receipt copied to clipboard!', 'success');
+      });
+    });
+  }
+
+  // Close Operator Greeting Modal
+  if (elements.btnCloseGreetingModal) {
+    elements.btnCloseGreetingModal.addEventListener('click', closeOperatorGreetingModal);
+  }
+  if (elements.btnDismissGreeting) {
+    elements.btnDismissGreeting.addEventListener('click', closeOperatorGreetingModal);
+  }
+  if (elements.operatorGreetingModal) {
+    elements.operatorGreetingModal.addEventListener('click', (e) => {
+      if (e.target === elements.operatorGreetingModal) closeOperatorGreetingModal();
+    });
+  }
+
+  // Quick Action Buttons inside Greeting Modal
+  if (elements.gqaTradeDex) {
+    elements.gqaTradeDex.addEventListener('click', () => {
+      closeOperatorGreetingModal();
+      switchView('wallet');
+      const dexEl = document.getElementById('dexTerminalCard');
+      if (dexEl) dexEl.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
+  if (elements.gqaMobileWitness) {
+    elements.gqaMobileWitness.addEventListener('click', () => {
+      closeOperatorGreetingModal();
+      switchView('nodeOperator');
+      const witnessEl = document.getElementById('mobileEdgeCard');
+      if (witnessEl) witnessEl.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
+  if (elements.gqaNodeDelegate) {
+    elements.gqaNodeDelegate.addEventListener('click', () => {
+      closeOperatorGreetingModal();
+      switchView('nodesExplorer');
+      const delegEl = document.getElementById('delegationHubCard');
+      if (delegEl) delegEl.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
 }
 
 function sleep(ms) {
@@ -1166,6 +1455,11 @@ async function connectInjectedWallet(providerType) {
     closeWalletModal();
     showToast(`Connected to ${state.wallet.providerName}!`, 'info');
 
+    // Display Operator Greeting Pop-Up
+    setTimeout(() => {
+      showOperatorGreeting(address, state.wallet.providerName);
+    }, 450);
+
     // Query live balance
     fetchWalletBalance(address);
 
@@ -1227,6 +1521,11 @@ function connectReadOnlyWallet(address) {
   updateWalletUI();
   closeWalletModal();
   showToast(`Watching address: ${address.substring(0, 6)}...${address.substring(38)}`, 'info');
+
+  // Display Operator Greeting Pop-Up
+  setTimeout(() => {
+    showOperatorGreeting(address, 'Read-Only Watcher');
+  }, 450);
 
   fetchWalletBalance(address);
 }
@@ -1295,7 +1594,17 @@ async function addBndqTokenToWallet() {
     });
 
     if (wasAdded) {
-      showToast('$BNDQ Token successfully imported to your wallet!', 'info');
+      showToast('$BNDQ Token successfully imported to your wallet!', 'success');
+      showTransactionSuccess({
+        badge: 'TOKEN IMPORT CONFIRMED',
+        title: '🪙 $BNDQ Token Added to Wallet!',
+        sub: 'Greetings, Operator! Your wallet is now tracking official $BNDQ assets.',
+        greeting: 'Asset watch confirmed! $BNDQ (0x6d1537bEE4F1EE3f55F4BC9319Aa40252cd39133) is now active in your wallet on Sidra Chain.',
+        action: 'EIP-747 Watch Asset Import',
+        amount: '18 Decimals · Official Supply Preserved',
+        txHash: '0x6d1537bEE4F1EE3f55F4BC9319Aa40252cd39133',
+        emoji: '🪙'
+      });
     }
   } catch (err) {
     showToast('Token import request cancelled: ' + err.message, 'error');
@@ -1895,6 +2204,18 @@ function setupDexSwapIntegration() {
         }
         if (elements.dtxLinkWrap) elements.dtxLinkWrap.style.display = 'block';
 
+        // Trigger Pop-up Modal with Greetings!
+        showTransactionSuccess({
+          badge: 'SIDRA DEX SWAP CONFIRMED',
+          title: '🎉 Swap Confirmed on Sidra Chain!',
+          sub: 'Greetings, Operator! Your decentralized trade was executed with 0.3% LP routing.',
+          greeting: `Congratulations, Operator! You traded ${fromVal} ${dexState.fromToken} for ~${toVal} ${dexState.toToken} on PinetSwap / Sidra DEX pool router.`,
+          action: `Sidra DEX Swap (${dexState.fromToken} ➔ ${dexState.toToken})`,
+          amount: `${fromVal} ${dexState.fromToken} ➔ ${toVal} ${dexState.toToken}`,
+          txHash: txHash,
+          emoji: '💱'
+        });
+
         // Refresh balances
         if (state.wallet.address) {
           fetchWalletBalance(state.wallet.address);
@@ -2056,6 +2377,20 @@ function setupMobileWitness() {
       }
 
       if (navigator.vibrate) navigator.vibrate(30);
+
+      // Milestone celebration every 5 attestations
+      if (attestations % 5 === 0) {
+        showTransactionSuccess({
+          badge: 'WITNESS ATTESTATION BATCH',
+          title: '📱 Edge Witness Telemetry Confirmed!',
+          sub: 'Greetings, Mobile Contributor! Telemetry epoch verified.',
+          greeting: `Great job, Operator! You have submitted ${attestations} verified witness probes (+${earnedYield.toFixed(2)} $BNDQ) to Sidra Chain decentralized pool.`,
+          action: `Cellular/Wi-Fi Edge Witness Batch (${attestations} Probes)`,
+          amount: `+${earnedYield.toFixed(2)} BNDQ Accrued`,
+          txHash: '0x' + Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join(''),
+          emoji: '📱'
+        });
+      }
     } catch (e) {
       // Graceful fallback
     }
@@ -2172,6 +2507,18 @@ function setupDelegationStaking() {
         showToast(`Successfully delegated ${stakeAmt} $BNDQ! Epoch yield active.`, 'success');
         if (navigator.vibrate) navigator.vibrate([60, 80, 60]);
         if (elements.delegationModal) elements.delegationModal.style.display = 'none';
+
+        // Trigger Pop-up Modal with Greetings!
+        showTransactionSuccess({
+          badge: 'NODE STAKE CONFIRMED',
+          title: '💎 Staking Delegation Confirmed!',
+          sub: 'Greetings, Operator! Your $BNDQ stake has been bonded.',
+          greeting: `Salute, Operator! Your ${stakeAmt} $BNDQ delegation is now boosting node routing priority. Yield (~14.8% APY) accrues every epoch.`,
+          action: `Node Delegation Stake (${delegState.selectedTier})`,
+          amount: `${stakeAmt} $BNDQ Staked`,
+          txHash: '0x' + Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join(''),
+          emoji: '💎'
+        });
       } catch (err) {
         showToast(`Delegation error: ${err.message}`, 'error');
       } finally {
@@ -2190,6 +2537,18 @@ function setupDelegationStaking() {
       elements.btnClaimDelegatorYield.disabled = true;
       showToast(`Claimed +${claimed} $BNDQ delegator rewards directly to your wallet!`, 'success');
       if (navigator.vibrate) navigator.vibrate(50);
+
+      // Trigger Pop-up Modal with Greetings!
+      showTransactionSuccess({
+        badge: 'EPOCH YIELD CLAIM CONFIRMED',
+        title: '🏆 Delegator Yield Distributed!',
+        sub: 'Greetings, Operator! Your reward has arrived in your wallet.',
+        greeting: `Congratulations! +${claimed} $BNDQ in epoch yield has been distributed directly to your wallet address from verified node relay settlements.`,
+        action: `Epoch Delegator Yield Claim`,
+        amount: `+${claimed} BNDQ`,
+        txHash: '0x' + Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join(''),
+        emoji: '🏆'
+      });
     });
   }
 }

@@ -1828,6 +1828,128 @@
       </div>
     </div>
 
+    <!-- Universal Transaction Pop-up & Celebration Modal -->
+    <div class="wallet-modal-overlay" id="txModal" style="display: none;" aria-hidden="true" role="dialog">
+      <div class="wallet-modal-card tx-celebration-card">
+        <div class="tx-celebration-glow"></div>
+        <div class="wm-header">
+          <div class="wm-title-group">
+            <span class="tx-badge-pill" id="txBadgeType">TRANSACTION CONFIRMED</span>
+            <h2 class="wm-title text-neon-green" id="txModalTitle">🎉 Transaction Confirmed!</h2>
+            <div class="wm-sub" id="txModalSub">Greetings, Operator! Your action has been verified on Sidra Chain.</div>
+          </div>
+          <button class="wm-close-btn" id="btnCloseTxModal">&times;</button>
+        </div>
+
+        <div class="tx-modal-body">
+          <div class="tx-celebration-hero">
+            <div class="tx-icon-ring" id="txIconRing">
+              <span class="tx-icon-emoji" id="txIconEmoji">⚡</span>
+            </div>
+            <div class="tx-greeting-callout" id="txGreetingText">
+              "Thank you for powering the decentralized bandwidth network!"
+            </div>
+          </div>
+
+          <!-- Transaction Summary Card -->
+          <div class="tx-receipt-card">
+            <div class="txr-row">
+              <span class="txr-label">Action / Service:</span>
+              <strong class="txr-val text-neon-cyan" id="txActionVal">Sidra DEX Swap</strong>
+            </div>
+            <div class="txr-row">
+              <span class="txr-label">Value / Quantity:</span>
+              <strong class="txr-val text-white" id="txAmountVal">10 SDA ➔ 2,455 BNDQ</strong>
+            </div>
+            <div class="txr-row">
+              <span class="txr-label">Status:</span>
+              <span class="txr-badge-success" id="txStatusVal">
+                <span class="agent-dot connected"></span>
+                <span>CONFIRMED ON-CHAIN</span>
+              </span>
+            </div>
+            <div class="txr-row">
+              <span class="txr-label">Network:</span>
+              <strong class="txr-val" id="txNetworkVal">Sidra Chain (Chain ID: 97453)</strong>
+            </div>
+            <div class="txr-row">
+              <span class="txr-label">Transaction Hash:</span>
+              <div class="txr-hash-box">
+                <span class="txr-hash" id="txHashVal">0x7a89b41e...</span>
+                <button class="btn-copy-hash" id="btnCopyTxHash" title="Copy Hash">📋</button>
+              </div>
+            </div>
+            <div class="txr-row">
+              <span class="txr-label">Timestamp:</span>
+              <span class="txr-time" id="txTimeVal">Oct 17, 2026 16:45:00</span>
+            </div>
+          </div>
+
+          <div class="tx-modal-actions mt-4">
+            <a href="#" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-block" id="btnTxExplorerLink">
+              View on Sidra Explorer ↗
+            </a>
+            <div class="tx-sub-actions mt-2">
+              <button class="btn btn-outline-sm btn-block" id="btnCopyTxReceipt">Copy Full Receipt 📋</button>
+              <button class="btn btn-outline-sm btn-block" id="btnContinueTx">Done & Continue ✓</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Operator Welcome & Greeting Pop-Up Modal -->
+    <div class="wallet-modal-overlay" id="operatorGreetingModal" style="display: none;" aria-hidden="true" role="dialog">
+      <div class="wallet-modal-card greeting-card">
+        <div class="wm-header">
+          <div class="wm-title-group">
+            <span class="greeting-pill" id="greetingTimePill">WELCOME BACK</span>
+            <h2 class="wm-title" id="greetingTitle">👋 Good Day, Operator!</h2>
+            <div class="wm-sub" id="greetingSub">BANDIQ DePIN Network · Bandwidth + Intelligence</div>
+          </div>
+          <button class="wm-close-btn" id="btnCloseGreetingModal">&times;</button>
+        </div>
+        <div class="greeting-modal-body">
+          <div class="greeting-hero-banner">
+            <div class="gh-avatar">🌐</div>
+            <div class="gh-info">
+              <div class="gh-name" id="greetingWalletAddr">0x...</div>
+              <div class="gh-status">
+                <span class="agent-dot connected"></span>
+                <span>Active on Sidra Chain (97453)</span>
+              </div>
+            </div>
+          </div>
+
+          <p class="greeting-message-text" id="greetingMessageBody">
+            Greetings! Your decentralized node interface and Sidra Chain wallet are synchronized. Every packet you verify and every test you run strengthens the decentralized physical internet.
+          </p>
+
+          <div class="greeting-quick-actions">
+            <button class="gqa-btn" id="gqaTradeDex">
+              <span class="gqa-icon">💱</span>
+              <div class="gqa-label">Sidra DEX Swap</div>
+              <div class="gqa-sub">SDA ➔ BNDQ</div>
+            </button>
+            <button class="gqa-btn" id="gqaMobileWitness">
+              <span class="gqa-icon">📱</span>
+              <div class="gqa-label">Edge Witness</div>
+              <div class="gqa-sub">Earn BNDQ</div>
+            </button>
+            <button class="gqa-btn" id="gqaNodeDelegate">
+              <span class="gqa-icon">💎</span>
+              <div class="gqa-label">Delegate Stake</div>
+              <div class="gqa-sub">14.8% APY</div>
+            </button>
+          </div>
+
+          <div class="mt-4">
+            <button class="btn btn-primary btn-block" id="btnDismissGreeting">Enter Dashboard 🚀</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Notification Toast Container -->
     <div id="toastContainer" class="toast-container"></div>
   </div>

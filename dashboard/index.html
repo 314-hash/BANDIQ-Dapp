@@ -7,6 +7,12 @@
   <meta name="description" content="BANDIQ DePIN Bandwidth Network Dashboard and Explorer on Sidra Chain ($BNDQ). Real-time telemetry, node operator controls, verifiable proof-of-bandwidth, and bandwidth marketplace.">
   <meta name="theme-color" content="#06070d">
   <link rel="icon" type="image/jpeg" href="bandiq_logo.jpg">
+  <link rel="apple-touch-icon" href="bandiq_logo.jpg">
+  <link rel="manifest" href="manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="BANDIQ">
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -62,8 +68,10 @@
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
             <path d="M9 12l2 2 4-4"/>
           </svg>
-          <span class="compliance-text">Ethical DePIN</span>
-        </div>
+        <button class="btn-install-pwa" id="btnInstallPwa" style="display: none;" title="Install BANDIQ Mobile App">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span>Install App</span>
+        </button>
         <button class="wallet-btn" id="connectWalletBtn">
           <svg class="icon-wallet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="2" y="4" width="20" height="16" rx="3"/>
@@ -386,6 +394,68 @@
             </div>
           </div>
 
+          <!-- ============================================================== -->
+          <!-- MOBILE EDGE CONTRIBUTOR & IN-BROWSER WITNESS (FOR PHONES & TABLETS) -->
+          <!-- ============================================================== -->
+          <div class="card glass-card mobile-edge-card mb-6" id="mobileEdgeCard">
+            <div class="card-header-flex">
+              <div>
+                <div class="flex-align-center gap-2">
+                  <h2 class="card-title text-neon-cyan">📱 Mobile Edge Contributor (In-Browser Witness)</h2>
+                  <span class="mobile-witness-pill" id="mobileWitnessStatusBadge">
+                    <span class="pulse-indicator" id="mobileWitnessPulse"></span>
+                    <span id="mobileWitnessStatusText">Standby</span>
+                  </span>
+                </div>
+                <p class="card-subtitle">Earn $BNDQ rewards on your smartphone! Turn your phone into a decentralized edge witness testing network latency, mobile speeds, and certifying desktop nodes.</p>
+              </div>
+              <div class="mobile-switch-wrap">
+                <label class="toggle-switch">
+                  <input type="checkbox" id="toggleMobileWitness">
+                  <span class="slider round"></span>
+                </label>
+                <span class="toggle-label" id="toggleMobileWitnessLabel">Activate Mobile Witness</span>
+              </div>
+            </div>
+
+            <!-- Mobile Live Telemetry Grid -->
+            <div class="mobile-telemetry-grid">
+              <div class="mt-item">
+                <span class="mt-lbl">Network Type</span>
+                <div class="mt-val" id="mobileNetType">Wi-Fi / 5G</div>
+                <span class="mt-sub" id="mobileNetDownlink">Downlink: ~45 Mbps</span>
+              </div>
+              <div class="mt-item">
+                <span class="mt-lbl">Edge Latency (RTT)</span>
+                <div class="mt-val text-neon-cyan" id="mobileNetRtt">18 ms</div>
+                <span class="mt-sub">Sidra Chain RPC Edge</span>
+              </div>
+              <div class="mt-item">
+                <span class="mt-lbl">Witness Attestations</span>
+                <div class="mt-val text-neon-purple" id="mobileAttestationCount">0</div>
+                <span class="mt-sub" id="mobileAttestationCadence">Next test in 15s</span>
+              </div>
+              <div class="mt-item">
+                <span class="mt-lbl">Earned Witness Share</span>
+                <div class="mt-val text-neon-green" id="mobileEarnedBndq">+ 0.00 BNDQ</div>
+                <span class="mt-sub">Credited to connected wallet</span>
+              </div>
+            </div>
+
+            <!-- Real-Time Activity Log for Mobile Witness -->
+            <div class="mobile-witness-log-box" id="mobileWitnessLogBox">
+              <div class="mwl-header">
+                <span>Recent Mobile Attestations & Witness Proofs</span>
+                <span class="mwl-device" id="mobileDeviceTag">Detecting device...</span>
+              </div>
+              <div class="mwl-list" id="mobileWitnessList">
+                <div class="mwl-row empty">
+                  <span>Toggle "Activate Mobile Witness" to start sampling latency and generating mobile proof-of-bandwidth attestations.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Operator Power Controls & Health Grid -->
           <div class="grid-3-col">
             <!-- Power Controls Card -->
@@ -600,6 +670,40 @@
             </div>
           </div>
 
+          <!-- Mobile Staking & Delegation Pool Banner -->
+          <div class="card glass-card delegation-hub-card mb-6" id="delegationHubCard">
+            <div class="card-header-flex">
+              <div>
+                <div class="flex-align-center gap-2">
+                  <h2 class="card-title text-neon-purple">💎 Mobile Node Delegation & Staking Hub</h2>
+                  <span class="delegation-apy-pill">APY: ~14.8%</span>
+                </div>
+                <p class="card-subtitle">Don't run a PC node? Stake your $BNDQ behind verified top-tier bandwidth nodes and share in their physical relay settlements automatically.</p>
+              </div>
+              <div class="delegation-stats-pill">
+                <span>Total Delegated: <strong>1.48M BNDQ</strong></span>
+              </div>
+            </div>
+
+            <div class="delegation-metrics-row">
+              <div class="dm-box">
+                <span class="dm-lbl">My Total Delegated</span>
+                <span class="dm-val text-neon-cyan" id="myDelegatedAmount">0.00 BNDQ</span>
+              </div>
+              <div class="dm-box">
+                <span class="dm-lbl">Claimable Delegator Yield</span>
+                <span class="dm-val text-neon-green" id="myClaimableYield">0.00 BNDQ</span>
+              </div>
+              <div class="dm-box">
+                <span class="dm-lbl">Active Node Backing</span>
+                <span class="dm-val" id="myDelegatedNodeCount">0 Nodes</span>
+              </div>
+              <div class="dm-action">
+                <button class="btn btn-primary-sm" id="btnClaimDelegatorYield" disabled>Claim Yield</button>
+              </div>
+            </div>
+          </div>
+
           <!-- Node Directory Table Card -->
           <div class="card glass-card table-card">
             <div class="table-responsive">
@@ -801,6 +905,37 @@
                   </tr>
                 </tbody>
               </table>
+            </div>
+          </div>
+
+          <!-- Mobile Fast-Connect QR Tunnel for Bandwidth Consumers -->
+          <div class="card glass-card mt-6" id="mobileTunnelCard">
+            <div class="card-header-flex">
+              <div>
+                <div class="flex-align-center gap-2">
+                  <h2 class="card-title text-neon-cyan">📱 Mobile Fast-Connect QR Tunnel</h2>
+                  <span class="live-dex-pill">Encrypted Residential Tunnel</span>
+                </div>
+                <p class="card-subtitle">Connect your smartphone or tablet to verified BANDIQ relay nodes in 1 tap via QR scan.</p>
+              </div>
+              <button class="btn btn-outline-cyan-sm" id="btnGenerateMobileTunnel">Generate Fresh QR Profile</button>
+            </div>
+
+            <div class="mobile-tunnel-grid">
+              <div class="mtg-qr-box">
+                <canvas id="tunnelQrCanvas" width="160" height="160"></canvas>
+                <span class="mtg-qr-caption">Scan with WireGuard / ShadowTunnel app</span>
+              </div>
+              <div class="mtg-details">
+                <div class="mtg-row"><span>Tunnel Protocol:</span> <strong>ChaCha20-Poly1305 / Noise_IK</strong></div>
+                <div class="mtg-row"><span>Active Relay Node:</span> <code id="mtgRelayNode">bandiq-node-f73b88...</code></div>
+                <div class="mtg-row"><span>Escrow Linked:</span> <strong class="text-neon-cyan">Session #sess-9912a</strong></div>
+                <div class="mtg-row"><span>Bandwidth Allotment:</span> <strong>10.0 GB (Encrypted)</strong></div>
+                <div class="mtg-copy-row mt-2">
+                  <input type="text" readonly id="tunnelUriInput" class="code-input" value="bandiq://tunnel-relay?node=f73b88&port=51820&cipher=chacha20">
+                  <button class="btn btn-outline-sm" id="btnCopyTunnelUri">Copy Config</button>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -1643,6 +1778,51 @@
           <div class="wm-security-note">
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             <span>Non-custodial. Private keys never leave your device.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delegation Staking Modal for Mobile & Web Users -->
+    <div class="wallet-modal-overlay" id="delegationModal" style="display: none;" aria-hidden="true" role="dialog">
+      <div class="wallet-modal-card">
+        <div class="wm-header">
+          <div class="wm-title-group">
+            <h2 class="wm-title">Delegate $BNDQ to Node</h2>
+            <div class="wm-sub" id="delegateModalNodeSub">bandiq-node-2d5c... · 99.8% Uptime</div>
+          </div>
+          <button class="wm-close-btn" id="btnCloseDelegationModal">&times;</button>
+        </div>
+        <div class="delegation-modal-body">
+          <div class="dmb-node-info">
+            <div class="dmb-stat"><span>Node Quality:</span> <strong class="text-neon-cyan" id="delegateNodeTier">Ultra Fiber (250 Mbps)</strong></div>
+            <div class="dmb-stat"><span>Commission Fee:</span> <strong>5.0%</strong></div>
+            <div class="dmb-stat"><span>Delegator Share:</span> <strong class="text-neon-green">95.0%</strong></div>
+            <div class="dmb-stat"><span>Est. Epoch APY:</span> <strong class="text-neon-purple">14.8%</strong></div>
+          </div>
+
+          <div class="form-group mt-3">
+            <label>Amount to Stake ($BNDQ):</label>
+            <div class="stake-input-row">
+              <input type="number" id="delegateStakeInput" class="text-input" value="100" min="10" step="10">
+              <button class="btn-max-sm" id="btnMaxStakeBndq">MAX</button>
+            </div>
+            <div class="stake-quick-chips" id="stakeChips">
+              <button class="stake-chip active" data-amount="100">100</button>
+              <button class="stake-chip" data-amount="500">500</button>
+              <button class="stake-chip" data-amount="1000">1,000</button>
+              <button class="stake-chip" data-amount="5000">5,000</button>
+            </div>
+          </div>
+
+          <div class="stake-summary-box mt-3">
+            <div class="ssb-row"><span>Lockup Period:</span> <strong>Flexible (Unstake anytime)</strong></div>
+            <div class="ssb-row"><span>Reward Distribution:</span> <strong>Epoch Payout (Every 24h)</strong></div>
+            <div class="ssb-row"><span>Estimated Weekly Return:</span> <strong class="text-neon-cyan" id="estWeeklyReturn">+ 0.28 BNDQ</strong></div>
+          </div>
+
+          <div class="dmb-actions mt-4">
+            <button class="btn btn-primary btn-block" id="btnConfirmDelegation">Confirm Delegation on Sidra Chain</button>
           </div>
         </div>
       </div>

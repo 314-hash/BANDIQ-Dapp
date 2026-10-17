@@ -23,6 +23,14 @@
       "destination": "/dashboard/app.js"
     },
     {
+      "source": "/manifest.json",
+      "destination": "/dashboard/manifest.json"
+    },
+    {
+      "source": "/sw.js",
+      "destination": "/dashboard/sw.js"
+    },
+    {
       "source": "/dashboard",
       "destination": "/dashboard/index.html"
     },

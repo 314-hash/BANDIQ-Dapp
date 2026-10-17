@@ -3240,3 +3240,379 @@ html, body {
   align-items: center;
   gap: 4px;
 }
+
+/* ==============================================================================
+   Mobile Features: PWA Install, Edge Contributor, Delegation & Tunnel QR
+============================================================================== */
+.btn-install-pwa {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, rgba(0, 242, 254, 0.2), rgba(139, 92, 246, 0.2));
+  border: 1px solid var(--color-cyan);
+  color: var(--color-cyan);
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 0 10px rgba(0, 242, 254, 0.2);
+}
+
+.btn-install-pwa:hover {
+  background: var(--color-cyan);
+  color: #06070d;
+}
+
+.mobile-edge-card {
+  border: 1px solid rgba(0, 242, 254, 0.3);
+  background: linear-gradient(135deg, rgba(6, 12, 24, 0.85) 0%, rgba(15, 23, 42, 0.8) 100%);
+  box-shadow: 0 0 25px rgba(0, 242, 254, 0.1);
+}
+
+.mobile-witness-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(100, 116, 139, 0.2);
+  border: 1px solid rgba(100, 116, 139, 0.4);
+  color: #94a3b8;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+}
+
+.mobile-witness-pill.active {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #10b981;
+}
+
+.mobile-switch-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 26px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider.round {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.15);
+  border: 1px solid var(--border-subtle);
+  transition: 0.3s;
+  border-radius: 26px;
+}
+
+.slider.round:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 50%;
+}
+
+input:checked + .slider.round {
+  background-color: var(--color-cyan);
+  box-shadow: 0 0 12px rgba(0, 242, 254, 0.5);
+}
+
+input:checked + .slider.round:before {
+  transform: translateX(22px);
+  background-color: #06070d;
+}
+
+.toggle-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.mobile-telemetry-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+  margin: 18px 0;
+}
+
+.mt-item {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mt-lbl {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.mt-val {
+  font-family: var(--font-mono);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.mt-sub {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+}
+
+.mobile-witness-log-box {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+}
+
+.mwl-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.mwl-device {
+  font-family: var(--font-mono);
+  color: var(--color-cyan);
+}
+
+.mwl-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.mwl-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.mwl-row.empty {
+  color: var(--text-dim);
+  font-style: italic;
+  justify-content: center;
+  padding: 10px;
+}
+
+/* Delegation Hub */
+.delegation-hub-card {
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  box-shadow: 0 0 25px rgba(139, 92, 246, 0.1);
+}
+
+.delegation-apy-pill {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: #10b981;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+}
+
+.delegation-stats-pill {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.delegation-metrics-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 16px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+}
+
+.dm-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dm-lbl {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.dm-val {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.btn-delegate-node {
+  background: rgba(139, 92, 246, 0.15);
+  border: 1px solid var(--border-neon-purple);
+  color: var(--color-purple-light);
+  font-size: 0.72rem;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-delegate-node:hover {
+  background: var(--color-purple-light);
+  color: #06070d;
+}
+
+/* Delegation Modal Details */
+.delegation-modal-body {
+  margin-top: 16px;
+}
+
+.dmb-node-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  font-size: 0.78rem;
+}
+
+.dmb-stat span {
+  color: var(--text-muted);
+  display: block;
+  font-size: 0.7rem;
+}
+
+.stake-input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stake-quick-chips {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.stake-chip {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.stake-chip.active {
+  background: rgba(139, 92, 246, 0.2);
+  border-color: var(--color-purple-light);
+  color: var(--color-purple-light);
+  font-weight: 700;
+}
+
+.stake-summary-box {
+  background: rgba(0, 242, 254, 0.04);
+  border: 1px solid rgba(0, 242, 254, 0.2);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  font-size: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ssb-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Mobile Tunnel QR */
+.mobile-tunnel-grid {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.mtg-qr-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  padding: 12px;
+  border-radius: var(--radius-md);
+}
+
+.mtg-qr-caption {
+  font-size: 0.68rem;
+  color: #334155;
+  font-weight: 600;
+  text-align: center;
+}
+
+.mtg-details {
+  flex: 1;
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.8rem;
+}
+
+.mtg-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mtg-copy-row {
+  display: flex;
+  gap: 8px;
+}
+

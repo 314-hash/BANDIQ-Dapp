@@ -20,6 +20,12 @@ module.exports = {
       url: process.env.SIDRA_RPC_URL || "http://127.0.0.1:8080/rpc",
       chainId: 97453,
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : []
+    },
+    sidraLive: {
+      url: process.env.SIDRA_RPC_URL || "https://node.sidrachain.com",
+      chainId: 97453,
+      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+      timeout: 120000
     }
   },
   paths: {

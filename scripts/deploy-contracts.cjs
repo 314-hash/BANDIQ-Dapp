@@ -85,9 +85,32 @@ async function main() {
     fs.mkdirSync(deploymentsDir, { recursive: true });
   }
 
+  // Save standard deployment record
   const outFilePath = path.join(deploymentsDir, `sidra_${network.chainId}.json`);
   fs.writeFileSync(outFilePath, JSON.stringify(deploymentData, null, 2));
-  console.log("\nDeployment record saved to:", outFilePath);
+  console.log("\n[OK] Deployment record saved to:", outFilePath);
+
+  // If live deployment on Sidra Chain, save dedicated sidra_live_97453.json
+  const isLive = process.env.LIVE_DEPLOY === "true" || network.name === "sidraLive" || network.chainId.toString() === "97453";
+  if (isLive) {
+    const liveOutFilePath = path.join(deploymentsDir, "sidra_live_97453.json");
+    fs.writeFileSync(liveOutFilePath, JSON.stringify(deploymentData, null, 2));
+    console.log("[OK] Live deployment record saved to:", liveOutFilePath);
+  }
+
+  // Update dashboard/contracts.js with live addresses if enabled (default true)
+  if (process.env.UPDATE_DASHBOARD !== "false") {
+    const contractsJsPath = path.join(__dirname, "../dashboard/contracts.js");
+    if (fs.existsSync(contractsJsPath)) {
+      let content = fs.readFileSync(contractsJsPath, "utf8");
+      content = content.replace(/nodeRegistry:\s*'0x[a-fA-F0-9]{40}'/, `nodeRegistry: '${registryAddress}'`);
+      content = content.replace(/bandwidthVerifier:\s*'0x[a-fA-F0-9]{40}'/, `bandwidthVerifier: '${verifierAddress}'`);
+      content = content.replace(/usageSettlement:\s*'0x[a-fA-F0-9]{40}'/, `usageSettlement: '${settlementAddress}'`);
+      content = content.replace(/rewardDistributor:\s*'0x[a-fA-F0-9]{40}'/, `rewardDistributor: '${distributorAddress}'`);
+      fs.writeFileSync(contractsJsPath, content, "utf8");
+      console.log("[OK] Updated dashboard/contracts.js with live on-chain contract addresses!");
+    }
+  }
 }
 
 main()

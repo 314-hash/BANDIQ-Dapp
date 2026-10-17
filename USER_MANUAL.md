@@ -258,6 +258,31 @@ To display your $BNDQ balance inside MetaMask, Rabby, or Trust Wallet:
 
 ---
 
+### Deploying Smart Contracts to Live Sidra Chain (`deploy-sidra-live.ps1`)
+
+To deploy the compiled smart contracts suite directly to the live Sidra Chain:
+
+```powershell
+# 1. (Optional) Run in simulation mode first (no real gas spent):
+.\scripts\deploy-sidra-live.ps1 -DryRun
+
+# 2. Deploy live with secure private key prompt:
+.\scripts\deploy-sidra-live.ps1
+
+# 3. Or pass private key via environment variable:
+$env:PRIVATE_KEY = "0xYourDeployerPrivateKey"
+.\scripts\deploy-sidra-live.ps1
+```
+
+*What the Pipeline Does:*
+1. **Verifies Sidra RPC:** Validates live connection to `https://node.sidrachain.com` and asserts Chain ID is `97453` (`0x17cad`).
+2. **Checks Bytecode:** Asserts existing $BNDQ token bytecode exists at `0x6d1537bEE4F1EE3f55F4BC9319Aa40252cd39133` (fixed supply).
+3. **Inspects Gas:** Derives deployer address and queries native SDA gas balance via RPC.
+4. **Deploys Suite:** Deploys `BandiqNodeRegistry`, `BandiqBandwidthVerifier`, `BandiqUsageSettlement`, and `BandiqRewardDistributor`.
+5. **Auto-Updates Dashboard:** Generates `deployments/sidra_live_97453.json` and updates `dashboard/contracts.js` with the real on-chain addresses.
+
+---
+
 ## 6. Mobile Users & Smartphone Contributor Guide (iOS & Android)
 
 BANDIQ is architected so that **mobile users do NOT need a powerful desktop PC to participate and earn $BNDQ rewards**. Smartphones and tablets can actively contribute as decentralized network witnesses, stake/delegate tokens to high-capacity nodes, connect to decentralized VPN tunnels, and execute instant token swaps.

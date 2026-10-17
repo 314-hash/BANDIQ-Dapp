@@ -1057,8 +1057,8 @@ function showTransactionSuccess(opts = {}) {
   }
 
   if (elements.btnTxExplorerLink) {
-    elements.btnTxExplorerLink.href = `https://explorer.sidrachain.com/tx/${data.txHash}`;
-    elements.btnTxExplorerLink.textContent = `View Tx on Sidra Explorer ↗`;
+    elements.btnTxExplorerLink.href = `https://ledger.sidrachain.com/tx/${data.txHash}`;
+    elements.btnTxExplorerLink.textContent = `View on Sidra Ledger Explorer ↗`;
   }
 
   if (elements.txModal) {
@@ -1160,7 +1160,7 @@ Amount / Value: ${currentTxReceipt.amount}
 Network: ${currentTxReceipt.network}
 Status: CONFIRMED ON-CHAIN
 Tx Hash: ${currentTxReceipt.txHash}
-Explorer: https://explorer.sidrachain.com/tx/${currentTxReceipt.txHash}
+Explorer: https://ledger.sidrachain.com/tx/${currentTxReceipt.txHash}
 Timestamp: ${new Date().toISOString()}
 =========================================`;
       navigator.clipboard.writeText(receiptText).then(() => {
@@ -1230,7 +1230,7 @@ const SIDRA_CHAIN_CONFIG = {
   chainIdDec: '97453',
   chainName: 'Sidra Chain',
   rpcUrls: ['https://node.sidrachain.com', 'http://127.0.0.1:8080/rpc'],
-  blockExplorerUrls: ['https://explorer.sidrachain.com'],
+  blockExplorerUrls: ['https://ledger.sidrachain.com', 'https://explorer.sidrachain.com'],
   nativeCurrency: { name: 'Sidra Coin', symbol: 'KST', decimals: 18 },
   tokenContract: '0x6d1537bEE4F1EE3f55F4BC9319Aa40252cd39133',
   tokenSymbol: 'BNDQ',
@@ -2199,8 +2199,8 @@ function setupDexSwapIntegration() {
         if (elements.dtxTitle) elements.dtxTitle.textContent = 'Swap Executed Successfully! ✓';
         if (elements.dtxBody) elements.dtxBody.textContent = `Completed swap of ${fromVal} ${dexState.fromToken} for ${toVal} ${dexState.toToken}. Liquidity settled on-chain.`;
         if (elements.dtxExplorerLink) {
-          elements.dtxExplorerLink.href = `https://explorer.sidrachain.com/tx/${txHash}`;
-          elements.dtxExplorerLink.textContent = `View Tx ${txHash.substring(0, 14)}... on Sidra Explorer ↗`;
+          elements.dtxExplorerLink.href = `https://ledger.sidrachain.com/tx/${txHash}`;
+          elements.dtxExplorerLink.textContent = `View Tx ${txHash.substring(0, 14)}... on Sidra Ledger ↗`;
         }
         if (elements.dtxLinkWrap) elements.dtxLinkWrap.style.display = 'block';
 

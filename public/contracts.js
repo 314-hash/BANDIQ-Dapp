@@ -14,7 +14,7 @@
     chainIdDec: '97453',
     chainName: 'Sidra Chain',
     rpcUrls: ['https://node.sidrachain.com', 'http://127.0.0.1:8080/rpc'],
-    blockExplorerUrls: ['https://explorer.sidrachain.com'],
+    blockExplorerUrls: ['https://ledger.sidrachain.com', 'https://explorer.sidrachain.com'],
 
     addresses: {
       // Existing BNDQ token on Sidra Chain (Preserved supply - no minting)

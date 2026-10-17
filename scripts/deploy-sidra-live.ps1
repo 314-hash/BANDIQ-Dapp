@@ -153,7 +153,7 @@ if ($DryRun) {
     try {
         $deployerAddress = (& node -e "const { ethers } = require('ethers'); const w = new ethers.Wallet(process.env.PRIVATE_KEY); console.log(w.address);").Trim()
         Write-Host "    [OK] Deployer Address: $deployerAddress" -ForegroundColor Green
-        Write-Host "         Explorer: https://explorer.sidrachain.com/address/$deployerAddress" -ForegroundColor DarkCyan
+        Write-Host "         Explorer: https://ledger.sidrachain.com/address/$deployerAddress" -ForegroundColor DarkCyan
 
         # Check native SDA balance
         $balPayload = '{"jsonrpc":"2.0","method":"eth_getBalance","params":["' + $deployerAddress + '","latest"],"id":4}'
@@ -217,7 +217,7 @@ if ($LASTEXITCODE -eq 0) {
 
     Write-Host ""
     Write-Host "Next Recommended Steps:" -ForegroundColor Yellow
-    Write-Host " 1. Verify deployed addresses on Sidra Explorer: https://explorer.sidrachain.com" -ForegroundColor Gray
+    Write-Host " 1. Verify deployed addresses on Sidra Explorer: https://ledger.sidrachain.com" -ForegroundColor Gray
     Write-Host " 2. Run dashboard to interact with live contracts: .\scripts\run-dashboard.ps1" -ForegroundColor Gray
     Write-Host " 3. Test voucher redemption and bandwidth escrow on live Sidra Chain." -ForegroundColor Gray
 } else {

@@ -234,7 +234,7 @@ If your wallet does not automatically add Sidra Chain, you can manually enter th
 | **New RPC URL** | `https://node.sidrachain.com` *(Local dev: `http://127.0.0.1:8080/rpc`)* |
 | **Chain ID** | `97453` *(Hex: `0x17cad`)* |
 | **Currency Symbol** | `KST` *(or `SIDRA`)* |
-| **Block Explorer URL** | `https://explorer.sidrachain.com` |
+| **Block Explorer URL** | `https://ledger.sidrachain.com` *(Mirror: `https://explorer.sidrachain.com`)* |
 
 ---
 
